@@ -21,25 +21,25 @@
   
     <meta name="description" content="在C和C++编程语言中，宏是一种强大的预处理指令，允许开发者在编译之前进行代码的文本替换。本文深入探讨了宏的定义、使用场景以及如何巧妙地利用它们来增强代码的效率和灵活性。本文将一起学习如何定义宏，探索它们的参数替换机制，以及如何避免常见的宏使用陷阱。此外，本文还将展示宏在条件编译、代码重用和性能优化中的实际应用，帮助你解锁宏的潜力，让你的C&#x2F;C++代码更加简洁、高效。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="探索C&#x2F;C++宏(Macros)的艺术（一）">
+<meta property="og:title" content="探索C&#x2F;C++宏的艺术（一）">
 <meta property="og:url" content="http://hijackiee.github.io/2024/11/18/Macros/%E5%AE%8F%E7%9A%84%E8%89%BA%E6%9C%AF_1/index.html">
 <meta property="og:site_name" content="HiJackiee&#39;s blog">
 <meta property="og:description" content="在C和C++编程语言中，宏是一种强大的预处理指令，允许开发者在编译之前进行代码的文本替换。本文深入探讨了宏的定义、使用场景以及如何巧妙地利用它们来增强代码的效率和灵活性。本文将一起学习如何定义宏，探索它们的参数替换机制，以及如何避免常见的宏使用陷阱。此外，本文还将展示宏在条件编译、代码重用和性能优化中的实际应用，帮助你解锁宏的潜力，让你的C&#x2F;C++代码更加简洁、高效。">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://hijackiee.github.io/img/bg/post_bg.png">
+<meta property="og:image" content="http://hijackiee.github.io/img/in_posts/Macros/post_bg_header">
 <meta property="article:published_time" content="2024-11-18T09:00:00.000Z">
-<meta property="article:modified_time" content="2024-11-18T12:13:36.997Z">
+<meta property="article:modified_time" content="2024-11-18T13:00:37.599Z">
 <meta property="article:author" content="HiJackiee">
 <meta property="article:tag" content="C">
 <meta property="article:tag" content="Cpp">
 <meta property="article:tag" content="Macros">
 <meta property="article:tag" content="编程技巧">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://hijackiee.github.io/img/bg/post_bg.png">
+<meta name="twitter:image" content="http://hijackiee.github.io/img/in_posts/Macros/post_bg_header">
   
   
   
-  <title>探索C/C++宏(Macros)的艺术（一） - HiJackiee&#39;s blog</title>
+  <title>探索C/C++宏的艺术（一） - HiJackiee&#39;s blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -199,7 +199,7 @@
   
 
 <div id="banner" class="banner" parallax=true
-     style="background: url('/img/bg/post_bg.png') no-repeat center center; background-size: cover;">
+     style="background: url('/img/in_posts/Macros/post_bg_header') no-repeat center center; background-size: cover;">
   <div class="full-bg-img">
     <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
       <div class="banner-text text-center fade-in-up">
@@ -228,7 +228,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.6k words
+          1.9k words
         
       </span>
     
@@ -239,7 +239,7 @@
         
         
         
-          14 mins
+          17 mins
         
       </span>
     
@@ -290,7 +290,7 @@
             
               <div class="markdown-body">
                 
-                <h1 id="宏是什么">宏是什么？</h1>
+                <h3 id="宏是什么">宏是什么？</h3>
 <p>  <strong>宏</strong>(<code>Macros</code>)是一段代码片段，每个<strong>宏</strong>被赋予了一个名称。<strong>无论何时使用该名称，都将由宏的内容替换</strong>（其实就是文本替换）。宏有两种——<strong>类对象宏(<code>Object-like Macros</code>)</strong>和<strong>类函数宏(<code>Function-like Macros</code>)</strong>。它们的差异主要体现在使用时，使用<strong>类对象宏</strong>时类似于数据对象，使用<strong>类函数宏</strong>时类似于函数调用。</p>
 <p><span class="math display">\[
 宏
@@ -298,7 +298,7 @@
 类对象宏\\
 类函数宏
 \end{cases}\]</span></p>
-<h1 id="类对象宏object-like-macros">类对象宏(Object-like Macros)</h1>
+<h3 id="类对象宏object-like-macros">类对象宏(Object-like Macros)</h3>
 <p>  <strong>类对象宏</strong>其实就是一个简单的<strong>标识符</strong>，其在代码中被使用之处会被其所指的代码片段给替换。之所以将其称为<strong>类对象宏</strong>，是因为在代码中使用<strong>类对象宏</strong>时就像在使用普通的数据对象一样。通常的<u>使用场景是给数值常量赋予符号名称</u>。例如：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">// 示例1</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> PI 3.14</span><br></code></pre></td></tr></table></figure>
 <p>  <u>在<code>C/C++</code>中，宏是通过预处理指令<code>#define</code>来创建的</u>。这个指令告诉预处理器定义一个新的宏（预处理器是C/C++编译过程中的一个阶段，负责处理源代码中的预处理指令，如宏定义、文件包含和条件编译等）。</p>
@@ -320,9 +320,9 @@ list)</strong>，也就是<u>当宏被使用时，预处理器将宏名称替换
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> NUMBERS 1, \</span><br><span class="hljs-meta">                2, \</span><br><span class="hljs-meta">                3</span><br><br><span class="hljs-type">int</span> nums[] = &#123;NUMBERS&#125;;<br><br><span class="hljs-comment">// 预处理展开后：</span><br><br><span class="hljs-type">int</span> nums[] = &#123;<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>&#125;;<br></code></pre></td></tr></table></figure>
 <blockquote>
 <p>这里官方文档说：因为预处理后宏会变成一行，那么报错信息提供的行号和我们实际所看到的行号就存在偏差。可能因为时间原因，这个问题已经不存在了：</p>
-<p><img src="img/in_posts/Macros/code1.png" srcset="/img/loading.gif" lazyload alt="错误代码" />
+<p><img src="/img/in_posts/Macros/code1.png" srcset="/img/loading.gif" lazyload alt="错误代码" />
 这段代码里，<code>return</code> 语句后没写分号。查看报错信息： <img
-src="img/in_posts/Macros/code1_err_info.png" srcset="/img/loading.gif" lazyload alt="报错信息" />
+src="/img/in_posts/Macros/code1_err_info.png" srcset="/img/loading.gif" lazyload alt="报错信息" />
 可以看到，报错信息里面行号是正常显示的，这个问题可以忽略。</p>
 </blockquote>
 <p>  在<code>C/C++</code>语言中定义宏时，宏体可以包含任何内容，只要这些内容能够分解成有效的<strong>预处理标记</strong>（<code>preprocessing tokens</code>）。这里的“预处理标记”指的是<u>预处理器能够识别的基本单位，比如关键字、标识符、字面量、运算符等</u>。
@@ -372,6 +372,19 @@ src="img/in_posts/Macros/code1_err_info.png" srcset="/img/loading.gif" lazyload 
 <code>FOO</code>，避免了无限递归。</p>
 <p>在这两种情况下，预处理器都会停止进一步展开宏，以防止无限递归的发生。这种自我引用的宏定义通常不是有意为之的，因为它们不会产生有用的结果，但它们确实展示了预处理器如何处理宏的递归展开，这部分将在后续
 <code>自引用宏章节</code> 介绍。</p>
+<h3 id="类函数宏function-like-macros">类函数宏(Function-like
+Macros)</h3>
+<p>  实际上，还可以定义<strong>看起来像函数调用的宏</strong>。这些被称为<strong>类函数宏</strong>。要定义一个类似函数的宏，同样使用
+<code>#define</code>指令，但在<u>宏名称后紧接一对括号</u>。例如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> lang_init()  c_init()</span><br><br><span class="hljs-comment">// 预处理后</span><br><span class="hljs-built_in">lang_init</span>()<br>     -&gt; <span class="hljs-built_in">c_init</span>()<br></code></pre></td></tr></table></figure>
+<p>当定义了一个类函数宏时，只有当这个宏的名字后面紧跟着一对括号时，它才会被展开。<u>如果宏的名字后面没有括号，那么它就不会被展开，而是保持原样</u>。这在存在同名的<strong>函数</strong>和<strong>类函数宏</strong>时，希望调用真实函数而不是宏时进行区分很有用：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-keyword">extern</span> <span class="hljs-type">void</span> <span class="hljs-title">foo</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span></span>;<br><span class="hljs-meta">#<span class="hljs-keyword">define</span> foo() <span class="hljs-comment">/* optimized inline version */</span></span><br>...<br><span class="hljs-built_in">foo</span>();<br>funcptr = foo;<br></code></pre></td></tr></table></figure>
+<p>这里对 <code>foo()</code> 的调用将使用<strong>宏</strong>，而函数指针
+<code>funcptr</code> 获取的是<strong>函数</strong><code>foo</code>
+的地址。但是这里如果将 <code>foo()</code> 进行展开将会出现语法错误……</p>
+<p>  如果在宏定义中的宏名称和括号之间放置空格，则不是类函数宏，而是定义了一个类对象宏，其扩展恰好以一对括号开始：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> lang_init ()  c_init()</span><br><br><span class="hljs-comment">// 预处理后</span><br><span class="hljs-built_in">lang_init</span>()<br>     -&gt; ()  <span class="hljs-built_in">c_init</span>()()<br></code></pre></td></tr></table></figure>
+<p>需要注意。</p>
 <!-- 
 [官方文档](https://gcc.gnu.org/onlinedocs/cpp/Macros.html) -->
 
@@ -425,7 +438,7 @@ src="img/in_posts/Macros/code1_err_info.png" srcset="/img/loading.gif" lazyload 
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>探索C/C++宏(Macros)的艺术（一）</div>
+      <div>探索C/C++宏的艺术（一）</div>
       <div>http://hijackiee.github.io/2024/11/18/Macros/宏的艺术_1/</div>
     </div>
     <div class="license-meta">
