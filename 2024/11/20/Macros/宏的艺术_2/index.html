@@ -1,0 +1,863 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="HiJackiee">
+  <meta name="keywords" content="computer tech software">
+  
+    <meta name="description" content="本文介绍宏参数及字符串化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="探索C&#x2F;C++宏的艺术（二）">
+<meta property="og:url" content="http://hijackiee.github.io/2024/11/20/Macros/%E5%AE%8F%E7%9A%84%E8%89%BA%E6%9C%AF_2/index.html">
+<meta property="og:site_name" content="HiJackiee&#39;s blog">
+<meta property="og:description" content="本文介绍宏参数及字符串化">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://hijackiee.github.io/img/in_posts/Macros/macro_2_bg_header.png">
+<meta property="article:published_time" content="2024-11-20T09:00:00.000Z">
+<meta property="article:modified_time" content="2024-11-20T04:11:57.160Z">
+<meta property="article:author" content="HiJackiee">
+<meta property="article:tag" content="C">
+<meta property="article:tag" content="Cpp">
+<meta property="article:tag" content="Macros">
+<meta property="article:tag" content="编程技巧">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://hijackiee.github.io/img/in_posts/Macros/macro_2_bg_header.png">
+  
+  
+  
+  <title>探索C/C++宏的艺术（二） - HiJackiee&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"hijackiee.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>HiJackiee&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/in_posts/Macros/macro_2_bg_header.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="宏的艺术:提升代码效率和灵活性"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-11-20 17:00" pubdate>
+          November 20, 2024 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.1k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          26 mins
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span> views
+        </span>
+        
+      
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">宏的艺术:提升代码效率和灵活性</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h3 id="宏参数">宏参数</h3>
+<p>  和真正的函数一样，类函数宏也<strong>可以接受参数</strong>。类函数宏需要参数时，你需要将参数插入圆括号<code>()</code>中，这和调用函数时一样(函数声明和定义时需要指明参数类型，宏是文本替换，所以不需要提供参数类型信息)。需要注意的是，宏参数须为有效的 <code>C/C++</code> 标识符，并且在<strong>存在多个参数时使用逗号隔开，以及可选的空格</strong>。</p>
+<h4 id="调用宏的方式">调用宏的方式</h4>
+<p>  当想要使用一个带有参数的宏时，宏名称后接一对圆括号<code>()</code>，并且<strong>在括号内插入实际的参数列表，参数列表用逗号隔开</strong>。例如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> MAX(a, b) ((a) &gt; (b)? (a): (b))</span><br><br><span class="hljs-comment">// 实际调用</span><br><span class="hljs-type">int</span> n = <span class="hljs-built_in">MAX</span>(<span class="hljs-number">2</span>, <span class="hljs-number">3</span>);<br></code></pre></td></tr></table></figure>
+<h4 id="宏调用可以跨多行">宏调用可以跨多行</h4>
+<p>  宏的调用不必限制在源文件的单行内，它<strong>可以跨越多行</strong>。这意味着你可以在调用宏时，在参数列表中使用换行符，以提高代码的可读性。例如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-type">int</span> n = <span class="hljs-built_in">MAX</span>(<br>    a + b,<br>    c + d<br>);<br></code></pre></td></tr></table></figure>
+<p>因为上一节讲过，所有宏都会被展开成源代码中的一行。</p>
+<h4 id="参数数量必须匹配">参数数量必须匹配</h4>
+<p>  当然，在调用宏时<strong>提供的参数数量必须与宏定义中的参数数量相匹配</strong>。如果宏定义了两个参数，调用时也必须提供两个参数。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-type">int</span> n = <span class="hljs-built_in">MAX</span>(<span class="hljs-number">3</span>); <span class="hljs-comment">// 错误</span><br></code></pre></td></tr></table></figure>
+<h4 id="宏展开时参数的替换">宏展开时参数的替换</h4>
+<p>  当宏被展开时，<strong>宏体</strong>中的每个参数都会被对应的实际参数替换。这里的<strong>替换</strong>指的是<u>将宏定义中的参数名称替换为实际参数的代码</u>。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> MAX(a, b) ((a) &gt; (b)? (a): (b))</span><br><br><span class="hljs-comment">// 实际调用</span><br><span class="hljs-type">int</span> n = <span class="hljs-built_in">MAX</span>(<span class="hljs-number">2</span>, <span class="hljs-number">3</span>);<br><br><span class="hljs-comment">// 预处理展开后</span><br><span class="hljs-type">int</span> n = ((<span class="hljs-number">2</span>) &gt; (<span class="hljs-number">3</span>)? (<span class="hljs-number">2</span>): (<span class="hljs-number">3</span>));<br></code></pre></td></tr></table></figure>
+<h4 id="参数的使用是可选的">参数的使用是可选的</h4>
+<p>  <strong>宏中定义的参数的使用是可选的</strong>，宏体定义的参数不一定要在宏体中使用。可以定义一个参数，但在宏体中不使用它，或者只使用部分参数。例如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> DEBUG_LOG(x, y) printf(<span class="hljs-string">&quot;Value of x: %d\n&quot;</span>, x)</span><br></code></pre></td></tr></table></figure>
+<h4 id="宏调用时参数的处理规则">宏调用时参数的处理规则</h4>
+<h5 id="参数前后的空白字符被丢弃">参数前后的空白字符被丢弃</h5>
+<p>  在宏调用中，每个参数前后的空白字符（空格、制表符等）都会被丢弃。这意味着，无论实际参数前后有多少空白字符，它们都不会出现在宏展开后的代码中。如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">// 实际调用</span><br><span class="hljs-type">int</span> n = <span class="hljs-built_in">MAX</span>(    <span class="hljs-number">2</span>    ,    <span class="hljs-number">3</span>    );<br><br><span class="hljs-comment">// 预处理展开后</span><br><span class="hljs-type">int</span> n = ((<span class="hljs-number">2</span>) &gt; (<span class="hljs-number">3</span>)? (<span class="hljs-number">2</span>): (<span class="hljs-number">3</span>));<br></code></pre></td></tr></table></figure>
+<p>可以看到，参数 <code>2</code> 和<code>3</code>前后的空白字符都被丢弃。</p>
+<h5 id="参数内部的空白字符被压缩为单个空格">参数内部的空白字符被压缩为单个空格</h5>
+<p>  在参数内部，所有的空白字符（包括空格、制表符等）都会被压缩为单个空格。这意味着，无论参数内部有多少连续的空白字符，它们都会被替换为一个空格。例如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">// 实际调用</span><br><span class="hljs-type">int</span> n = <span class="hljs-built_in">MAX</span>(<span class="hljs-number">2</span>, <span class="hljs-number">3</span> +    <span class="hljs-number">4</span>);<br><br><span class="hljs-comment">// 预处理展开后</span><br><span class="hljs-type">int</span> n = ((<span class="hljs-number">2</span>) &gt; (<span class="hljs-number">3</span> + <span class="hljs-number">4</span>)? (<span class="hljs-number">2</span>): (<span class="hljs-number">3</span> + <span class="hljs-number">4</span>));<br></code></pre></td></tr></table></figure>
+<p>参数<code>3 +    4</code>中的多个空白字符被压缩成了一个空格。</p>
+<h5 id="参数内的括号必须平衡">参数内的括号必须平衡</h5>
+<p>  在参数内部，如果使用了圆括号，那么这些圆括号必须平衡（即每对开括号(必须有对应的闭括号)）。<u>在平衡的圆括号内部的逗号不会导致参数的结束，简单理解就是圆括号中的逗号不会将其分隔成不同参数</u>。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">// 实际调用</span><br><span class="hljs-type">int</span> n = <span class="hljs-built_in">MAX</span>((<span class="hljs-number">2</span>, <span class="hljs-number">3</span>), <span class="hljs-number">3</span>);<br><br><span class="hljs-comment">// 预处理展开后</span><br><span class="hljs-type">int</span> n = (((<span class="hljs-number">2</span>, <span class="hljs-number">3</span>)) &gt; (<span class="hljs-number">3</span>)? ((<span class="hljs-number">2</span>, <span class="hljs-number">3</span>)): (<span class="hljs-number">3</span>));<br></code></pre></td></tr></table></figure>
+<p>且不论上述宏展开后的代码是否合法（实际上宏展开也不会进行语法检查），参数<code>(2, 3)</code>并没有被分隔成两个参数 <code>(2</code> 和 <code>3)</code>。所以说，圆括号务必要平衡。</p>
+<h5 id="方括号和花括号不需要平衡">方括号和花括号不需要平衡</h5>
+<p>  对于方括号<code>[]</code>和花括号<code>&#123;&#125;</code>，不需要平衡，其内部的逗号仍然会被视为参数分隔符。例如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">// 实际调用</span><br><span class="hljs-type">int</span> n = <span class="hljs-built_in">MAX</span>([<span class="hljs-number">2</span>, <span class="hljs-number">3</span>], <span class="hljs-number">3</span>); <span class="hljs-comment">// 三个参数 [2、3] 和 3</span><br><span class="hljs-type">int</span> n = <span class="hljs-built_in">MAX</span>(&#123;<span class="hljs-number">2</span>, <span class="hljs-number">3</span>&#125;, <span class="hljs-number">3</span>); <span class="hljs-comment">// 三个参数 &#123;2、3&#125; 和 3</span><br></code></pre></td></tr></table></figure>
+<p>这里<strong>实际上是无法进行宏展开的</strong>，会导致编译错误，因为宏定义时只接受两个参数，而这里提供了三个参数。</p>
+<h4 id="宏参数的展开规则">宏参数的展开规则</h4>
+<ol>
+<li>
+<p>宏参数的完全展开<br>
+  <u>在宏体中替换参数之前，所有传递给宏的实际参数都会先进行完全的宏展开</u>。这意味着，如果实际参数本身是一个宏，或者包含宏，那么这些宏会首先被展开。</p>
+</li>
+<li>
+<p>替换后的再次扫描<br>
+  替换参数到宏体之后，整个宏体（包括替换后的参数）会再次被扫描，以查找是否有更多的宏需要展开。这个过程会持续进行，直到没有更多的宏可以展开。</p>
+</li>
+</ol>
+<p>举个例子：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-type">int</span> n = <span class="hljs-built_in">MAX</span>(<span class="hljs-built_in">MAX</span>(<span class="hljs-number">2</span>, <span class="hljs-number">3</span>), <span class="hljs-number">3</span>);<br></code></pre></td></tr></table></figure>
+<p>第一次，参数进行展开：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-type">int</span> n = <span class="hljs-built_in">MAX</span>((<span class="hljs-number">2</span>) &gt; (<span class="hljs-number">3</span>)? (<span class="hljs-number">2</span>): (<span class="hljs-number">3</span>), <span class="hljs-number">3</span>);<br></code></pre></td></tr></table></figure>
+<p>第二次，替换后的再次扫描：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-type">int</span> n = ((((<span class="hljs-number">2</span>) &gt; (<span class="hljs-number">3</span>)? (<span class="hljs-number">2</span>): (<span class="hljs-number">3</span>))) &gt; (<span class="hljs-number">3</span>)? (((<span class="hljs-number">2</span>) &gt; (<span class="hljs-number">3</span>)? (<span class="hljs-number">2</span>): (<span class="hljs-number">3</span>))): (<span class="hljs-number">3</span>));<br></code></pre></td></tr></table></figure>
+<p>事实上，你甚至在为宏传递空参数，例如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">// 实际调用</span><br><span class="hljs-type">int</span> n = <span class="hljs-built_in">MAX</span>(, <span class="hljs-number">3</span>);<br><br><span class="hljs-comment">// 预处理展开后</span><br><span class="hljs-type">int</span> n = (() &gt; (<span class="hljs-number">3</span>)? (): (<span class="hljs-number">3</span>));<br></code></pre></td></tr></table></figure>
+<p>但是在传空参数时仍然要确保参数的匹配。</p>
+<p>  需要注意的是：出现在<strong>字符串中的宏参数不会被它们相应的实际参数替换</strong>。例如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> foo(x) x, <span class="hljs-string">&quot;x&quot;</span></span><br><br><span class="hljs-comment">// 实际调用</span><br><span class="hljs-built_in">foo</span>(bar)<br><br><span class="hljs-comment">// 预处理展开后</span><br>bar, <span class="hljs-string">&quot;x&quot;</span><br></code></pre></td></tr></table></figure>
+<blockquote>
+<p>到这里，你一定会疑惑，为什么我们在宏定义时，宏体中的参数都会包裹在一对圆括号内</p>
+</blockquote>
+<h4 id="宏体参数用圆括号包裹的原因">宏体参数用圆括号包裹的原因</h4>
+<h5 id="操作符优先级：">操作符优先级：</h5>
+<p>  在C/C++中，宏参数可能会与宏体中的其他代码一起参与运算。如果不使用括号，可能会因为操作符优先级的问题导致宏的展开结果与预期不符。例如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> SQUARE(x) x * x</span><br></code></pre></td></tr></table></figure>
+<p>  如果你使用<code>SQUARE(a + b)</code>，宏会展开为<code>a + b * a + b</code>，这显然不是我们想要的结果，因为按照乘法优先于加法的规则，它实际上变成了<code>a + (b * a) + b</code>。正确的结果应该是<code>(a + b) * (a + b)</code>。</p>
+<h5 id="使用括号可以确保参数作为一个整体被处理：">使用括号可以确保参数作为一个整体被处理：</h5>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> SQUARE(x) (x) * (x)</span><br></code></pre></td></tr></table></figure>
+<p>  这样，<code>SQUARE(a + b)</code>会正确展开为<code>(a + b) * (a + b)</code>。</p>
+<h5 id="避免宏参数为空：">避免宏参数为空：</h5>
+<p>  如果宏的参数可能为空（例如，在宏定义中使用<code>##</code>运算符进行连接时），不使用括号可能会导致编译错误。例如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> EMPTY()</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> GLUE(x, y) x ## y</span><br><br><span class="hljs-built_in">GLUE</span>(EMPTY, <span class="hljs-type">int</span>) var; <span class="hljs-comment">// 这将尝试定义一个名为&quot;int&quot;的变量，而不是&quot;Emptyint&quot;</span><br></code></pre></td></tr></table></figure>
+<p>  如果<code>EMPTY</code>宏没有括号，<code>GLUE(EMPTY, int)</code>将尝试将<code>EMPTY</code>和<code>int</code>连接起来，而不是将<code>EMPTY()</code>作为一个整体与<code>int</code>连接。</p>
+<h5 id="参数可能包含多个标记：">参数可能包含多个标记：</h5>
+<p>  如果宏参数本身是一个复合表达式或多个标记，那么使用括号可以确保整个表达式被正确处理。例如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> SQUARE_AND_INCREMENT(x) ((x) * (x)) + 1</span><br></code></pre></td></tr></table></figure>
+<p>  这里，<code>(x)</code>确保了<code>x</code>的整个表达式被乘以自身，然后再加<code>1</code>。</p>
+<h5 id="提高代码的可读性和一致性：">提高代码的可读性和一致性：</h5>
+<p>  使用括号可以使宏的定义更加清晰，让阅读代码的人更容易理解宏的意图和行为。</p>
+<h3 id="字符串化">字符串化</h3>
+<p>  预处理器中的字符串化（<code>Stringizing</code>）操作。这是一种将宏参数转换为字符串常量的技术。有时可能希望将宏参数转换为字符串常量。<u>在字符串常量中，参数不会被替换，但是可以使用<code>#</code>预处理操作符来实现这一点</u>。</p>
+<h4 id="操作符的使用">#操作符的使用</h4>
+<p>  当宏参数前面有一个<code>#</code>操作符时，预处理器会用实际参数的文本内容替换它，并将其转换为字符串常量。这与普通的参数替换不同，因为参数不会首先被宏展开。<br>
+  字符串化操作<u>不会在参数替换之前对参数进行宏展开</u>。这意味着如果参数是一个宏，它不会被展开，而是直接将其名称作为字符串插入。例如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> STRING hello</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> STRINGFY(Argu) #Argu</span><br><br><span class="hljs-built_in">STRINGFY</span>(STRING)<br></code></pre></td></tr></table></figure>
+<p>预处理展开之后：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-string">&quot;STRING&quot;</span><br></code></pre></td></tr></table></figure>
+<p>可以看到，宏<code>STRINGFY</code>的参数也是一个宏<code>STRING</code>，但并没有被展开为 <code>hello</code>，而是直接将其名称字符串化为了字符串常量<code>&quot;STRING&quot;</code>。</p>
+<p>  不能直接将参数与周围的文本组合在一起并一次性字符串化。相反，你可以编写一系列相邻的字符串常量和字符串化的参数。预处理器会将字符串化的参数替换为字符串常量，然后，编译器会将所有相邻的字符串常量合并为一个长字符串。举个例子：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> WARN_IF(EXP) \</span><br><span class="hljs-meta">do &#123; <span class="hljs-keyword">if</span> (EXP) \</span><br><span class="hljs-meta">        fprintf (stderr, <span class="hljs-string">&quot;Warning: &quot;</span> #EXP <span class="hljs-string">&quot;\n&quot;</span>); &#125; \</span><br><span class="hljs-meta">while (0)</span><br><span class="hljs-built_in">WARN_IF</span> (x == <span class="hljs-number">0</span>);<br></code></pre></td></tr></table></figure>
+<p>预处理器展开后：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">do</span> &#123; <span class="hljs-keyword">if</span> (x == <span class="hljs-number">0</span>) \<br>    <span class="hljs-built_in">fprintf</span> (stderr, <span class="hljs-string">&quot;Warning: &quot;</span> <span class="hljs-string">&quot;x == 0&quot;</span> <span class="hljs-string">&quot;\n&quot;</span>); \<br>    &#125; <span class="hljs-keyword">while</span> (<span class="hljs-number">0</span>);<br></code></pre></td></tr></table></figure>
+<p>注意，这里的<code>\</code>表示行间是连接的，因为宏展开会成一行，这里为了方便，增加了换行。可以看到，<code>EXP</code> 的参数被替换为 <code>if</code> 语句中的条件参数和 <code>fprintf</code> 参数中的 <code>string</code> 参数。<u>如果 <code>x</code> 是一个宏，它将在 <code>If</code> 语句中展开，但不会在字符串中展开</u>。后面的几个字符串常量<code>&quot;Warning: &quot; &quot;x == 0&quot; &quot;\n&quot;</code>会在编译器的帮助下合并成一个字符串常量。</p>
+<blockquote>
+<p>这里其实还提到了 <code>do...while(0)</code> 循环的使用，这是一种技巧，将在后续章节探讨。</p>
+</blockquote>
+<p>  可见，字符串化不仅仅是在宏参数周围添加双引号那么简单。预处理器会进行额外的处理，以确保生成的字符串常量是有效的，并且包含正确的内容。</p>
+<h4 id="宏参数的细节处理">宏参数的细节处理</h4>
+<h5 id="预处理器对引号和反斜杠的处理">预处理器对引号和反斜杠的处理</h5>
+<p>  当宏参数中包含字符串常量时，预处理器会对其进行转义处理。这意味着，如果宏参数中包含双引号或反斜杠，预处理器会在它们前面添加反斜杠来进行转义。这样做的目的是为了确保生成的字符串常量在<code>C/C++</code>语言中是有效的。例如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> STRINGFY(Argu) #Argu</span><br><br><span class="hljs-built_in">STRINGFY</span>(<span class="hljs-string">&quot;hello\n&quot;</span>)<br></code></pre></td></tr></table></figure>
+<p>预处理器展开后：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-string">&quot;\&quot;hello\\n\&quot;&quot;</span><br></code></pre></td></tr></table></figure>
+<h5 id="非字符串或字符常量中的反斜杠不加倍">非字符串或字符常量中的反斜杠不加倍</h5>
+<p>  如果反斜杠不在字符串或字符常量中，它们不会被加倍。例如，<code>\n</code>单独字符串化时，结果就是<code>&quot;\n&quot;</code>。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> STRINGFY(Argu) #Argu</span><br><br><span class="hljs-built_in">STRINGFY</span>(\n)<br></code></pre></td></tr></table></figure>
+<p>预处理器展开后：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-string">&quot;\n&quot;</span><br></code></pre></td></tr></table></figure>
+<h5 id="字符串化中的空白处理">字符串化中的空白处理</h5>
+<p>  在字符串化过程中，宏参数中的所有前导和尾随空白都会被忽略。文本中的任何空白序列（空格、制表符等）在字符串化结果中会被转换为单个空格。其实也是一种特殊的宏参数处理。</p>
+<h5 id="无法将宏参数转换为字符常量">无法将宏参数转换为字符常量</h5>
+<p>  没有办法将宏参数直接转换为字符常量。这是因为字符常量在<code>C/C++</code>语言中是用单引号括起来的单个字符，而字符串化操作是将整个宏参数转换为双引号括起来的字符串常量。</p>
+<h4 id="如何字符串化宏参数的展开">如何字符串化宏参数的展开</h4>
+<p>  如果要将<strong>宏参数展开后的结果转换成字符串常量</strong>，则需要使用<strong>两级宏</strong>（即<strong>嵌套宏</strong>）来实现。这是因为在预处理阶段，<u>宏参数首先被展开，然后才进行字符串化</u>。如果直接在宏中使用<code>#</code>操作符来字符串化宏参数，那么字符串化的是宏参数本身，而不是它展开后的结果。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> xstr(s) str(s)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> str(s) #s</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> foo 4</span><br><br><span class="hljs-built_in">xstr</span> (foo)<br></code></pre></td></tr></table></figure>
+<p>第一次展开：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-built_in">xstr</span>(<span class="hljs-number">4</span>) <span class="hljs-comment">// 第一次展开并非字符串化，故参数会展开</span><br></code></pre></td></tr></table></figure>
+<p>第二次展开：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-built_in">str</span>(<span class="hljs-number">4</span>) <span class="hljs-comment">// 第二次展开是 xstr 展开</span><br></code></pre></td></tr></table></figure>
+<p>然后字符串化：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-string">&quot;4&quot;</span> <span class="hljs-comment">// 最后是字符串化</span><br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/C-C/" class="category-chain-item">C/C++</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/C/" class="print-no-link">#C</a>
+      
+        <a href="/tags/Cpp/" class="print-no-link">#Cpp</a>
+      
+        <a href="/tags/Macros/" class="print-no-link">#Macros</a>
+      
+        <a href="/tags/%E7%BC%96%E7%A8%8B%E6%8A%80%E5%B7%A7/" class="print-no-link">#编程技巧</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>探索C/C++宏的艺术（二）</div>
+      <div>http://hijackiee.github.io/2024/11/20/Macros/宏的艺术_2/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>HiJackiee</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>November 20, 2024</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/11/18/Macros/%E5%AE%8F%E7%9A%84%E8%89%BA%E6%9C%AF_1/" title="探索C/C++宏的艺术（一）">
+                        <span class="hidden-mobile">探索C/C++宏的艺术（一）</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"TXq4ppb58Sn8q9qxUUiyOj2n-gzGzoHsz","appKey":"hT0sQzaF08WIshhmXfGBp7q7","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <p>&copy; 2024 HiJackiee. All rights reserved.</p> <p>Contact me: <a href="mailto:yannbinng@outlook.com">@outlook.com</a></p> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>
