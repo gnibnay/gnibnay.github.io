@@ -1,0 +1,876 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="HiJackiee">
+  <meta name="keywords" content="computer tech software">
+  
+    <meta name="description" content="本文总结介绍C++多线程编程中用于避免死锁的技巧——层次锁（或称层级锁、层次互斥元）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++多线程之层次锁">
+<meta property="og:url" content="http://hijackiee.github.io/2024/12/26/Concurrency_c++/c++%E5%A4%9A%E7%BA%BF%E7%A8%8B-%E5%B1%82%E6%AC%A1%E9%94%81/index.html">
+<meta property="og:site_name" content="HiJackiee&#39;s blog">
+<meta property="og:description" content="本文总结介绍C++多线程编程中用于避免死锁的技巧——层次锁（或称层级锁、层次互斥元）">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://hijackiee.github.io/img/in_posts/Concurrency/concurrency_bg_header.png">
+<meta property="article:published_time" content="2024-12-26T09:00:00.000Z">
+<meta property="article:modified_time" content="2024-12-28T05:32:03.695Z">
+<meta property="article:author" content="HiJackiee">
+<meta property="article:tag" content="Cpp">
+<meta property="article:tag" content="多线程">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://hijackiee.github.io/img/in_posts/Concurrency/concurrency_bg_header.png">
+  
+  
+  
+  <title>C++多线程之层次锁 - HiJackiee&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"hijackiee.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>HiJackiee&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/in_posts/Concurrency/concurrency_bg_header.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="C++多线程编程实战"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-12-26 17:00" pubdate>
+          December 26, 2024 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.1k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          18 mins
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span> views
+        </span>
+        
+      
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">C++多线程编程实战</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="层次锁hierarchical-lock">层次锁⌊hierarchical lock⌉</h2>
+<p>  在<code>C++</code>多线程编程中，避免死锁是一大要务。简单回顾一下死锁的概念：</p>
+<h3 id="死锁">死锁</h3>
+<p>  死锁（<code>Deadlock</code>）多线程执行过程中，每个线程都持有一些资源，同时又尝试获取其他线程所持有的资源，导致所有线程都无法继续执行的一种状态。简单理解，就是多个线程相互等待对方释放资源，但没有任何线程能够继续向前推进。</p>
+<p>  死锁通常涉及四个基本条件：</p>
+<ol type="1">
+<li><p>互斥
+指资源在某一时刻只能被一个线程使用，如多线程编程中常见的互斥元
+<code>mutex</code>；</p></li>
+<li><p>占有和等待
+指一个线程至少占有一个资源，同时又等待获取其他线程占有的资源；</p></li>
+<li><p>不可抢占
+指资源只能由占有它的线程资源释放，而不能强行剥夺；</p></li>
+<li><p>循环等待
+指存在一个线程的集合，其中每个线程都在等待下一个线程所占有的资源，形成一个等待的循环。</p></li>
+</ol>
+<p><br><br><br></p>
+<h3 id="避免死锁">避免死锁</h3>
+<p>  避免死锁的方法有很多，基本思路就是破坏死锁发生的四个基本条件：</p>
+<ol type="1">
+<li><p>破坏互斥条件
+即允许资源同时被多个线程访问，但这通常并不适合需要互斥访问的资源；</p></li>
+<li><p>破坏占有与等待条件
+要求线程在请求新资源之前释放所有已占有的资源；</p></li>
+<li><p>破坏不可抢占条件 允许资源被抢占，在实践中这很难实现；</p></li>
+<li><p>破坏循环等待条件
+通过给所有资源（如互斥元）编号一个顺序，并要求线程按照这个顺序请求资源；</p></li>
+</ol>
+<p>  我们这里讨论破坏循环等待条件的情况，即为所有资源编号一个顺序，使得所有线程只能按照固定的顺序请求资源。下面的“资源”统一以互斥元（<code>mutex</code>）为例。</p>
+<h4 id="以固定顺序获取锁">以固定顺序获取锁</h4>
+<p>  相当直观的一个事实：当死锁发生时，必须存在一个线程之间的等待循环，每个线程都在等待下一个线程释放资源。如果存在两个或者更多的互斥元，<code>C++17</code>
+引入了 <code>std::lock</code>
+的方法来<strong>原子性</strong>地锁定多个互斥元，也即是说<u>要么同时锁定多个互斥元，要么阻塞当前线程直到所有的互斥元都可用</u>。这是可以考虑地一种方法，但是当不能使用
+<code>std::lock</code>
+的单个操作取得多个锁时，次优的做法就是在每个线程中以相同的顺序获取互斥元，也就是破坏循环等待条件。</p>
+<p>  很好理解的是，这里的<code>顺序</code>是一种全局的顺序，而非相对的。什么意思，比如，一个函数的参数列表中传入两个互斥元，我们以一种相对的顺序：先锁第一个参数，再锁第二个参数，此时就是一种相对的而非全局的顺序。很显然，这样的相对锁定顺序同样会引起死锁的发生——当线程
+<code>A</code> 和线程 <code>B</code>
+的参数顺序恰好相反时，这就是一个典型的死锁。</p>
+<p>  如何实现一种全局的顺序呢？下面介绍的<strong>层次锁</strong>将是一个不错的方法。</p>
+<h3 id="使用层次锁">使用层次锁</h3>
+<p>  你可以称之为
+<code>层次锁⌊hierarchical lock⌉</code>、<code>层次互斥元⌊hierarchical_mutex⌉</code>（<code>hierarchical adj 分等级的</code>）
+等等，一切都是接受的，这并非关键。<strong>层次锁</strong>并未在
+<code>C++</code>
+标准中得到实现，而是一种用户自定义的互斥锁，这很有用，兴许不久的将来会看到它会进入到
+<code>C++</code>
+标准中。层次锁实际上是定义了互斥元的锁定顺序的特例，并在实际运行中检查是否遵循这种<code>顺序</code>。</p>
+<p>  <code>hierarchical_mutex</code>
+的工作原理基于一个简单的规则：在同一线程中，只能按照层次值递减的顺序锁定多个
+<code>hierarchical_mutex</code>。这实际上就体现了锁定的固定顺序：即从<u>高到低的顺序</u>。如果尝试违反这一规则的顺序锁定互斥元，<code>hierarchical_mutex</code>
+会抛出异常，表明层次被违反。这里需要注意的是：如果锁在层次中处于相同级别，则不能同时持有它们。</p>
+<blockquote>
+<p>那么实现细节？</p>
+</blockquote>
+<p>  一个自定义的 <code>hierarchical_mutex</code>
+类通常包含以下几个部分：</p>
+<ol type="1">
+<li>一个内部的 <code>std::mutex</code> 用于实际的互斥；</li>
+<li>一个 <code>hierarchical_value</code> 用于存储该互斥锁的层次值；</li>
+<li>一个 <code>previous_hierarchy_value</code>
+用于存储当前线程的前一个层次值；</li>
+<li>一个 <code>this_thread_hierarchy_value</code>
+的静态局部变量，用于跟踪当前线程的层次值。</li>
+</ol>
+<p>  当然，为了支持 <code>std::lock_guard</code> 的 <code>RAII</code>
+惯用语法，<code>hierarchical_mutex</code> 类提供了
+<code>lock</code>、<code>unlock</code> 和 <code>try_lock</code>
+等成员函数，以支持互斥锁的基本操作，比如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function">std::lock_guard&lt;hierarchical_mutex&gt; <span class="hljs-title">lk</span><span class="hljs-params">(hierarchical_mutex(<span class="hljs-number">5000</span> <span class="hljs-comment">/*层次值*/</span>))</span></span><br></code></pre></td></tr></table></figure>
+<blockquote>
+<p><code>try_lock()</code>
+成员函数用于尝试锁定一个互斥元，若互斥元的锁已经为另一个线程所持有，则返回
+<code>false</code></p>
+</blockquote>
+<p>下面是 <code>hierarchical_mutex</code> 的简单实现：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">class</span> <span class="hljs-title class_">hierarchical_mutex</span>&#123;<br>    std::mutex internal_mutex;  <span class="hljs-comment">// 用于实际的互斥</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> <span class="hljs-type">const</span> hierarchy_value;    <span class="hljs-comment">// 存储该互斥锁的层次值</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> previous_hierarchy_value;   <span class="hljs-comment">// 存储当前线程的前一个层次值</span><br>                                              <span class="hljs-comment">// 互斥元解锁时恢复层次值</span><br>    <span class="hljs-type">static</span> <span class="hljs-keyword">thread_local</span> <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> this_thread_hierarchy_value;  <br>            <span class="hljs-comment">// thread_local 用于声明一个局部于线程的静态变量，这意味着每个线程都会拥有该</span><br>            <span class="hljs-comment">// 变量的独立副本。这类变量称为线程局部存储（Thread-Local Storge, TLS）</span><br>            <span class="hljs-comment">// 生命周期是始于线程创建，终于线程结束</span><br><br>            <span class="hljs-comment">// this_thread_hierarchy_value 用于跟踪当前线程的层次值</span><br><br>    <span class="hljs-comment">// 规则检查</span><br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">check_for_hierarchy_violation</span><span class="hljs-params">()</span></span>&#123;<br>        <span class="hljs-comment">// 锁定顺序应该是由高到低，当前线程只能锁定层次值低于自身的互斥元</span><br>        <span class="hljs-keyword">if</span> (this_thread_hierarchy_value &lt;= hierarchy_value)&#123;<br>            <span class="hljs-keyword">throw</span> std::<span class="hljs-built_in">logic_error</span>(<span class="hljs-string">&quot;mutex hierarchy violated&quot;</span>);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-comment">// 更新层次值</span><br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">update_hierarchy_value</span><span class="hljs-params">()</span></span>&#123;<br>        <span class="hljs-comment">// 保存当前线程层次值到 previous_hierarchy_value</span><br>        previous_hierarchy_value = this_thread_hierarchy_value;<br><br>        <span class="hljs-comment">// 锁定一个互斥元后将线程的层次值更新为互斥元对应的层次值</span><br>        this_thread_hierarchy_value = hierarchy_value;<br>    &#125;<br><br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-comment">// 构造函数，接受一个 unsigned long 类型的层次值</span><br>    <span class="hljs-function"><span class="hljs-keyword">explicit</span> <span class="hljs-title">hierarchical_mutex</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> value)</span>: hierarchy_value(value),</span><br><span class="hljs-function">            previous_hierarchy_value(<span class="hljs-number">0</span>) &#123;</span>&#125;<br><br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">lock</span><span class="hljs-params">()</span></span>&#123;<br>        <span class="hljs-built_in">check_for_hierarchy_violation</span>();<br>        internal_mutex.<span class="hljs-built_in">lock</span>();<br>        <span class="hljs-built_in">update_hierarchy_value</span>();<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">unlock</span><span class="hljs-params">()</span></span>&#123;<br>        <span class="hljs-comment">// 恢复当前线程的层次值为 previous_hierarchy_value</span><br>        this_thread_hierarchy_value = previous_hierarchy_value;<br>        internal_mutex.<span class="hljs-built_in">unlock</span>();<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">try_lock</span><span class="hljs-params">()</span></span>&#123;<br>        <span class="hljs-built_in">check_for_hierarchy_violation</span>();<br>        <span class="hljs-keyword">if</span> (!internal_mutex.<span class="hljs-built_in">try_lock</span>())<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br><br>        <span class="hljs-built_in">update_hierarchy_value</span>();<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>    &#125;<br>&#125;;<br><br><span class="hljs-comment">// this_thread_hierarchy_value 设置为 ULONG_MAX，即初始化为最大值，目的就是使其初始时可</span><br><span class="hljs-comment">// 以锁定任何层次值的互斥元，选取哪一层次的锁作为开始总是自由的</span><br><span class="hljs-function"><span class="hljs-keyword">thread_local</span> <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> </span><br><span class="hljs-function">    <span class="hljs-title">hierarchical_mutex::this_thread_hierarchy_value</span><span class="hljs-params">(ULONG_MAX)</span></span>;<br></code></pre></td></tr></table></figure>
+<p>  下面以一个实际例子来讲解 <code>hierarchical_mutex</code>
+的作用：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function">hierarchical_mutex <span class="hljs-title">high_level_mutex</span><span class="hljs-params">(<span class="hljs-number">10000</span>)</span></span>; <span class="hljs-comment">// 定义一个高层次值的层次互斥元</span><br><span class="hljs-function">hierarchical_mutex <span class="hljs-title">low_level_mutex</span><span class="hljs-params">(<span class="hljs-number">5000</span>)</span></span>;   <span class="hljs-comment">// 定义一个低层次值的层次互斥元</span><br><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">do_low_level_stuff</span><span class="hljs-params">()</span></span>;<br><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">low_level_func</span><span class="hljs-params">()</span></span>&#123;<br>    <span class="hljs-function">std::lock_guard&lt;hierarchical_mutex&gt; <span class="hljs-title">lk</span><span class="hljs-params">(low_level_mutex)</span></span>; <span class="hljs-comment">// RAII 语法</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">do_low_level_stuff</span>();<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">high_level_stuff</span><span class="hljs-params">(<span class="hljs-type">int</span> some_param)</span></span>;<br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">high_level_func</span><span class="hljs-params">()</span></span>&#123;<br>    <span class="hljs-function">std::lock_guard&lt;hierarchical_mutex&gt; <span class="hljs-title">lk</span><span class="hljs-params">(high_level_mutex)</span></span>;<br>    <span class="hljs-built_in">high_level_stuff</span>(<span class="hljs-built_in">low_level_func</span>());<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">thread_a</span><span class="hljs-params">()</span></span>&#123;<br>    <span class="hljs-built_in">high_level_func</span>();<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>下面是整个代码函数依赖图：</p>
+<pre><code class=" mermaid">graph TD
+    threadA[&quot;thread_a()&quot;]
+    highLevelFunc[&quot;high_level_func()&quot;]
+    lowLevelFunc[&quot;low_level_func()&quot;]
+    doLowLevelStuff[&quot;do_low_level_stuff()&quot;]
+    highLevelStuff[&quot;high_level_stuff()&quot;]
+
+    threadA --&gt; highLevelFunc
+    highLevelFunc --&gt; lowLevelFunc
+    highLevelFunc --&gt; highLevelStuff
+    lowLevelFunc --&gt; doLowLevelStuff
+</code></pre>
+<p>  假设线程<code>a</code> 执行 <code>thread_a</code>
+函数，初始时，线程 <code>a</code>
+的<code>this_thread_hierarchy_value</code> 为
+<code>ULONG_MAX</code>，即最大值。之后，<code>thread_a()</code> 调用
+<code>high_level_func()</code>，并锁定了
+<code>high_level_mutex</code>（具有层次值为
+<code>10000</code>），使得线程 <code>a</code> 的
+<code>this_thread_hierarchy_value</code> 值更新为当前层次互斥元的层次值
+<code>10000</code>。然后在 <code>high_level_func()</code> 中调用了
+<code>low_level_func()</code>，并锁定了
+<code>low_level_mutex</code>（具有层次值为 <code>5000</code>），此时线程
+<code>a</code> 的 <code>this_thread_hierarchy_value</code>
+值更新为当前层次互斥元的层次值 <code>5000</code>。所有，线程
+<code>a</code> 对层次互斥元的锁定符合由高到低的顺序，因此运行良好。</p>
+<p>  来看运行失败的例子：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function">hierarchical_mutex <span class="hljs-title">other_mutex</span><span class="hljs-params">(<span class="hljs-number">100</span>)</span></span>;<br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">do_other_stuff</span><span class="hljs-params">()</span></span>;<br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">other_stuff</span><span class="hljs-params">()</span></span>&#123;<br>    <span class="hljs-built_in">high_level_func</span>();<br>    <span class="hljs-built_in">do_other_stuff</span>();<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">thread_b</span><span class="hljs-params">()</span></span>&#123;<br>    <span class="hljs-function">std::lock_guard&lt;hierarchical_mutex&gt; <span class="hljs-title">lk</span><span class="hljs-params">(other_mutex)</span></span>;<br>    <span class="hljs-built_in">other_stuff</span>();<br>&#125;<br></code></pre></td></tr></table></figure>
+<pre><code class=" mermaid">graph TD
+    threadB[&quot;thread_b()&quot;]
+    otherStuff[&quot;other_stuff()&quot;]
+    highLevelFunc[&quot;high_level_func()&quot;]
+    lowLevelFunc[&quot;low_level_func()&quot;]
+    doLowLevelStuff[&quot;do_low_level_stuff()&quot;]
+    highLevelStuff[&quot;high_level_stuff()&quot;]
+    doOtherStuff[&quot;do_other_stuff()&quot;]
+
+    threadB --&gt; otherStuff
+    otherStuff --&gt; highLevelFunc
+    otherStuff --&gt; doOtherStuff
+    highLevelFunc --&gt; lowLevelFunc
+    highLevelFunc --&gt; highLevelStuff
+    lowLevelFunc --&gt; doLowLevelStuff
+
+</code></pre>
+<p>  线程 <code>b</code> 执行 <code>thread_b</code> 函数，初始时，线程
+<code>b</code> 的<code>this_thread_hierarchy_value</code> 同样为
+<code>ULONG_MAX</code>，即最大值。之后，<code>thread_b()</code> 经过了
+<code>check_for_hierarchy_violation()</code> 的检查并锁定了
+<code>other_mutex</code>（层次值为 <code>100</code>），使得线程
+<code>b</code> 的 <code>this_thread_hierarchy_value</code>
+值更新为当前层次互斥元的层次值 <code>100</code>。之后
+<code>thread_b()</code> 又调用了
+<code>other_stuff()</code>，其内部调用了
+<code>high_level_func()</code>,而 <code>high_level_func()</code>
+尝试锁定具有更高层次值的 <code>high_level_mutex</code>（层次值为
+<code>10000</code>），在进行
+<code>check_for_hierarchy_violation()</code> 抛出了异常，线程
+<code>b</code> 运行失败。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/C-C/" class="category-chain-item">C/C++</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Cpp/" class="print-no-link">#Cpp</a>
+      
+        <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" class="print-no-link">#多线程</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>C++多线程之层次锁</div>
+      <div>http://hijackiee.github.io/2024/12/26/Concurrency_c++/c++多线程-层次锁/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>HiJackiee</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>December 26, 2024</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/12/24/Macros/%E5%AE%8F%E7%9A%84%E8%89%BA%E6%9C%AF_3/" title="探索C/C++宏的艺术（三）">
+                        <span class="hidden-mobile">探索C/C++宏的艺术（三）</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"TXq4ppb58Sn8q9qxUUiyOj2n-gzGzoHsz","appKey":"hT0sQzaF08WIshhmXfGBp7q7","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <p>&copy; 2024 HiJackiee. All rights reserved.</p> <p>Contact me: <a href="mailto:yannbinng@outlook.com">@outlook.com</a></p> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>

@@ -28,10 +28,10 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://hijackiee.github.io/img/in_posts/Macros/macro_2_bg_header.png">
 <meta property="article:published_time" content="2024-12-24T09:00:00.000Z">
-<meta property="article:modified_time" content="2024-12-27T11:47:07.801Z">
+<meta property="article:modified_time" content="2024-12-27T12:04:09.577Z">
 <meta property="article:author" content="HiJackiee">
-<meta property="article:tag" content="C">
 <meta property="article:tag" content="Cpp">
+<meta property="article:tag" content="C">
 <meta property="article:tag" content="Macros">
 <meta property="article:tag" content="编程技巧">
 <meta name="twitter:card" content="summary_large_image">
@@ -239,7 +239,7 @@
         
         
         
-          18 mins
+          17 mins
         
       </span>
     
@@ -292,9 +292,8 @@
                 
                 <h2 id="连接concatenation">连接[Concatenation]</h2>
 <p>  在拓展宏时，将两个标记合并成一个标记通常很有用。而这个过程被称为<strong>标记连接</strong>
-<span class="math inline">\(token \
-concatenation\)</span>（或称<strong>标记粘贴</strong> <span
-class="math inline">\(token\ pasting\)</span>），这是通过
+<code>token concatenation</code>（或称<strong>标记粘贴</strong>
+<code>token pasting</code>），这是通过
 <code>##</code>预处理运算符实现的。宏进行展开时，在<code>##</code>运算符两侧的标记会被合并成为一个标记，而<code>##</code>运算符本身会被删去。比如：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> PASTE(x, y) x ## y</span><br><br><span class="hljs-built_in">PASTE</span>(My, Class)<br><br><span class="hljs-comment">// 预处理之后</span><br>MyClass<br></code></pre></td></tr></table></figure>
 <h3 id="合法的标记">合法的标记</h3>
@@ -437,9 +436,9 @@ class="math inline">\(token\ pasting\)</span>），这是通过
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/C/" class="print-no-link">#C</a>
-      
         <a href="/tags/Cpp/" class="print-no-link">#Cpp</a>
+      
+        <a href="/tags/C/" class="print-no-link">#C</a>
       
         <a href="/tags/Macros/" class="print-no-link">#Macros</a>
       
@@ -499,6 +498,12 @@ class="math inline">\(token\ pasting\)</span>），这是通过
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2024/12/26/Concurrency_c++/c++%E5%A4%9A%E7%BA%BF%E7%A8%8B-%E5%B1%82%E6%AC%A1%E9%94%81/" title="C++多线程之层次锁">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">C++多线程之层次锁</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
