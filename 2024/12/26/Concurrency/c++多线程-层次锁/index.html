@@ -28,7 +28,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://hijackiee.github.io/img/in_posts/Concurrency/concurrency_bg_header.png">
 <meta property="article:published_time" content="2024-12-26T09:00:00.000Z">
-<meta property="article:modified_time" content="2024-12-30T11:50:55.377Z">
+<meta property="article:modified_time" content="2024-12-31T10:18:28.150Z">
 <meta property="article:author" content="HiJackiee">
 <meta property="article:tag" content="Cpp">
 <meta property="article:tag" content="多线程">
@@ -294,19 +294,19 @@
 <p>  死锁（<code>Deadlock</code>）多线程执行过程中，每个线程都持有一些资源，同时又尝试获取其他线程所持有的资源，导致所有线程都无法继续执行的一种状态。简单理解，就是多个线程相互等待对方释放资源，但没有任何线程能够继续向前推进。</p>
 <p>  死锁通常涉及四个基本条件：</p>
 <ol type="1">
-<li><p>互斥<br>指资源在某一时刻只能被一个线程使用，如多线程编程中常见的互斥元
+<li><p><strong>互斥</strong><br>指资源在某一时刻只能被一个线程使用，如多线程编程中常见的互斥元
 <code>mutex</code>；</p></li>
-<li><p>占有和等待<br>指一个线程至少占有一个资源，同时又等待获取其他线程占有的资源；</p></li>
-<li><p>不可抢占<br>指资源只能由占有它的线程资源释放，而不能强行剥夺；</p></li>
-<li><p>循环等待<br>指存在一个线程的集合，其中每个线程都在等待下一个线程所占有的资源，形成一个等待的循环。</p></li>
+<li><p><strong>占有和等待</strong><br>指一个线程至少占有一个资源，同时又等待获取其他线程占有的资源；</p></li>
+<li><p><strong>不可抢占</strong><br>指资源只能由占有它的线程资源释放，而不能强行剥夺；</p></li>
+<li><p><strong>循环等待</strong><br>指存在一个线程的集合，其中每个线程都在等待下一个线程所占有的资源，形成一个等待的循环。</p></li>
 </ol>
 <h3 id="避免死锁">避免死锁</h3>
 <p>  避免死锁的方法有很多，基本思路就是破坏死锁发生的四个基本条件：</p>
 <ol type="1">
-<li><p>破坏互斥条件<br>即允许资源同时被多个线程访问，但这通常并不适合需要互斥访问的资源；</p></li>
-<li><p>破坏占有与等待条件<br>要求线程在请求新资源之前释放所有已占有的资源；</p></li>
-<li><p>破坏不可抢占条件<br>允许资源被抢占，在实践中这很难实现；</p></li>
-<li><p>破坏循环等待条件<br>通过给所有资源（如互斥元）编号一个顺序，并要求线程按照这个顺序请求资源；</p></li>
+<li><p><strong>破坏互斥条件</strong><br>即允许资源同时被多个线程访问，但这通常并不适合需要互斥访问的资源；</p></li>
+<li><p><strong>破坏占有与等待条件</strong><br>要求线程在请求新资源之前释放所有已占有的资源；</p></li>
+<li><p><strong>破坏不可抢占条件</strong><br>允许资源被抢占，在实践中这很难实现；</p></li>
+<li><p><strong>破坏循环等待条件</strong><br>通过给所有资源（如互斥元）编号一个顺序，并要求线程按照这个顺序请求资源；</p></li>
 </ol>
 <p>  我们这里讨论破坏循环等待条件的情况，即为所有资源编号一个顺序，使得所有线程只能按照固定的顺序请求资源。下面的“资源”统一以互斥元（<code>mutex</code>）为例。</p>
 <h4 id="以固定顺序获取锁">以固定顺序获取锁</h4>
