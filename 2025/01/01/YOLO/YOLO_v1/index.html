@@ -19,19 +19,20 @@
   <meta name="author" content="HiJackiee">
   <meta name="keywords" content="computer tech software">
   
-    <meta name="description" content="本文是对 《You Look Only Once: Unified, Real-Time Object Detection》 论文的分享">
+    <meta name="description" content="本文是对 《You Look Only Once: Unified, Real-Time Object Detection》 论文的总结分享">
 <meta property="og:type" content="article">
 <meta property="og:title" content="YOLO v1 论文分享">
-<meta property="og:url" content="http://hijackiee.github.io/2025/01/01/YOLO/You_Only_Look_Once/index.html">
+<meta property="og:url" content="http://hijackiee.github.io/2025/01/01/YOLO/YOLO_v1/index.html">
 <meta property="og:site_name" content="HiJackiee&#39;s blog">
-<meta property="og:description" content="本文是对 《You Look Only Once: Unified, Real-Time Object Detection》 论文的分享">
+<meta property="og:description" content="本文是对 《You Look Only Once: Unified, Real-Time Object Detection》 论文的总结分享">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://hijackiee.github.io/img/in_posts/YOLO/yolo_bg_header.png">
 <meta property="article:published_time" content="2025-01-01T09:00:00.000Z">
-<meta property="article:modified_time" content="2025-01-04T14:13:47.544Z">
+<meta property="article:modified_time" content="2025-01-06T07:17:33.682Z">
 <meta property="article:author" content="HiJackiee">
 <meta property="article:tag" content="PaperShare">
 <meta property="article:tag" content="YOLO">
+<meta property="article:tag" content="目标检测">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://hijackiee.github.io/img/in_posts/YOLO/yolo_bg_header.png">
   
@@ -311,10 +312,11 @@ target="_blank" rel="noopener" href="https://pjreddie.com/darknet/yolo/">项目�
 <h3 id="摘要-abstract">摘要 Abstract</h3>
 <ul>
 <li><strong>YOLO介绍</strong><br>提出了一种名为 <code>YOLO</code>
-的新方法，用于目标检测（<code>object detection</code>）。这种方法将目标检测视为一个<strong>回归问题</strong>，直接从整张图像预测边界框和类别概率，而不是重新利用分类器进行检测（之前工作的主要方向）。
-&gt;
-<strong>边界框</strong>（<code>Bounding Box</code>）是目标检测中用于定位图像内目标位置的矩形区域，用于确定目标的确切位置、进行分类以及评估预测的准确性，常以不同颜色或样式的矩形框在图像上显示，便于可视化分析。在<code>YOLO</code>算法中，每个网格单元预测多个边界框及其置信度和条件类别概率，实现快速目标检测。</li>
+的新方法，用于目标检测（<code>object detection</code>）。这种方法将目标检测视为一个<strong>回归问题</strong>，直接从整张图像预测边界框和类别概率，而不是重新利用分类器进行检测（之前工作的主要方向）。</li>
 </ul>
+<blockquote>
+<p><strong>边界框</strong>（<code>Bounding Box</code>）是目标检测中用于定位图像内目标位置的矩形区域，用于确定目标的确切位置、进行分类以及评估预测的准确性，常以不同颜色或样式的矩形框在图像上显示，便于可视化分析。在<code>YOLO</code>算法中，每个网格单元预测多个边界框及其置信度和条件类别概率，实现快速目标检测。</p>
+</blockquote>
 <blockquote>
 <p><strong>类别概率</strong>（<code>class probabilities</code>）是指在机器学习和模式识别任务中，模型对于给定输入样本属于某个特定类别的置信度或概率估计。在目标检测和图像识别等任务中，类别概率尤为重要，因为它们不仅需要识别出图像中的对象，还需要确定这些对象属于哪个类别。<br><br>在<code>YOLO</code>算法中，类别概率是指每个网格单元预测的边界框内包含某个类别目标的概率。这些概率值是<strong>条件概率</strong>，即在网格单元内确实存在目标的条件下（所以与边界框的置信度是由关联的），边界框包含特定类别目标的概率。通过这种方式，<code>YOLO</code>能够同时预测目标的位置和类别，实现快速且准确的目标检测。</p>
 </blockquote>
@@ -347,15 +349,19 @@ target="_blank" rel="noopener" href="https://pjreddie.com/darknet/yolo/">项目�
 <p>  每个网格单元预测<code>B</code>（用<code>B</code>表示是出于<code>Boxes</code>）个边界框以及这些框的置信度分数。这些<strong>置信度分数</strong>反映了模型对于边界框内包含物体的置信度，同时也反映了模型对其边界框准确性的评估。<br>形式上，<code>YOLO</code>
 将置信度定义为</p>
 <p><span class="math display">\[Confidence =
-Pr(Object)*IOU_{pred}^{truth}\]</span> &gt; <span
+Pr(Object)*IOU_{pred}^{truth}\]</span></p>
+<blockquote>
+<p><span
 class="math inline">\(Pr(Object)\)</span>：模型预测某个边界框包含至少一个对象的概率。<span
 class="math inline">\(Pr\)</span> 代表概率。</p>
+</blockquote>
 <p>  如果网格单元中不存在物体，则置信度得分应该为
-<code>0</code>。否则，置信度得分希望等于边界框与真实值之间的<strong>交并比</strong>（<code>IOU</code>）。<br>
-&gt;
-交并比（<code>Intersection Over Union</code>，<code>IOU</code>）是目标检测和图像分割任务中常用的评估指标，用于衡量两个边界框（或区域）之间的重叠程度。<code>IOU</code>计算的是两个边界框交集面积与并集面积的比值。<span
+<code>0</code>。否则，置信度得分希望等于边界框与真实值之间的<strong>交并比</strong>（<code>IOU</code>）。</p>
+<blockquote>
+<p>交并比（<code>Intersection Over Union</code>，<code>IOU</code>）是目标检测和图像分割任务中常用的评估指标，用于衡量两个边界框（或区域）之间的重叠程度。<code>IOU</code>计算的是两个边界框交集面积与并集面积的比值。<span
 class="math display">\[IOU^{A}_{B} = \frac{Area(A \cap B)}{Area(A) +
 Area(B) - Area(A \cap B)}\]</span><br></p>
+</blockquote>
 <p>  每个边界框包含<code>5</code>个预测值：<code>x</code>，
 <code>y</code>，<code>w</code>，<code>h</code>以及<code>置信度</code>。<code>(x, y)</code>坐标表示边界框的中心<strong>相对于网格单元边界的相对位置</strong>，其数值是归一化的结果。比如：</p>
 <p><img src="/img/in_posts/YOLO/YOLO_v1/image-1.png" srcset="/img/loading.gif" lazyload /></p>
@@ -368,12 +374,13 @@ class="math inline">\(Pr(Class_i | Object)\)</span>
 。这些概率是基于网格单元包含一个物体的条件，即条件概率。<u>无论网格单元中的边界框数量
 <code>B</code> 有多少，都只预测一组类别概率</u>。<br></p>
 <p>  测试时，将条件类别概率与各个边界框的置信度预测相乘，</p>
-<p><span class="math display">\[Pr(Class_i | Object) * Pr(Object) *
-IOU_{pred}^{truth} \\\\ = Pr(Class_i) * IOU_{pred}^{truth}
-······（1）\]</span></p>
-<p>可得每个框的<strong>针对类别的置信度分数</strong>。这些分数既编码了该类别出现在框中的概率，也编码了边界框与对象的拟合程度。
-&gt;
-这里说明，模型不仅给出了每个边界框内包含对象的置信度，而且给出了这个边界框内对象属于特定类别的置信度</p>
+<p><span class="math display">\[\begin{aligned}Pr(Class_i | Object) *
+Pr(Object) * IOU_{pred}^{truth} \\\\ = Pr(Class_i) * IOU_{pred}^{truth}
+\\\\ ······（1） \end{aligned}\]</span></p>
+<p>可得每个框的<strong>针对类别的置信度分数</strong>。这些分数既编码了该类别出现在框中的概率，也编码了边界框与对象的拟合程度。</p>
+<blockquote>
+<p>这里说明，模型不仅给出了每个边界框内包含对象的置信度，而且给出了这个边界框内对象属于特定类别的置信度</p>
+</blockquote>
 <p><img src="/img/in_posts/YOLO/YOLO_v1/image.png" srcset="/img/loading.gif" lazyload /></p>
 <p>  <code>YOLO</code> 将检测建模为一个回归问题。它将图像划分为 <span
 class="math inline">\(S \times S\)</span> 的网格，并为每个网格单元预测
@@ -451,11 +458,12 @@ src="/img/in_posts/YOLO/YOLO_v1/image-5.png" srcset="/img/loading.gif" lazyload 
 可以看到，对于同等误差 <span class="math inline">\(\Delta
 w\)</span>，小框较大框更加敏感，很好地契合了优化目的。</li>
 </ol>
+<p><br></p>
 <p>  于是，通过前面的优化，<code>YOLO</code>
 使用了如下的，多部分和的损失函数：</p>
 <p><span class="math display">\[\begin{aligned} \lambda_{coord}
 \sum_{i=1}^{S^2} \sum_{j=1}^{B}\ \mathbf{1}_{ij}^{obj}[(x_i-\hat{x_i})^2
-+ (y_i - \hat{y_i})^2]+ \\\\ \lambda_{coord} \sum_{i=1}^{S^2}
++ (y_i - \hat{y_i})^2] \\\\ + \lambda_{coord} \sum_{i=1}^{S^2}
 \sum_{j=1}^{B}\ \mathbf{1}_{ij}^{obj}[(\sqrt{w_i}-\sqrt{\hat{w_i}})^2 +
 (\sqrt{h_i}-\sqrt{\hat{h_i}}\ )^2] \\\\ + \sum_{i=1}^{S^2}
 \sum_{j=1}^{B}\ \mathbf{1}_{ij}^{obj} (C_i - \hat{C_i})^2 \\\\ +
@@ -470,8 +478,9 @@ w\)</span>，小框较大框更加敏感，很好地契合了优化目的。</li
 1}\)</span>。</p>
 </blockquote>
 <p>损失函数中的 <span class="math inline">\(\mathbf{1}\)</span>
-符号是一个指示函数，其中： - <span
-class="math inline">\(\mathbf{1}_{i}^{obj}\)</span> 表示第
+符号是一个指示函数，其中：</p>
+<ul>
+<li><p><span class="math inline">\(\mathbf{1}_{i}^{obj}\)</span> 表示第
 <code>i</code> 个网格单元是否包含物体，是则 <span
 class="math inline">\(\mathbf{1}_{i}^{obj} = 1\)</span>，否则 <span
 class="math inline">\(\mathbf{1}_{i}^{obj} = 0\)</span>，即：</p>
@@ -480,8 +489,8 @@ class="math inline">\(\mathbf{1}_{i}^{obj} = 0\)</span>，即：</p>
 <p><span class="math inline">\(\mathbf{1}_{i}^{noobj}\)</span>
 恰与之相反：</p>
 <p><span class="math display">\[\mathbf{1}_{i}^{noobj} = \begin{cases}
-1,\ 网格单元不含物体 \\\\ 0,\ 网格单元包含物体\end{cases}\]</span></p>
-<ul>
+1,\ 网格单元不含物体 \\\\ 0,\
+网格单元包含物体\end{cases}\]</span></p></li>
 <li><p><span class="math inline">\(\mathbf{1}_{ij}^{obj}\)</span> 表示第
 <code>i</code> 个网格单元的第 <code>j</code>
 个边界框预测器是否负责预测一个物体（一个网格单元会预测 <code>B</code>
@@ -495,11 +504,11 @@ class="math inline">\(\mathbf{1}_{i}^{obj} = 0\)</span>，即：</p>
 <p>  实际上，上述损失函数可以分为以下几个部分：</p>
 <ol type="1">
 <li><p><strong>位置误差</strong></p>
-<p><span class="math display">\[\lambda_{coord} \sum_{i=1}^{S^2}
-\sum_{j=1}^{B}\ \mathbf{1}_{ij}^{obj}[(x_i-\hat{x_i})^2 + (y_i -
-\hat{y_i})^2]+ \\\\ \lambda_{coord} \sum_{i=1}^{S^2} \sum_{j=1}^{B}\
-\mathbf{1}_{ij}^{obj}[(\sqrt{w_i}-\sqrt{\hat{w_i}})^2 +
-(\sqrt{h_i}-\sqrt{\hat{h_i}}\ )^2] \]</span></p></li>
+<p><span class="math display">\[\begin{aligned}\lambda_{coord}
+\sum_{i=1}^{S^2} \sum_{j=1}^{B}\ \mathbf{1}_{ij}^{obj}[(x_i-\hat{x_i})^2
++ (y_i - \hat{y_i})^2] \\\\ + \lambda_{coord} \sum_{i=1}^{S^2}
+\sum_{j=1}^{B}\ \mathbf{1}_{ij}^{obj}[(\sqrt{w_i}-\sqrt{\hat{w_i}})^2 +
+(\sqrt{h_i}-\sqrt{\hat{h_i}}\ )^2] \end{aligned}\]</span></p></li>
 <li><p><strong>置信度误差（含物体时）</strong></p>
 <p><span class="math display">\[\sum_{i=1}^{S^2} \sum_{j=1}^{B}\
 \mathbf{1}_{ij}^{obj} (C_i - \hat{C_i})^2 \]</span></p></li>
@@ -517,6 +526,7 @@ class="math inline">\(\hat{p_i} ( c )\)</span>
 表示模型预测的类别概率。事实上，损失函数中的 “含帽”
 的变量是模型预测的相关值。</p></li>
 </ol>
+<p><img src="/img/in_posts/YOLO/YOLO_v1/image-6.png" srcset="/img/loading.gif" lazyload /></p>
 <p>  由损失函数不难看出，由于分类误差中含有指示函数 <span
 class="math inline">\(\mathbf{1}_{i}^{obj}\)</span>
 ，所以损失函数只会在该网格单元中存在物体时才对分类误差进行惩罚。</p>
@@ -554,6 +564,13 @@ class="math inline">\(\mathbf{1}_{ij}^{obj}\)</span>
   <a href="/categories/YOLO/" class="category-chain-item">YOLO</a>
   
   
+    <span>></span>
+    
+  <a href="/categories/YOLO/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/" class="category-chain-item">目标检测</a>
+  
+  
+
+  
 
       </span>
     
@@ -570,6 +587,8 @@ class="math inline">\(\mathbf{1}_{ij}^{obj}\)</span>
       
         <a href="/tags/YOLO/" class="print-no-link">#YOLO</a>
       
+        <a href="/tags/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/" class="print-no-link">#目标检测</a>
+      
     </div>
   
 </div>
@@ -581,7 +600,7 @@ class="math inline">\(\mathbf{1}_{ij}^{obj}\)</span>
   <div class="license-box my-3">
     <div class="license-title">
       <div>YOLO v1 论文分享</div>
-      <div>http://hijackiee.github.io/2025/01/01/YOLO/You_Only_Look_Once/</div>
+      <div>http://hijackiee.github.io/2025/01/01/YOLO/YOLO_v1/</div>
     </div>
     <div class="license-meta">
       
