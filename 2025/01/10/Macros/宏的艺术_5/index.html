@@ -30,8 +30,8 @@
 <meta property="article:published_time" content="2025-01-10T09:00:00.000Z">
 <meta property="article:modified_time" content="2025-01-12T03:01:27.255Z">
 <meta property="article:author" content="HiJackiee">
-<meta property="article:tag" content="Cpp">
 <meta property="article:tag" content="C">
+<meta property="article:tag" content="Cpp">
 <meta property="article:tag" content="Macros">
 <meta property="article:tag" content="编程技巧">
 <meta name="twitter:card" content="summary_large_image">
@@ -305,24 +305,18 @@
                 
                 <h2 id="宏的陷阱">宏的陷阱</h2>
 <p>  在本节中，将介绍一些适用于宏和宏扩展的特殊规则，并指出在某些情况下，这些规则会产生与直觉相反的后果，<strong>必须加以注意</strong>。</p>
-<h3 id="嵌套错误-misnesting">嵌套错误 ⌊Misnesting⌉</h3>
+<h3 id="嵌套错误-⌊Misnesting⌉">嵌套错误 ⌊Misnesting⌉</h3>
 <p>  当一个宏被调用时，它的参数会被代入宏体中，<strong>并且代入后的结果会和输入文件的其他部分一起被检查，以查找更多的宏调用</strong>。有可能将一个宏调用的一部分来自宏体本身，另一部分来自参数拼接在一起。如：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> twice(x) (2*(x))</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> call_with_1(x) x(1)</span><br><br><span class="hljs-built_in">call_with_1</span>(twice)<br></code></pre></td></tr></table></figure>
-<p>  这个例子中，<code>call_with_1(twice)</code> 首先会被展开为
-<code>twice(1)</code>，然后预处理器会再次检查部分展开后的结果。然后
-<code>twice(1)</code> 会被展开为
-<code>(2*(1))</code>，得到最终的展开结果。</p>
-<p><span class="math display">\[\begin{aligned} call\_with\_1(twice)
-\rightarrow twice(1) \\\\ \rightarrow (2*(1)) \end{aligned}\]</span></p>
+<p>  这个例子中，<code>call_with_1(twice)</code> 首先会被展开为 <code>twice(1)</code>，然后预处理器会再次检查部分展开后的结果。然后 <code>twice(1)</code> 会被展开为 <code>(2*(1))</code>，得到最终的展开结果。</p>
+<p>$$\begin{aligned} call_with_1(twice) \rightarrow twice(1) \\ \rightarrow (2*(1)) \end{aligned}$$</p>
 <p>  宏定义<strong>不必带有平衡的圆括号</strong>。通过在宏体中编写一个不平衡的开括号，可以创建一个宏调用，它从宏体内部开始，但在宏体之外结束。例如：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> strange(file) fprintf (file, <span class="hljs-string">&quot;%s %d&quot;</span>,</span><br><br><span class="hljs-built_in">strange</span>(stderr) p, <span class="hljs-number">35</span>)<br></code></pre></td></tr></table></figure>
-<p>  这个例子最终的展开结果是
-<code>fprintf (stderr, "%s %d", p, 35)</code>。这里调用了<code>strange</code>宏，并传入<code>stderr</code>作为参数。由于宏体中的括号不平衡，宏展开时，<code>strange(stderr)</code>展开为<code>fprintf (stderr, "%s %d",</code>，此时<strong>宏展开还没有结束</strong>，因为左括号没有完全匹配。所以，后面的<code>p, 35)</code>会被视为宏调用的一部分，继续展开。</p>
+<p>  这个例子最终的展开结果是 <code>fprintf (stderr, &quot;%s %d&quot;, p, 35)</code>。这里调用了<code>strange</code>宏，并传入<code>stderr</code>作为参数。由于宏体中的括号不平衡，宏展开时，<code>strange(stderr)</code>展开为<code>fprintf (stderr, &quot;%s %d&quot;,</code>，此时<strong>宏展开还没有结束</strong>，因为左括号没有完全匹配。所以，后面的<code>p, 35)</code>会被视为宏调用的一部分，继续展开。</p>
 <blockquote>
 <p>这种使用方式虽然在技术上是可行的，但非常不推荐，因为它会使代码难以理解和维护。括号不平衡的宏定义很容易导致错误，尤其是在复杂的宏定义和调用场景中，可能会引发编译错误或其他难以调试的问题。因此，通常建议在宏定义中保持括号的平衡，以避免这类潜在的陷阱。</p>
 </blockquote>
-<h3 id="运算符优先级问题-operator-precedence-problems">运算符优先级问题
-⌊Operator Precedence Problems⌉</h3>
+<h3 id="运算符优先级问题-⌊Operator-Precedence-Problems⌉">运算符优先级问题 ⌊Operator Precedence Problems⌉</h3>
 <p>  你可能也注意到了，在大多数宏定义示例中，<strong>宏参数名周围有括号</strong>，并且<strong>整个宏定义通常也被一对括号包围</strong>。这么做的原因实际上是<strong>为了避免运算符优先级问题和其他潜在的陷阱</strong>。</p>
 <h4 id="为什么宏参数名周围需要有括号">为什么宏参数名周围需要有括号</h4>
 <p>  在宏定义中，每个参数周围加上括号可以确保参数在宏展开时被正确地视为一个整体，避免由于运算符优先级问题导致的错误。例如下面这个宏定义：</p>
@@ -333,8 +327,7 @@
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-type">int</span> result = <span class="hljs-built_in">MULTI</span>(<span class="hljs-number">3</span> + <span class="hljs-number">4</span>, <span class="hljs-number">5</span> + <span class="hljs-number">6</span>);<br></code></pre></td></tr></table></figure>
 <p>宏展开后：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-type">int</span> result = <span class="hljs-number">3</span> + <span class="hljs-number">4</span> * <span class="hljs-number">5</span> + <span class="hljs-number">6</span>;<br></code></pre></td></tr></table></figure>
-<p>但是，根据运算符优先级，<code>*</code> 的优先级高于
-<code>+</code>。于是实际上表达式会被计算为：</p>
+<p>但是，根据运算符优先级，<code>*</code> 的优先级高于 <code>+</code>。于是实际上表达式会被计算为：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-type">int</span> result = <span class="hljs-number">3</span> + (<span class="hljs-number">4</span> * <span class="hljs-number">5</span>) + <span class="hljs-number">6</span>; <span class="hljs-comment">// = 29</span><br></code></pre></td></tr></table></figure>
 <p>而不是我们期望的结果：<code>(3 + 4) * (5 + 6) = 77</code></p>
 <h4 id="为什么宏定义周围需要有括号">为什么宏定义周围需要有括号</h4>
@@ -349,125 +342,76 @@
 <p>显然，这与我们的预期结果不符。</p>
 <h4 id="总结">总结</h4>
 <p>  在宏定义中，每个宏参数名周围加上括号，以及整个宏定义周围加上括号，可以确保宏展开后的表达式按照预期的方式进行计算，避免因运算符优先级问题导致的错误。这样可以提高代码的可读性和可维护性，减少潜在的<code>bug</code>。</p>
-<h3 id="吞掉分号-swallowing-the-semicolon">吞掉分号 ⌊Swallowing the
-Semicolon⌉</h3>
+<h3 id="吞掉分号-⌊Swallowing-the-Semicolon⌉">吞掉分号 ⌊Swallowing the Semicolon⌉</h3>
 <p>  通常，定义一个拓展为<strong>复合语句</strong>的宏是需要的。例如：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> SKIP_SPACES(p, limit)  \</span><br><span class="hljs-meta">&#123; char *lim = (limit);         \</span><br><span class="hljs-meta">  while (p &lt; lim) &#123;            \</span><br><span class="hljs-meta">    <span class="hljs-keyword">if</span> (*p++ != <span class="hljs-string">&#x27; &#x27;</span>) &#123;         \</span><br><span class="hljs-meta">      p--; break; &#125;&#125;&#125;</span><br></code></pre></td></tr></table></figure>
-<p>  这个例子中定义的宏可以将一个指针 <code>p</code>
-跳过空白字符。这里使用了 <code>\</code>
-来分割宏定义，因为宏定义必须是单逻辑行。而 <code>C/C++</code>
-本身以<code>;</code>
-表示语句的结束而不是换行，所以宏定义的单逻辑行是可以容纳复合语句的。</p>
-<p>  对此宏的一个调用可以是
-<code>SKIP_SPACES(p, lim)</code>。严格上讲，此宏将被拓展为一个复合语句，而它是一个完整的语句，所以不需要分号
-<code>;</code>
-来结束。但是，由于此宏调用看起来像函数调用，如果可以像函数调用一样来使用这个宏——在其末尾写一个分号（相当于后接了一条空语句），如
-<code>SKIP_SPACES(p, limit);</code>，可以最大程度上减少混淆。</p>
-<p>  这对 <code>if-else</code> 语句就带来了麻烦。因为分号 <code>;</code>
-本身可以被视为一个空语句。例如：</p>
+<p>  这个例子中定义的宏可以将一个指针 <code>p</code> 跳过空白字符。这里使用了 <code>\</code> 来分割宏定义，因为宏定义必须是单逻辑行。而 <code>C/C++</code> 本身以<code>;</code> 表示语句的结束而不是换行，所以宏定义的单逻辑行是可以容纳复合语句的。</p>
+<p>  对此宏的一个调用可以是 <code>SKIP_SPACES(p, lim)</code>。严格上讲，此宏将被拓展为一个复合语句，而它是一个完整的语句，所以不需要分号 <code>;</code> 来结束。但是，由于此宏调用看起来像函数调用，如果可以像函数调用一样来使用这个宏——在其末尾写一个分号（相当于后接了一条空语句），如 <code>SKIP_SPACES(p, limit);</code>，可以最大程度上减少混淆。</p>
+<p>  这对 <code>if-else</code> 语句就带来了麻烦。因为分号 <code>;</code> 本身可以被视为一个空语句。例如：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">if</span> (*p != <span class="hljs-number">0</span>)<br>    <span class="hljs-built_in">SKIP_SPACES</span>(p, lim);<br><span class="hljs-keyword">else</span> ...<br></code></pre></td></tr></table></figure>
 <p>  这就使得这段代码实际上变为：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">if</span> (*p != <span class="hljs-number">0</span>)<br>    <span class="hljs-built_in">SKIP_SPACES</span>(p, lim)<br>    ;   <span class="hljs-comment">// 空语句</span><br><span class="hljs-keyword">else</span> ...<br></code></pre></td></tr></table></figure>
 <p>显然，这段代码是无效的，除非在在调用时人为加个 <code>&#123;&#125;</code>：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">if</span> (*p != <span class="hljs-number">0</span>) &#123;<br>    <span class="hljs-built_in">SKIP_SPACES</span>(p, lim)<br>    ;   <span class="hljs-comment">// 空语句</span><br>&#125;<br><span class="hljs-keyword">else</span> ...<br></code></pre></td></tr></table></figure>
-<p>这确实是一个方法，实际上仍然可以选择修改 <code>SKIP_SPACES</code>
-本身的宏定义，使用 <code>do-while</code> 语句来解决这个问题：</p>
+<p>这确实是一个方法，实际上仍然可以选择修改 <code>SKIP_SPACES</code> 本身的宏定义，使用 <code>do-while</code> 语句来解决这个问题：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> SKIP_SPACES(p, limit)     \</span><br><span class="hljs-meta">do &#123; char *lim = (limit);         \</span><br><span class="hljs-meta">     while (p &lt; lim) &#123;            \</span><br><span class="hljs-meta">       <span class="hljs-keyword">if</span> (*p++ != <span class="hljs-string">&#x27; &#x27;</span>) &#123;         \</span><br><span class="hljs-meta">         p--; break; &#125;&#125;&#125;          \</span><br><span class="hljs-meta">while (0)</span><br></code></pre></td></tr></table></figure>
 <blockquote>
-<p><code>C/C++</code> 中的 <code>do-while</code> 语句本身末尾需要分号
-<code>;</code> 表示结束。所以，以函数调用的形式，正好对宏体中的
-<code>do-while</code> 语句补齐了最后的分号 <code>;</code>。</p>
+<p><code>C/C++</code> 中的 <code>do-while</code> 语句本身末尾需要分号 <code>;</code> 表示结束。所以，以函数调用的形式，正好对宏体中的 <code>do-while</code> 语句补齐了最后的分号 <code>;</code>。</p>
 </blockquote>
-<p>现在，这样的调用 <code>SKIP_SPACES(p, lim);</code> 会被展开为
-<code>do &#123;...&#125; while (0);</code> ，而循环只会执行一次。</p>
-<h3 id="副作用的重复-duplication-of-side-effects">副作用的重复
-⌊Duplication of Side Effects⌉</h3>
-<p>  很多的 <code>C</code> 程序会定义一个宏
-<code>min</code>，用来求取最小值：</p>
+<p>现在，这样的调用 <code>SKIP_SPACES(p, lim);</code> 会被展开为 <code>do &#123;...&#125; while (0);</code> ，而循环只会执行一次。</p>
+<h3 id="副作用的重复-⌊Duplication-of-Side-Effects⌉">副作用的重复 ⌊Duplication of Side Effects⌉</h3>
+<p>  很多的 <code>C</code> 程序会定义一个宏 <code>min</code>，用来求取最小值：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> min(X, Y)  ((X) &lt; (Y) ? (X) : (Y))</span><br></code></pre></td></tr></table></figure>
 <p>当用带有副作用的参数去调用这个宏时，如：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++">next = <span class="hljs-built_in">min</span> (x + y, <span class="hljs-built_in">foo</span> (z));<br></code></pre></td></tr></table></figure>
 <p>此宏就会被展开为：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++">next = ((x + y) &lt; (<span class="hljs-built_in">foo</span> (z)) ? (x + y) : (<span class="hljs-built_in">foo</span> (z)));<br></code></pre></td></tr></table></figure>
-<p>发现问题了吗？这里的 <code>foo(z)</code> 实际上可能会被执行两次，如果
-<code>foo()</code> 本身具有副作用（比如每次调用让静态变量加
-<code>1</code>等等），这显然不符合调用此宏的预期。因此，可以认为此
-<code>min</code> 宏不是一个安全的宏。</p>
-<p>  解决这个问题的最佳方法是在定义 <code>min</code> 时只计算一次
-<code>foo(z)</code> 的值。<code>C</code>
-语言本身并没有提供标准的实现方法，但是可以通过 <code>GNU</code>
-拓展实现如下功能：</p>
+<p>发现问题了吗？这里的 <code>foo(z)</code> 实际上可能会被执行两次，如果 <code>foo()</code> 本身具有副作用（比如每次调用让静态变量加 <code>1</code>等等），这显然不符合调用此宏的预期。因此，可以认为此 <code>min</code> 宏不是一个安全的宏。</p>
+<p>  解决这个问题的最佳方法是在定义 <code>min</code> 时只计算一次 <code>foo(z)</code> 的值。<code>C</code> 语言本身并没有提供标准的实现方法，但是可以通过 <code>GNU</code> 拓展实现如下功能：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> min(X, Y)                \</span><br><span class="hljs-meta">(&#123; typeof (X) x_ = (X);          \</span><br><span class="hljs-meta">   typeof (Y) y_ = (Y);          \</span><br><span class="hljs-meta">   (x_ &lt; y_) ? x_ : y_; &#125;)</span><br></code></pre></td></tr></table></figure>
-<p><code>(&#123;...&#125;)</code>
-产生一个复合语句，于是可以在其内部定义局部变量，并且为每个参数分配一个局部变量。这里的问题就是，定义一个局部变量需要直到参数的类型，所以，这里使用
-<code>typeof</code>
-来获取参数的类型是关键。通过局部变量，就可以很有效地避免副作用的重复。</p>
-<p>  当然，如果不想或者不能使用 <code>GUN</code> 拓展提供的
-<code>typeof</code> 方法，那么使用这类的 <code>min</code>
-宏就需要格外小心。如果明确知道参数的类型，就可以用具体的类型替代
-<code>typeof</code> 的作用：</p>
+<p><code>(&#123;...&#125;)</code> 产生一个复合语句，于是可以在其内部定义局部变量，并且为每个参数分配一个局部变量。这里的问题就是，定义一个局部变量需要直到参数的类型，所以，这里使用 <code>typeof</code> 来获取参数的类型是关键。通过局部变量，就可以很有效地避免副作用的重复。</p>
+<p>  当然，如果不想或者不能使用 <code>GUN</code> 拓展提供的 <code>typeof</code> 方法，那么使用这类的 <code>min</code> 宏就需要格外小心。如果明确知道参数的类型，就可以用具体的类型替代 <code>typeof</code> 的作用：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> min(X, Y)                \</span><br><span class="hljs-meta">(&#123; int x_ = (X);          \</span><br><span class="hljs-meta">   int y_ = (Y);          \</span><br><span class="hljs-meta">   (x_ &lt; y_) ? x_ : y_; &#125;)</span><br></code></pre></td></tr></table></figure>
-<p>这里假设参数 <code>X</code> 和 <code>Y</code> 都是 <code>int</code>
-类型（或者返回 <code>int</code> 类型）。</p>
-<h3 id="自引用宏-self-referential-macros">自引用宏 ⌊Self-Referential
-Macros⌉</h3>
+<p>这里假设参数 <code>X</code> 和 <code>Y</code> 都是 <code>int</code> 类型（或者返回 <code>int</code> 类型）。</p>
+<h3 id="自引用宏-⌊Self-Referential-Macros⌉">自引用宏 ⌊Self-Referential Macros⌉</h3>
 <p>  所谓<strong>自引用宏</strong>是指<u>宏名出现在其宏体中的宏</u>。前面讲过，所有的宏展开后会被重新扫描，以寻找更多可替代的宏。显然，如果可以将宏进行<strong>自我引用</strong>，就会产生无限大的扩展。为了避免这种情况，自引用不会被认为是宏调用，它会被原封不动地传入预处理器的输出中。举个例子：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> foo (4+foo)</span><br></code></pre></td></tr></table></figure>
-<p>  按照普遍的规则，对 <code>foo</code> 的每次调用都会拓展为
-<code>(4+foo)</code>。然后重新扫描，并拓展为
-<code>(4+(4+foo))</code>。以此类推，直到内存耗尽。</p>
-<p>  而按照自引用的规则，这一过程被缩短到
-<code>(4+foo)</code>。也就是说，<strong>宏体中的同名宏将不会被预处理器展开</strong>。在这个例子里，无论何处调用
-<code>foo</code>，其结果都是将 <code>foo</code> 加上
-<code>4</code>。</p>
-<p>  大多数情况下，这并非一个好主意。因为阅读代码的人看到
-<code>foo</code>
-类的宏调用，会将其视为一个变量而不是一个宏。并理所应当地将其值认为是
-<code>foo</code> 变量的值，实际上的值比其大 <code>4</code>。</p>
-<p>  实际上，自引用宏还有一类情况：<u>不同宏定义之间交叉引用</u>。比如，宏
-<code>x</code> 的宏体中使用宏 <code>y</code>，而宏 <code>y</code>
-的宏体中使用 <code>x</code>，这样就造成了宏 <code>x</code>
-的间接自引用：</p>
+<p>  按照普遍的规则，对 <code>foo</code> 的每次调用都会拓展为 <code>(4+foo)</code>。然后重新扫描，并拓展为 <code>(4+(4+foo))</code>。以此类推，直到内存耗尽。</p>
+<p>  而按照自引用的规则，这一过程被缩短到 <code>(4+foo)</code>。也就是说，<strong>宏体中的同名宏将不会被预处理器展开</strong>。在这个例子里，无论何处调用 <code>foo</code>，其结果都是将 <code>foo</code> 加上 <code>4</code>。</p>
+<p>  大多数情况下，这并非一个好主意。因为阅读代码的人看到 <code>foo</code> 类的宏调用，会将其视为一个变量而不是一个宏。并理所应当地将其值认为是 <code>foo</code> 变量的值，实际上的值比其大 <code>4</code>。</p>
+<p>  实际上，自引用宏还有一类情况：<u>不同宏定义之间交叉引用</u>。比如，宏 <code>x</code> 的宏体中使用宏 <code>y</code>，而宏 <code>y</code> 的宏体中使用 <code>x</code>，这样就造成了宏 <code>x</code> 的间接自引用：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> x (4 + y)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> y (2 * x)</span><br></code></pre></td></tr></table></figure>
 <p>这个例子会被展开为：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c++">x  → (<span class="hljs-number">4</span> + y)<br>   → (<span class="hljs-number">4</span> + (<span class="hljs-number">2</span> * x))<br><br>y  → (<span class="hljs-number">2</span> * x)<br>   → (<span class="hljs-number">2</span> * (<span class="hljs-number">4</span> + y))<br></code></pre></td></tr></table></figure>
 <p>即，每个宏在其他宏的定义中出现时都会展开，但间接出现在自身定义中时不会展开。</p>
-<h3 id="参数预扫描-argument-prescan">参数预扫描 ⌊Argument Prescan⌉</h3>
-<p>  在 <code>C</code>
-语言预处理中，宏参数的展开机制颇为有趣且关键。通常情况下，宏参数在被替换到宏体之前，会先进行完全的宏展开，除非它们被字符串化或与其他标记拼接。替换后，整个宏体，包括替换后的参数，<strong>会被再次扫描以展开其中的宏调用</strong>。这就意味着参数会被<strong>扫描两次</strong>来展开其中的宏调用。</p>
+<h3 id="参数预扫描-⌊Argument-Prescan⌉">参数预扫描 ⌊Argument Prescan⌉</h3>
+<p>  在 <code>C</code> 语言预处理中，宏参数的展开机制颇为有趣且关键。通常情况下，宏参数在被替换到宏体之前，会先进行完全的宏展开，除非它们被字符串化或与其他标记拼接。替换后，整个宏体，包括替换后的参数，<strong>会被再次扫描以展开其中的宏调用</strong>。这就意味着参数会被<strong>扫描两次</strong>来展开其中的宏调用。</p>
 <p>  大多数时候，这种双扫描机制似乎没什么影响。如果参数中包含宏调用，它们会在第一次扫描时被展开。因此，展开后的结果中不再包含宏调用，所以第二次扫描也不会改变它。如果参数没有预扫描就被直接替换，那么剩下的那次扫描也会找到相同的宏调用并产生相同的结果。</p>
 <p>  你可能会想，当一个自引用宏被用作另一个宏的参数时（参见自引用宏），双扫描机制会不会改变结果：自引用宏会在第一次扫描时展开一次，然后在第二次扫描时再展开一次。然而，事实并非如此。<strong>在第一次扫描中没有展开的自引用会被标记，使得它们在第二次扫描时也不会展开</strong>。</p>
 <p>  你可能会疑惑，“如果预扫描没有区别，为什么要提它呢？为什么不跳过它让预处理器更快呢？”答案是，预扫描在三种特殊情况下确实有区别：</p>
 <ul>
-<li><p><strong>宏的嵌套调用</strong><br>我们说嵌套宏调用发生在宏的参数中包含对该宏本身的调用时。例如，如果
-<code>f</code> 是一个期望一个参数的宏，那么 <code>f(f (1))</code>
-就是一对嵌套的 <code>f</code> 调用。期望的展开方式是先展开
-<code>f(1)</code>，然后将展开结果代入 <code>f</code>
-的定义中。预扫描使得预期的结果能够顺利出现。<strong>如果没有预扫描</strong>，<code>f(1)</code>
-本身就会作为参数被代入，在主扫描过程中，内部的 <code>f</code>
-调用会表现为间接的自引用，从而不会被展开。</p></li>
-<li><p><strong>调用其他宏进行字符串化或拼接的宏</strong><br>如果宏的参数被字符串化或拼接，预扫描就不会发生。如果你想先展开一个宏，然后再对它的展开结果进行字符串化或拼接，可以通过让一个宏调用另一个进行字符串化或拼接的宏来实现。例如：
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> AFTERX(x) X_ ## x</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> XAFTERX(x) AFTERX(x)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> TABLESIZE 1024</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> BUFSIZE TABLESIZE</span><br></code></pre></td></tr></table></figure> 在这种情况下，<code>AFTERX(BUFSIZE)</code> 展开为
-<code>X_BUFSIZE</code>，而 <code>XAFTERX(BUFSIZE)</code> 展开为
-<code>X_1024</code>（而不是
-<code>X_TABLESIZE</code>，因为预扫描总是进行完整的展开）。</p></li>
-<li><p><strong>参数中宏展开包含未保护逗号的宏</strong><br>这可能会导致在第二次扫描时展开的宏被错误地调用，传入了错误数量的参数。来看一个例子：
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> foo  a,b</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> bar(x) lose(x)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> lose(x) (1 + (x))</span><br></code></pre></td></tr></table></figure> 我们希望 <code>bar(foo)</code> 能够变成
-<code>(1 + (foo))</code>，然后再变成
-<code>(1 + (a,b))</code>。然而，实际上 <code>bar(foo)</code> 展开成了
-<code>lose(a,b)</code>，这时就会出现错误，因为 <code>lose</code>
-需要一个单一的参数。在这种情况下，问题可以通过使用本就应该用来防止算术运算嵌套错误的括号来轻松解决：
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> foo (a,b)</span><br></code></pre></td></tr></table></figure> 或者， <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> bar(x) lose((x))</span><br></code></pre></td></tr></table></figure> 额外的一对括号可以防止
-<code>foo</code> 定义中的逗号被解释为参数分隔符。</p></li>
+<li>
+<p><strong>宏的嵌套调用</strong><br>我们说嵌套宏调用发生在宏的参数中包含对该宏本身的调用时。例如，如果 <code>f</code> 是一个期望一个参数的宏，那么 <code>f(f (1))</code> 就是一对嵌套的 <code>f</code> 调用。期望的展开方式是先展开 <code>f(1)</code>，然后将展开结果代入 <code>f</code> 的定义中。预扫描使得预期的结果能够顺利出现。<strong>如果没有预扫描</strong>，<code>f(1)</code> 本身就会作为参数被代入，在主扫描过程中，内部的 <code>f</code> 调用会表现为间接的自引用，从而不会被展开。</p>
+</li>
+<li>
+<p><strong>调用其他宏进行字符串化或拼接的宏</strong><br>如果宏的参数被字符串化或拼接，预扫描就不会发生。如果你想先展开一个宏，然后再对它的展开结果进行字符串化或拼接，可以通过让一个宏调用另一个进行字符串化或拼接的宏来实现。例如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> AFTERX(x) X_ ## x</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> XAFTERX(x) AFTERX(x)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> TABLESIZE 1024</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> BUFSIZE TABLESIZE</span><br></code></pre></td></tr></table></figure>
+<p>在这种情况下，<code>AFTERX(BUFSIZE)</code> 展开为 <code>X_BUFSIZE</code>，而 <code>XAFTERX(BUFSIZE)</code> 展开为 <code>X_1024</code>（而不是 <code>X_TABLESIZE</code>，因为预扫描总是进行完整的展开）。</p>
+</li>
+<li>
+<p><strong>参数中宏展开包含未保护逗号的宏</strong><br>这可能会导致在第二次扫描时展开的宏被错误地调用，传入了错误数量的参数。来看一个例子：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> foo  a,b</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> bar(x) lose(x)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> lose(x) (1 + (x))</span><br></code></pre></td></tr></table></figure>
+<p>我们希望 <code>bar(foo)</code> 能够变成 <code>(1 + (foo))</code>，然后再变成 <code>(1 + (a,b))</code>。然而，实际上 <code>bar(foo)</code> 展开成了 <code>lose(a,b)</code>，这时就会出现错误，因为 <code>lose</code> 需要一个单一的参数。在这种情况下，问题可以通过使用本就应该用来防止算术运算嵌套错误的括号来轻松解决：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> foo (a,b)</span><br></code></pre></td></tr></table></figure>
+<p>或者，</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> bar(x) lose((x))</span><br></code></pre></td></tr></table></figure>
+<p>额外的一对括号可以防止 <code>foo</code> 定义中的逗号被解释为参数分隔符。</p>
+</li>
 </ul>
-<h3 id="参数中的换行-newlines-in-arguments">参数中的换行 ⌊Newlines in
-Arguments⌉</h3>
+<h3 id="参数中的换行-⌊Newlines-in-Arguments⌉">参数中的换行 ⌊Newlines in Arguments⌉</h3>
 <p>  类函数宏的调用可以跨越多个行。然而在当前的实现中，整个宏展开的结果都出现在这一行。这就导致编译器或者调试器发出的行号信息引用的是宏调用开始的那一行，这就可能与导致问题的参数的那一行不同。例如：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> ignore_second_arg(a,b,c) a; c</span><br><span class="hljs-built_in">ignore_second_arg</span> (<span class="hljs-built_in">foo</span> (),<br>                  <span class="hljs-built_in">ignored</span> (),<br>                  syntax error);<br></code></pre></td></tr></table></figure>
-<p>  由标记 <code>syntax error</code>
-触发的语法错误会导致错误消息引用第三行——即
-<code>ignore_second_arg</code>
-宏所在的行，尽管有问题的代码实际上来自第五行。</p>
+<p>  由标记 <code>syntax error</code> 触发的语法错误会导致错误消息引用第三行——即 <code>ignore_second_arg</code> 宏所在的行，尽管有问题的代码实际上来自第五行。</p>
 <blockquote>
 <p>因为时间问题，这个 <code>bug</code> 已经被修复了，可以忽略。</p>
 </blockquote>
@@ -511,9 +455,9 @@ Arguments⌉</h3>
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Cpp/" class="print-no-link">#Cpp</a>
-      
         <a href="/tags/C/" class="print-no-link">#C</a>
+      
+        <a href="/tags/Cpp/" class="print-no-link">#Cpp</a>
       
         <a href="/tags/Macros/" class="print-no-link">#Macros</a>
       
