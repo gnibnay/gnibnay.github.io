@@ -30,8 +30,8 @@
 <meta property="article:published_time" content="2024-11-20T09:00:00.000Z">
 <meta property="article:modified_time" content="2025-01-10T06:34:48.834Z">
 <meta property="article:author" content="HiJackiee">
-<meta property="article:tag" content="C">
 <meta property="article:tag" content="Cpp">
+<meta property="article:tag" content="C">
 <meta property="article:tag" content="Macros">
 <meta property="article:tag" content="编程技巧">
 <meta name="twitter:card" content="summary_large_image">
@@ -303,126 +303,127 @@
             
               <div class="markdown-body">
                 
-                <h2 id="一、宏参数">一、宏参数</h2>
-<p>  和真正的函数一样，类函数宏也<strong>可以接受参数</strong>。类函数宏需要参数时，你需要将参数插入圆括号<code>()</code>中，这和调用函数时一样(函数声明和定义时需要指明参数类型，宏是文本替换，所以不需要提供参数类型信息)。需要注意的是，宏参数须为有效的 <code>C/C++</code> 标识符，并且在<strong>存在多个参数时使用逗号隔开，以及可选的空格</strong>。</p>
-<h3 id="1-1-调用宏的方式">1.1 调用宏的方式</h3>
+                <h2 id="一宏参数">一、宏参数</h2>
+<p>  和真正的函数一样，类函数宏也<strong>可以接受参数</strong>。类函数宏需要参数时，你需要将参数插入圆括号<code>()</code>中，这和调用函数时一样(函数声明和定义时需要指明参数类型，宏是文本替换，所以不需要提供参数类型信息)。需要注意的是，宏参数须为有效的
+<code>C/C++</code>
+标识符，并且在<strong>存在多个参数时使用逗号隔开，以及可选的空格</strong>。</p>
+<h3 id="调用宏的方式">1.1 调用宏的方式</h3>
 <p>  当想要使用一个带有参数的宏时，宏名称后接一对圆括号<code>()</code>，并且<strong>在括号内插入实际的参数列表，参数列表用逗号隔开</strong>。例如：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> MAX(a, b) ((a) &gt; (b)? (a): (b))</span><br><br><span class="hljs-comment">// 实际调用</span><br><span class="hljs-type">int</span> n = <span class="hljs-built_in">MAX</span>(<span class="hljs-number">2</span>, <span class="hljs-number">3</span>);<br></code></pre></td></tr></table></figure>
-<h3 id="1-2-宏调用可以跨多行">1.2 宏调用可以跨多行</h3>
+<h3 id="宏调用可以跨多行">1.2 宏调用可以跨多行</h3>
 <p>  宏的调用不必限制在源文件的单行内，它<strong>可以跨越多行</strong>。这意味着你可以在调用宏时，在参数列表中使用换行符，以提高代码的可读性。例如：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-type">int</span> n = <span class="hljs-built_in">MAX</span>(<br>    a + b,<br>    c + d<br>);<br></code></pre></td></tr></table></figure>
 <p>因为上一节讲过，所有宏都会被展开成源代码中的一行。</p>
-<h3 id="1-3-参数数量必须匹配">1.3 参数数量必须匹配</h3>
+<h3 id="参数数量必须匹配">1.3 参数数量必须匹配</h3>
 <p>  当然，在调用宏时<strong>提供的参数数量必须与宏定义中的参数数量相匹配</strong>。如果宏定义了两个参数，调用时也必须提供两个参数。</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-type">int</span> n = <span class="hljs-built_in">MAX</span>(<span class="hljs-number">3</span>); <span class="hljs-comment">// 错误</span><br></code></pre></td></tr></table></figure>
-<h3 id="1-4-宏展开时参数的替换">1.4 宏展开时参数的替换</h3>
+<h3 id="宏展开时参数的替换">1.4 宏展开时参数的替换</h3>
 <p>  当宏被展开时，<strong>宏体</strong>中的每个参数都会被对应的实际参数替换。这里的<strong>替换</strong>指的是<u>将宏定义中的参数名称替换为实际参数的代码</u>。</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> MAX(a, b) ((a) &gt; (b)? (a): (b))</span><br><br><span class="hljs-comment">// 实际调用</span><br><span class="hljs-type">int</span> n = <span class="hljs-built_in">MAX</span>(<span class="hljs-number">2</span>, <span class="hljs-number">3</span>);<br><br><span class="hljs-comment">// 预处理展开后</span><br><span class="hljs-type">int</span> n = ((<span class="hljs-number">2</span>) &gt; (<span class="hljs-number">3</span>)? (<span class="hljs-number">2</span>): (<span class="hljs-number">3</span>));<br></code></pre></td></tr></table></figure>
-<h3 id="1-5-参数的使用是可选的">1.5 参数的使用是可选的</h3>
+<h3 id="参数的使用是可选的">1.5 参数的使用是可选的</h3>
 <p>  <strong>宏中定义的参数的使用是可选的</strong>，宏体定义的参数不一定要在宏体中使用。可以定义一个参数，但在宏体中不使用它，或者只使用部分参数。例如：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> DEBUG_LOG(x, y) printf(<span class="hljs-string">&quot;Value of x: %d\n&quot;</span>, x)</span><br></code></pre></td></tr></table></figure>
-<h3 id="1-6-宏调用时参数的处理规则">1.6 宏调用时参数的处理规则</h3>
-<h4 id="1-参数前后的空白字符被丢弃">1. 参数前后的空白字符被丢弃</h4>
+<h3 id="宏调用时参数的处理规则">1.6 宏调用时参数的处理规则</h3>
+<h4 id="参数前后的空白字符被丢弃">1. 参数前后的空白字符被丢弃</h4>
 <p>  在宏调用中，每个参数前后的空白字符（空格、制表符等）都会被丢弃。这意味着，无论实际参数前后有多少空白字符，它们都不会出现在宏展开后的代码中。如：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">// 实际调用</span><br><span class="hljs-type">int</span> n = <span class="hljs-built_in">MAX</span>(    <span class="hljs-number">2</span>    ,    <span class="hljs-number">3</span>    );<br><br><span class="hljs-comment">// 预处理展开后</span><br><span class="hljs-type">int</span> n = ((<span class="hljs-number">2</span>) &gt; (<span class="hljs-number">3</span>)? (<span class="hljs-number">2</span>): (<span class="hljs-number">3</span>));<br></code></pre></td></tr></table></figure>
-<p>可以看到，参数 <code>2</code> 和<code>3</code>前后的空白字符都被丢弃。</p>
-<h4 id="2-参数内部的空白字符被压缩为单个空格">2. 参数内部的空白字符被压缩为单个空格</h4>
+<p>可以看到，参数 <code>2</code>
+和<code>3</code>前后的空白字符都被丢弃。</p>
+<h4 id="参数内部的空白字符被压缩为单个空格">2.
+参数内部的空白字符被压缩为单个空格</h4>
 <p>  在参数内部，所有的空白字符（包括空格、制表符等）都会被压缩为单个空格。这意味着，无论参数内部有多少连续的空白字符，它们都会被替换为一个空格。例如：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">// 实际调用</span><br><span class="hljs-type">int</span> n = <span class="hljs-built_in">MAX</span>(<span class="hljs-number">2</span>, <span class="hljs-number">3</span> +    <span class="hljs-number">4</span>);<br><br><span class="hljs-comment">// 预处理展开后</span><br><span class="hljs-type">int</span> n = ((<span class="hljs-number">2</span>) &gt; (<span class="hljs-number">3</span> + <span class="hljs-number">4</span>)? (<span class="hljs-number">2</span>): (<span class="hljs-number">3</span> + <span class="hljs-number">4</span>));<br></code></pre></td></tr></table></figure>
 <p>参数<code>3 +    4</code>中的多个空白字符被压缩成了一个空格。</p>
-<h4 id="3-参数内的括号必须平衡">3. 参数内的括号必须平衡</h4>
+<h4 id="参数内的括号必须平衡">3. 参数内的括号必须平衡</h4>
 <p>  在参数内部，如果使用了圆括号，那么这些圆括号必须平衡（即每对开括号(必须有对应的闭括号)）。<u>在平衡的圆括号内部的逗号不会导致参数的结束，简单理解就是圆括号中的逗号不会将其分隔成不同参数</u>。</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">// 实际调用</span><br><span class="hljs-type">int</span> n = <span class="hljs-built_in">MAX</span>((<span class="hljs-number">2</span>, <span class="hljs-number">3</span>), <span class="hljs-number">3</span>);<br><br><span class="hljs-comment">// 预处理展开后</span><br><span class="hljs-type">int</span> n = (((<span class="hljs-number">2</span>, <span class="hljs-number">3</span>)) &gt; (<span class="hljs-number">3</span>)? ((<span class="hljs-number">2</span>, <span class="hljs-number">3</span>)): (<span class="hljs-number">3</span>));<br></code></pre></td></tr></table></figure>
-<p>且不论上述宏展开后的代码是否合法（实际上宏展开也不会进行语法检查），参数<code>(2, 3)</code>并没有被分隔成两个参数 <code>(2</code> 和 <code>3)</code>。所以说，圆括号务必要平衡。</p>
-<h4 id="4-方括号和花括号不需要平衡">4. 方括号和花括号不需要平衡</h4>
+<p>且不论上述宏展开后的代码是否合法（实际上宏展开也不会进行语法检查），参数<code>(2, 3)</code>并没有被分隔成两个参数
+<code>(2</code> 和 <code>3)</code>。所以说，圆括号务必要平衡。</p>
+<h4 id="方括号和花括号不需要平衡">4. 方括号和花括号不需要平衡</h4>
 <p>  对于方括号<code>[]</code>和花括号<code>&#123;&#125;</code>，不需要平衡，其内部的逗号仍然会被视为参数分隔符。例如：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">// 实际调用</span><br><span class="hljs-type">int</span> n = <span class="hljs-built_in">MAX</span>([<span class="hljs-number">2</span>, <span class="hljs-number">3</span>], <span class="hljs-number">3</span>); <span class="hljs-comment">// 三个参数 [2、3] 和 3</span><br><span class="hljs-type">int</span> n = <span class="hljs-built_in">MAX</span>(&#123;<span class="hljs-number">2</span>, <span class="hljs-number">3</span>&#125;, <span class="hljs-number">3</span>); <span class="hljs-comment">// 三个参数 &#123;2、3&#125; 和 3</span><br></code></pre></td></tr></table></figure>
 <p>这里<strong>实际上是无法进行宏展开的</strong>，会导致编译错误，因为宏定义时只接受两个参数，而这里提供了三个参数。</p>
-<h3 id="1-7-宏参数的展开规则">1.7 宏参数的展开规则</h3>
-<ol>
-<li>
-<p>宏参数的完全展开<br>
-  <u>在宏体中替换参数之前，所有传递给宏的实际参数都会先进行完全的宏展开</u>。这意味着，如果实际参数本身是一个宏，或者包含宏，那么这些宏会首先被展开。</p>
-</li>
-<li>
-<p>替换后的再次扫描<br>
-  替换参数到宏体之后，整个宏体（包括替换后的参数）会再次被扫描，以查找是否有更多的宏需要展开。这个过程会持续进行，直到没有更多的宏可以展开。</p>
-</li>
+<h3 id="宏参数的展开规则">1.7 宏参数的展开规则</h3>
+<ol type="1">
+<li><p>宏参数的完全展开
+  <u>在宏体中替换参数之前，所有传递给宏的实际参数都会先进行完全的宏展开</u>。这意味着，如果实际参数本身是一个宏，或者包含宏，那么这些宏会首先被展开。</p></li>
+<li><p>替换后的再次扫描
+  替换参数到宏体之后，整个宏体（包括替换后的参数）会再次被扫描，以查找是否有更多的宏需要展开。这个过程会持续进行，直到没有更多的宏可以展开。</p></li>
 </ol>
 <p>举个例子：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-type">int</span> n = <span class="hljs-built_in">MAX</span>(<span class="hljs-built_in">MAX</span>(<span class="hljs-number">2</span>, <span class="hljs-number">3</span>), <span class="hljs-number">3</span>);<br></code></pre></td></tr></table></figure>
-<p>第一次，参数进行展开：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-type">int</span> n = <span class="hljs-built_in">MAX</span>((<span class="hljs-number">2</span>) &gt; (<span class="hljs-number">3</span>)? (<span class="hljs-number">2</span>): (<span class="hljs-number">3</span>), <span class="hljs-number">3</span>);<br></code></pre></td></tr></table></figure>
-<p>第二次，替换后的再次扫描：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-type">int</span> n = ((((<span class="hljs-number">2</span>) &gt; (<span class="hljs-number">3</span>)? (<span class="hljs-number">2</span>): (<span class="hljs-number">3</span>))) &gt; (<span class="hljs-number">3</span>)? (((<span class="hljs-number">2</span>) &gt; (<span class="hljs-number">3</span>)? (<span class="hljs-number">2</span>): (<span class="hljs-number">3</span>))): (<span class="hljs-number">3</span>));<br></code></pre></td></tr></table></figure>
-<p>事实上，你甚至在为宏传递空参数，例如：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">// 实际调用</span><br><span class="hljs-type">int</span> n = <span class="hljs-built_in">MAX</span>(, <span class="hljs-number">3</span>);<br><br><span class="hljs-comment">// 预处理展开后</span><br><span class="hljs-type">int</span> n = (() &gt; (<span class="hljs-number">3</span>)? (): (<span class="hljs-number">3</span>));<br></code></pre></td></tr></table></figure>
+<p>第一次，参数进行展开： <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-type">int</span> n = <span class="hljs-built_in">MAX</span>((<span class="hljs-number">2</span>) &gt; (<span class="hljs-number">3</span>)? (<span class="hljs-number">2</span>): (<span class="hljs-number">3</span>), <span class="hljs-number">3</span>);<br></code></pre></td></tr></table></figure></p>
+<p>第二次，替换后的再次扫描： <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-type">int</span> n = ((((<span class="hljs-number">2</span>) &gt; (<span class="hljs-number">3</span>)? (<span class="hljs-number">2</span>): (<span class="hljs-number">3</span>))) &gt; (<span class="hljs-number">3</span>)? (((<span class="hljs-number">2</span>) &gt; (<span class="hljs-number">3</span>)? (<span class="hljs-number">2</span>): (<span class="hljs-number">3</span>))): (<span class="hljs-number">3</span>));<br></code></pre></td></tr></table></figure></p>
+<p>事实上，你甚至在为宏传递空参数，例如： <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">// 实际调用</span><br><span class="hljs-type">int</span> n = <span class="hljs-built_in">MAX</span>(, <span class="hljs-number">3</span>);<br><br><span class="hljs-comment">// 预处理展开后</span><br><span class="hljs-type">int</span> n = (() &gt; (<span class="hljs-number">3</span>)? (): (<span class="hljs-number">3</span>));<br></code></pre></td></tr></table></figure></p>
 <p>但是在传空参数时仍然要确保参数的匹配。</p>
 <p>  需要注意的是：出现在<strong>字符串中的宏参数不会被它们相应的实际参数替换</strong>。例如：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> foo(x) x, <span class="hljs-string">&quot;x&quot;</span></span><br><br><span class="hljs-comment">// 实际调用</span><br><span class="hljs-built_in">foo</span>(bar)<br><br><span class="hljs-comment">// 预处理展开后</span><br>bar, <span class="hljs-string">&quot;x&quot;</span><br></code></pre></td></tr></table></figure>
 <blockquote>
 <p>到这里，你一定会疑惑，为什么我们在宏定义时，宏体中的参数都会包裹在一对圆括号内</p>
 </blockquote>
-<h3 id="1-8-宏体参数用圆括号包裹的原因">1.8 宏体参数用圆括号包裹的原因</h3>
-<h4 id="1-操作符优先级：">1. 操作符优先级：</h4>
+<h3 id="宏体参数用圆括号包裹的原因">1.8 宏体参数用圆括号包裹的原因</h3>
+<h4 id="操作符优先级">1. 操作符优先级：</h4>
 <p>  在C/C++中，宏参数可能会与宏体中的其他代码一起参与运算。如果不使用括号，可能会因为操作符优先级的问题导致宏的展开结果与预期不符。例如：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> SQUARE(x) x * x</span><br></code></pre></td></tr></table></figure>
 <p>  如果你使用<code>SQUARE(a + b)</code>，宏会展开为<code>a + b * a + b</code>，这显然不是我们想要的结果，因为按照乘法优先于加法的规则，它实际上变成了<code>a + (b * a) + b</code>。正确的结果应该是<code>(a + b) * (a + b)</code>。</p>
-<h4 id="2-使用括号可以确保参数作为一个整体被处理：">2. 使用括号可以确保参数作为一个整体被处理：</h4>
+<h4 id="使用括号可以确保参数作为一个整体被处理">2.
+使用括号可以确保参数作为一个整体被处理：</h4>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> SQUARE(x) (x) * (x)</span><br></code></pre></td></tr></table></figure>
 <p>  这样，<code>SQUARE(a + b)</code>会正确展开为<code>(a + b) * (a + b)</code>。</p>
-<h4 id="3-避免宏参数为空：">3. 避免宏参数为空：</h4>
+<h4 id="避免宏参数为空">3. 避免宏参数为空：</h4>
 <p>  如果宏的参数可能为空（例如，在宏定义中使用<code>##</code>运算符进行连接时），不使用括号可能会导致编译错误。例如：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> EMPTY()</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> GLUE(x, y) x ## y</span><br><br><span class="hljs-built_in">GLUE</span>(EMPTY, <span class="hljs-type">int</span>) var; <span class="hljs-comment">// 这将尝试定义一个名为&quot;int&quot;的变量，而不是&quot;Emptyint&quot;</span><br></code></pre></td></tr></table></figure>
 <p>  如果<code>EMPTY</code>宏没有括号，<code>GLUE(EMPTY, int)</code>将尝试将<code>EMPTY</code>和<code>int</code>连接起来，而不是将<code>EMPTY()</code>作为一个整体与<code>int</code>连接。</p>
-<h4 id="4-参数可能包含多个标记：">4. 参数可能包含多个标记：</h4>
+<h4 id="参数可能包含多个标记">4. 参数可能包含多个标记：</h4>
 <p>  如果宏参数本身是一个复合表达式或多个标记，那么使用括号可以确保整个表达式被正确处理。例如：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> SQUARE_AND_INCREMENT(x) ((x) * (x)) + 1</span><br></code></pre></td></tr></table></figure>
 <p>  这里，<code>(x)</code>确保了<code>x</code>的整个表达式被乘以自身，然后再加<code>1</code>。</p>
-<h4 id="5-提高代码的可读性和一致性：">5. 提高代码的可读性和一致性：</h4>
+<h4 id="提高代码的可读性和一致性">5. 提高代码的可读性和一致性：</h4>
 <p>  使用括号可以使宏的定义更加清晰，让阅读代码的人更容易理解宏的意图和行为。</p>
-<h2 id="二、字符串化">二、字符串化</h2>
+<h2 id="二字符串化">二、字符串化</h2>
 <p>  预处理器中的字符串化（<code>Stringizing</code>）操作。这是一种将宏参数转换为字符串常量的技术。有时可能希望将宏参数转换为字符串常量。<u>在字符串常量中，参数不会被替换，但是可以使用<code>#</code>预处理操作符来实现这一点</u>。</p>
-<h3 id="2-1-操作符的使用">2.1 #操作符的使用</h3>
+<h3 id="操作符的使用">2.1 #操作符的使用</h3>
 <p>  当宏参数前面有一个<code>#</code>操作符时，预处理器会用实际参数的文本内容替换它，并将其转换为字符串常量。这与普通的参数替换不同，因为参数不会首先被宏展开。</p>
 <p>  字符串化操作<u>不会在参数替换之前对参数进行宏展开</u>。这意味着如果参数是一个宏，它不会被展开，而是直接将其名称作为字符串插入。例如：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> STRING hello</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> STRINGFY(Argu) #Argu</span><br><br><span class="hljs-built_in">STRINGFY</span>(STRING)<br></code></pre></td></tr></table></figure>
-<p>预处理展开之后：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-string">&quot;STRING&quot;</span><br></code></pre></td></tr></table></figure>
-<p>可以看到，宏<code>STRINGFY</code>的参数也是一个宏<code>STRING</code>，但并没有被展开为 <code>hello</code>，而是直接将其名称字符串化为了字符串常量<code>&quot;STRING&quot;</code>。</p>
+<p>预处理展开之后： <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-string">&quot;STRING&quot;</span><br></code></pre></td></tr></table></figure>
+可以看到，宏<code>STRINGFY</code>的参数也是一个宏<code>STRING</code>，但并没有被展开为
+<code>hello</code>，而是直接将其名称字符串化为了字符串常量<code>"STRING"</code>。</p>
 <p>  不能直接将参数与周围的文本组合在一起并一次性字符串化。相反，你可以编写一系列相邻的字符串常量和字符串化的参数。预处理器会将字符串化的参数替换为字符串常量，然后，编译器会将所有相邻的字符串常量合并为一个长字符串。举个例子：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> WARN_IF(EXP) \</span><br><span class="hljs-meta">do &#123; <span class="hljs-keyword">if</span> (EXP) \</span><br><span class="hljs-meta">        fprintf (stderr, <span class="hljs-string">&quot;Warning: &quot;</span> #EXP <span class="hljs-string">&quot;\n&quot;</span>); &#125; \</span><br><span class="hljs-meta">while (0)</span><br><span class="hljs-built_in">WARN_IF</span> (x == <span class="hljs-number">0</span>);<br></code></pre></td></tr></table></figure>
 <p>预处理器展开后：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">do</span> &#123; <span class="hljs-keyword">if</span> (x == <span class="hljs-number">0</span>) \<br>    <span class="hljs-built_in">fprintf</span> (stderr, <span class="hljs-string">&quot;Warning: &quot;</span> <span class="hljs-string">&quot;x == 0&quot;</span> <span class="hljs-string">&quot;\n&quot;</span>); \<br>    &#125; <span class="hljs-keyword">while</span> (<span class="hljs-number">0</span>);<br></code></pre></td></tr></table></figure>
-<p>注意，这里的<code>\</code>表示行间是连接的，因为宏展开会成一行，这里为了方便，增加了换行。可以看到，<code>EXP</code> 的参数被替换为 <code>if</code> 语句中的条件参数和 <code>fprintf</code> 参数中的 <code>string</code> 参数。<u>如果 <code>x</code> 是一个宏，它将在 <code>If</code> 语句中展开，但不会在字符串中展开</u>。后面的几个字符串常量<code>&quot;Warning: &quot; &quot;x == 0&quot; &quot;\n&quot;</code>会在编译器的帮助下合并成一个字符串常量。</p>
+<p>注意，这里的<code>\</code>表示行间是连接的，因为宏展开会成一行，这里为了方便，增加了换行。可以看到，<code>EXP</code>
+的参数被替换为 <code>if</code> 语句中的条件参数和 <code>fprintf</code>
+参数中的 <code>string</code> 参数。<u>如果 <code>x</code>
+是一个宏，它将在 <code>If</code>
+语句中展开，但不会在字符串中展开</u>。后面的几个字符串常量<code>"Warning: " "x == 0" "\n"</code>会在编译器的帮助下合并成一个字符串常量。</p>
 <blockquote>
-<p>这里其实还提到了 <code>do...while(0)</code> 循环的使用，这是一种技巧，将在后续章节探讨。</p>
+<p>这里其实还提到了 <code>do...while(0)</code>
+循环的使用，这是一种技巧，将在后续章节探讨。</p>
 </blockquote>
 <p>  可见，字符串化不仅仅是在宏参数周围添加双引号那么简单。预处理器会进行额外的处理，以确保生成的字符串常量是有效的，并且包含正确的内容。</p>
-<h3 id="2-2-宏参数字符串化的细节处理">2.2 宏参数字符串化的细节处理</h3>
-<h4 id="1-预处理器对引号和反斜杠的处理">1. 预处理器对引号和反斜杠的处理</h4>
+<h3 id="宏参数字符串化的细节处理">2.2 宏参数字符串化的细节处理</h3>
+<h4 id="预处理器对引号和反斜杠的处理">1.
+预处理器对引号和反斜杠的处理</h4>
 <p>  当宏参数中包含字符串常量时，预处理器会对其进行转义处理。这意味着，如果宏参数中包含双引号或反斜杠，预处理器会在它们前面添加反斜杠来进行转义。这样做的目的是为了确保生成的字符串常量在<code>C/C++</code>语言中是有效的。例如：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> STRINGFY(Argu) #Argu</span><br><br><span class="hljs-built_in">STRINGFY</span>(<span class="hljs-string">&quot;hello\n&quot;</span>)<br></code></pre></td></tr></table></figure>
-<p>预处理器展开后：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-string">&quot;\&quot;hello\\n\&quot;&quot;</span><br></code></pre></td></tr></table></figure>
-<h4 id="2-非字符串或字符常量中的反斜杠不加倍">2. 非字符串或字符常量中的反斜杠不加倍</h4>
-<p>  如果反斜杠不在字符串或字符常量中，它们不会被加倍。例如，<code>\n</code>单独字符串化时，结果就是<code>&quot;\n&quot;</code>。</p>
+<p>预处理器展开后： <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-string">&quot;\&quot;hello\\n\&quot;&quot;</span><br></code></pre></td></tr></table></figure></p>
+<h4 id="非字符串或字符常量中的反斜杠不加倍">2.
+非字符串或字符常量中的反斜杠不加倍</h4>
+<p>  如果反斜杠不在字符串或字符常量中，它们不会被加倍。例如，<code>\n</code>单独字符串化时，结果就是<code>"\n"</code>。</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> STRINGFY(Argu) #Argu</span><br><br><span class="hljs-built_in">STRINGFY</span>(\n)<br></code></pre></td></tr></table></figure>
-<p>预处理器展开后：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-string">&quot;\n&quot;</span><br></code></pre></td></tr></table></figure>
-<h4 id="3-字符串化中的空白处理">3. 字符串化中的空白处理</h4>
+<p>预处理器展开后： <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-string">&quot;\n&quot;</span><br></code></pre></td></tr></table></figure></p>
+<h4 id="字符串化中的空白处理">3. 字符串化中的空白处理</h4>
 <p>  在字符串化过程中，宏参数中的所有前导和尾随空白都会被忽略。文本中的任何空白序列（空格、制表符等）在字符串化结果中会被转换为单个空格。其实也是一种特殊的宏参数处理。</p>
-<h4 id="4-无法将宏参数转换为字符常量">4. 无法将宏参数转换为字符常量</h4>
+<h4 id="无法将宏参数转换为字符常量">4. 无法将宏参数转换为字符常量</h4>
 <p>  没有办法将宏参数直接转换为字符常量。这是因为字符常量在<code>C/C++</code>语言中是用单引号括起来的单个字符，而字符串化操作是将整个宏参数转换为双引号括起来的字符串常量。</p>
-<h3 id="2-3-如何字符串化宏参数的展开">2.3 如何字符串化宏参数的展开</h3>
+<h3 id="如何字符串化宏参数的展开">2.3 如何字符串化宏参数的展开</h3>
 <p>  如果要将<strong>宏参数展开后的结果转换成字符串常量</strong>，则需要使用<strong>两级宏</strong>（即<strong>嵌套宏</strong>）来实现。这是因为在预处理阶段，<u>宏参数首先被展开，然后才进行字符串化</u>。如果直接在宏中使用<code>#</code>操作符来字符串化宏参数，那么字符串化的是宏参数本身，而不是它展开后的结果。</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> xstr(s) str(s)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> str(s) #s</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> foo 4</span><br><br><span class="hljs-built_in">xstr</span> (foo)<br></code></pre></td></tr></table></figure>
-<p>第一次展开：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-built_in">xstr</span>(<span class="hljs-number">4</span>) <span class="hljs-comment">// 第一次展开并非字符串化，故参数会展开</span><br></code></pre></td></tr></table></figure>
-<p>第二次展开：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-built_in">str</span>(<span class="hljs-number">4</span>) <span class="hljs-comment">// 第二次展开是 xstr 展开</span><br></code></pre></td></tr></table></figure>
-<p>然后字符串化：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-string">&quot;4&quot;</span> <span class="hljs-comment">// 最后是字符串化</span><br></code></pre></td></tr></table></figure>
+<p>第一次展开： <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-built_in">xstr</span>(<span class="hljs-number">4</span>) <span class="hljs-comment">// 第一次展开并非字符串化，故参数会展开</span><br></code></pre></td></tr></table></figure></p>
+<p>第二次展开： <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-built_in">str</span>(<span class="hljs-number">4</span>) <span class="hljs-comment">// 第二次展开是 xstr 展开</span><br></code></pre></td></tr></table></figure></p>
+<p>然后字符串化： <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-string">&quot;4&quot;</span> <span class="hljs-comment">// 最后是字符串化</span><br></code></pre></td></tr></table></figure></p>
 
                 
               </div>
@@ -463,9 +464,9 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/C/" class="print-no-link">#C</a>
-      
         <a href="/tags/Cpp/" class="print-no-link">#Cpp</a>
+      
+        <a href="/tags/C/" class="print-no-link">#C</a>
       
         <a href="/tags/Macros/" class="print-no-link">#Macros</a>
       
