@@ -30,8 +30,8 @@
 <meta property="article:published_time" content="2024-12-28T09:00:00.000Z">
 <meta property="article:modified_time" content="2025-08-03T09:45:32.276Z">
 <meta property="article:author" content="gnibnay">
-<meta property="article:tag" content="Cpp">
 <meta property="article:tag" content="C">
+<meta property="article:tag" content="Cpp">
 <meta property="article:tag" content="Macros">
 <meta property="article:tag" content="编程技巧">
 <meta name="twitter:card" content="summary_large_image">
@@ -303,73 +303,43 @@
             
               <div class="markdown-body">
                 
-                <h2 id="预定义宏predefined-macros">预定义宏⌊Predefined Macros⌉</h2>
-<p>  一些<strong>类对象宏</strong><code>object-like Macros</code>是预定义的，使用它们时不需要提供它们的定义。它们分为三类:
-<code>标准宏⌊Standard Macros⌉</code>、<code>通用宏⌊Common Macros⌉</code>和<code>系统特定宏⌊System-specific Macros⌉</code>。</p>
-<p>  在 <code>C++</code>
-中，还有第四类：<code>命名操作符⌊Named operators⌉</code>。它们就像预定义的宏，但是不能被取消定义（<code>undefine</code>）。</p>
-<h3 id="标准预定义宏standard-predefined-macros">标准预定义宏⌊Standard
-Predefined Macros⌉</h3>
+                <h2 id="预定义宏⌊Predefined-Macros⌉">预定义宏⌊Predefined Macros⌉</h2>
+<p>  一些<strong>类对象宏</strong><code>object-like Macros</code>是预定义的，使用它们时不需要提供它们的定义。它们分为三类: <code>标准宏⌊Standard Macros⌉</code>、<code>通用宏⌊Common Macros⌉</code>和<code>系统特定宏⌊System-specific Macros⌉</code>。</p>
+<p>  在 <code>C++</code> 中，还有第四类：<code>命名操作符⌊Named operators⌉</code>。它们就像预定义的宏，但是不能被取消定义（<code>undefine</code>）。</p>
+<h3 id="标准预定义宏⌊Standard-Predefined-Macros⌉">标准预定义宏⌊Standard Predefined Macros⌉</h3>
 <p>  标准的预定义宏是由相关的语言标准指定的，因此它们可用于实现这些标准的所有编译器。旧的编译器可能不会提供所有这些选项。这类预定义宏的名字<u>都以双下划线开头</u>。例如：</p>
-<h4 id="file__宏">1. __FILE__宏</h4>
+<h4 id="1-FILE-宏">1. __FILE__宏</h4>
 <p>  <code>__FILE__</code>宏以<code>C</code><strong>字符串的名称常量</strong>的形式展开。这是预处理器打开文件的路径，而不是<code>#include</code>中指定的短名称或作为输入的文件名参数。例如，<code>/usr/local/include/myheade.h</code>是<code>__FILE__</code>宏可能的扩展结果。</p>
-<h4 id="line__宏">2. __LINE__宏</h4>
+<h4 id="2-LINE-宏">2. __LINE__宏</h4>
 <p>  <code>__LINE__</code>宏将以<strong>十进制整数常数</strong>的形式扩展到当前的输入行数。虽然我们称之为预定义的宏，但它是一个相当奇怪的宏，因为它的“定义”会随着每一个新的源代码行而变化。</p>
-<p><br></p>
-<p>  <code>__FILE__</code> 和 <code>__LINE__</code>
-对于生成消息来报告程序检测到的错误非常有用;
-消息可以报告检测到错误的源代码的行数。比如说：</p>
-<p><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-built_in">fprintf</span> (stderr, <span class="hljs-string">&quot;Internal error: &quot;</span><br>               <span class="hljs-string">&quot;negative string length &quot;</span><br>               <span class="hljs-string">&quot;%d at %s, line %d.&quot;</span>,<br>       length, __FILE__, __LINE__);<br></code></pre></td></tr></table></figure></p>
-<p>  对于 <code>__FILE__</code> 和 <code>__LINE__</code> 宏遇到
-<code>#include</code> 预处理指令时其展开会有变化。当编译器遇到
-<code>#include</code>
-指令时，它会将当前的输入流替换为被包含文件的内容。在这个过程中，预处理器会改变
-<code>__FILE__</code> 和 <code>__LINE__</code>
-宏的展开值，使它们分别对应于被包含文件的名称和行号。也即是说：</p>
+<br>
+<p>  <code>__FILE__</code> 和 <code>__LINE__</code> 对于生成消息来报告程序检测到的错误非常有用; 消息可以报告检测到错误的源代码的行数。比如说：</p>
+ <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-built_in">fprintf</span> (stderr, <span class="hljs-string">&quot;Internal error: &quot;</span><br>               <span class="hljs-string">&quot;negative string length &quot;</span><br>               <span class="hljs-string">&quot;%d at %s, line %d.&quot;</span>,<br>       length, __FILE__, __LINE__);<br></code></pre></td></tr></table></figure>
+<p>  对于 <code>__FILE__</code> 和 <code>__LINE__</code> 宏遇到 <code>#include</code> 预处理指令时其展开会有变化。当编译器遇到 <code>#include</code> 指令时，它会将当前的输入流替换为被包含文件的内容。在这个过程中，预处理器会改变 <code>__FILE__</code> 和 <code>__LINE__</code> 宏的展开值，使它们分别对应于被包含文件的名称和行号。也即是说：</p>
 <ul>
 <li><code>__FILE__</code> 宏会展开为被包含文件的文件名字符串；</li>
 <li><code>__LINE__</code> 宏会展开为被包含文件对应位置的行号。</li>
 </ul>
-<p>  当包含文件结束，即 <code>#include</code> 指令结束，编译器回到包含
-<code>#include</code> 指令的原文件继续处理，<code>__FILE__</code> 和
-<code>__LINE__</code> 的值会恢复到 <code>#include</code>
-指令之前的值。但是需要注意的是，<code>__LINE__</code> 的值会增加
-<code>1</code>，因为<code>#include</code> 指令已经执行完成，当前是
-<code>#include</code> 指令的下一行。举个例子：</p>
+<p>  当包含文件结束，即 <code>#include</code> 指令结束，编译器回到包含 <code>#include</code> 指令的原文件继续处理，<code>__FILE__</code> 和 <code>__LINE__</code> 的值会恢复到 <code>#include</code> 指令之前的值。但是需要注意的是，<code>__LINE__</code> 的值会增加 <code>1</code>，因为<code>#include</code> 指令已经执行完成，当前是 <code>#include</code> 指令的下一行。举个例子：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">// main.cpp</span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;header.h&quot;</span></span><br>std::cout &lt;&lt; <span class="hljs-string">&quot;Back in main.cpp, line: &quot;</span> &lt;&lt; __LINE__ &lt;&lt; std::endl;   <span class="hljs-comment">// 此处 __LINE__ 值为 3</span><br><br><span class="hljs-comment">// header.h</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> PRINT_INFO() std::cout \</span><br><span class="hljs-meta">    &lt;&lt; <span class="hljs-string">&quot;In header.h, file: &quot;</span>   \</span><br><span class="hljs-meta">    &lt;&lt; __FILE__ &lt;&lt; <span class="hljs-string">&quot;, line: &quot;</span>  \</span><br><span class="hljs-meta">    &lt;&lt; __LINE__ &lt;&lt; std::endl</span><br><br><span class="hljs-built_in">PRINT_INFO</span>();<br></code></pre></td></tr></table></figure>
-<p>  当 <code>__LINE__</code> 和 <code>__FILE__</code> 遇到
-<code>#line</code> 指令时同样有所变化，这里不做讨论。</p>
+<p>  当 <code>__LINE__</code> 和 <code>__FILE__</code> 遇到 <code>#line</code> 指令时同样有所变化，这里不做讨论。</p>
 <blockquote>
-<p>  <code>C99</code>引入了
-<code>__func__</code>,<code>GCC</code>长期以来一直提供
-<code>__FUNCION__</code>。这两个字符串都包含当前函数的名称(两者在语义上略有不同;
-请参阅 <code>GCC</code> 手册)。它们<strong>都不是宏</strong>;
-预处理器不知道当前函数的名称。但是，它们往往与 <code>__FILE__</code> 和
-<code>__LINE__</code> 结合使用。</p>
+<p>  <code>C99</code>引入了 <code>__func__</code>,<code>GCC</code>长期以来一直提供 <code>__FUNCION__</code>。这两个字符串都包含当前函数的名称(两者在语义上略有不同; 请参阅 <code>GCC</code> 手册)。它们<strong>都不是宏</strong>; 预处理器不知道当前函数的名称。但是，它们往往与 <code>__FILE__</code> 和 <code>__LINE__</code> 结合使用。</p>
 </blockquote>
-<h4 id="date__宏">3. __DATE__宏</h4>
+<h4 id="3-DATE-宏">3. __DATE__宏</h4>
 <p>  此宏将扩展为描述预处理器运行日期的<strong>字符串常量</strong>。字符串常量包含<code>11</code>个字符，看起来像<code>Feb 12 1996</code>。如果一个月的日期小于<code>10</code>，则在左边用一个空格填充。</p>
-<p>  如果<code>GCC</code>不能确定当前的日期，它将发出一个警告消息（每次编译一次），而<code>__DATE__</code>将扩展到
-<code>??? ?? ????</code>。</p>
+<p>  如果<code>GCC</code>不能确定当前的日期，它将发出一个警告消息（每次编译一次），而<code>__DATE__</code>将扩展到 <code>??? ?? ????</code>。</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c++">__DATE__<br><br><span class="hljs-comment">// 预处理之后</span><br><span class="hljs-string">&quot;Jan  9 2025&quot;</span><br></code></pre></td></tr></table></figure>
-<h4 id="time___宏">3. __TIME___宏</h4>
+<h4 id="3-TIME-宏">3. __TIME___宏</h4>
 <p>  此宏扩展为一个描述预处理器运行时间的字符串常量。字符串常量包含<code>8</code>个字符，看起来像<code>23:59:01</code>。</p>
-<p>  如果<code>GCC</code>不能确定当前的时间，它将发出一个警告消息（每次编译一次），而<code>__TIME__</code>将扩展到
-<code>??:??:??</code>。</p>
+<p>  如果<code>GCC</code>不能确定当前的时间，它将发出一个警告消息（每次编译一次），而<code>__TIME__</code>将扩展到 <code>??:??:??</code>。</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c++">__TIME__<br><br><span class="hljs-comment">// 预处理之后</span><br><span class="hljs-string">&quot;23:14:14&quot;</span><br></code></pre></td></tr></table></figure>
-<h3 id="通用预定义宏common-predefined-macros">通用预定义宏⌊Common
-Predefined Macros⌉</h3>
+<h3 id="通用预定义宏⌊Common-Predefined-Macros⌉">通用预定义宏⌊Common Predefined Macros⌉</h3>
 <p>  这里不作讨论；</p>
-<h3
-id="系统特定预定义宏system-specific-predefined-macros">系统特定预定义宏⌊System-specific
-Predefined Macros⌉</h3>
+<h3 id="系统特定预定义宏⌊System-specific-Predefined-Macros⌉">系统特定预定义宏⌊System-specific Predefined Macros⌉</h3>
 <p>  这里不作讨论；</p>
-<h3 id="命名运算符c-named-operators">命名运算符⌊C++ Named
-Operators⌉</h3>
-<p>  在 <code>C++</code> 中，有 <code>11</code>
-个关键字是通常使用标点符号书写的运算符的交替拼写。
-即使在预处理器中，这些关键字也是如此处理的。 它们在 <code>#if</code>
-中起着操作符的作用，不能被定义为宏。如下：</p>
+<h3 id="命名运算符⌊C-Named-Operators⌉">命名运算符⌊C++ Named Operators⌉</h3>
+<p>  在 <code>C++</code> 中，有 <code>11</code> 个关键字是通常使用标点符号书写的运算符的交替拼写。 即使在预处理器中，这些关键字也是如此处理的。 它们在 <code>#if</code> 中起着操作符的作用，不能被定义为宏。如下：</p>
 <table>
 <thead>
 <tr>
@@ -425,25 +395,18 @@ Operators⌉</h3>
 </tbody>
 </table>
 <h2 id="取消定义或重新定义宏">取消定义或重新定义宏</h2>
-<p>  如果一个宏不再有用，可以使用 <code>#undef</code>
-指令将其取消定义。<code>#undef</code>
-指令<strong>只有一个参数</strong>，即要解除定义的宏的名称。
-<strong>即使宏是函数式的，也要使用裸宏名</strong>。
-如果在宏名后面出现任何内容，都是错误的。
-如果名称不是宏，<code>#undef</code> 不起作用。</p>
+<p>  如果一个宏不再有用，可以使用 <code>#undef</code> 指令将其取消定义。<code> #undef</code> 指令<strong>只有一个参数</strong>，即要解除定义的宏的名称。 <strong>即使宏是函数式的，也要使用裸宏名</strong>。 如果在宏名后面出现任何内容，都是错误的。 如果名称不是宏，<code>#undef</code> 不起作用。</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> FOO 4</span><br>x = FOO;        <span class="hljs-comment">// x = 4;</span><br><span class="hljs-meta">#<span class="hljs-keyword">undef</span> FOO</span><br>x = FOO;        <span class="hljs-comment">// x = FOO;</span><br></code></pre></td></tr></table></figure>
-<p>  如果某个宏被<strong>取消定义</strong>了，该标识符可通过随后的
-<code>#define</code> 指令重新定义为宏。
-新定义不必与旧定义有任何相似之处。但是，如果一个标识符本身是宏，然后又通过
-<code>#define</code>
-指令进行重新定义，那么新的定义需要和旧定义<strong>在效果上是相同的</strong>。什么是在效果上相同？如下：</p>
+<p>  如果某个宏被<strong>取消定义</strong>了，该标识符可通过随后的 <code>#define</code> 指令重新定义为宏。 新定义不必与旧定义有任何相似之处。但是，如果一个标识符本身是宏，然后又通过 <code>#define</code> 指令进行重新定义，那么新的定义需要和旧定义<strong>在效果上是相同的</strong>。什么是在效果上相同？如下：</p>
 <ul>
 <li>两者需要保持是同一类宏（类对象宏或类函数宏）；</li>
 <li>替换列表中的所有标记都是一样的；</li>
 <li>如果宏定义中有参数，那么这些参数也必须相同；</li>
 <li>空白出现在两者相同的位置。但空白的数量不必完全相同。注意，注释也算空白。
-&gt;
-空白字符（包括空格、制表符、换行符等）在两个宏定义中出现在相同的地方。这里的“相同的地方”指的是空白字符的位置，而不是空白字符的数量。也就是说，两个宏定义在结构上看起来应该是相似的，尽管它们之间的空白字符数量可能不同。此外，注释（comments）也被视为空白字符。</li>
+<blockquote>
+<p>空白字符（包括空格、制表符、换行符等）在两个宏定义中出现在相同的地方。这里的“相同的地方”指的是空白字符的位置，而不是空白字符的数量。也就是说，两个宏定义在结构上看起来应该是相似的，尽管它们之间的空白字符数量可能不同。此外，注释（comments）也被视为空白字符。</p>
+</blockquote>
+</li>
 </ul>
 <p>  例如下面的定义在效果上是相同的：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> FOUR (2 + 2)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> FOUR         (2    +    2)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> FOUR (2 <span class="hljs-comment">/* two */</span> + 2)</span><br></code></pre></td></tr></table></figure>
@@ -452,21 +415,12 @@ Operators⌉</h3>
 <p>  你可能会问，既然前后两者在效果上是相同的，那么这样做的意义在哪里？实际上，对宏的重定义尽管要求保持原有的效果不变，但是可以增加其他的功能，比如打印日志等，如下面的例子：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><br><span class="hljs-comment">// 假设有一个宏 MAX，用于比较两个值并返回较大的一个</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MAX(a, b) ((a) &gt; (b) ? (a) : (b))</span><br><br><span class="hljs-comment">// 现在需要在其中添加一些日志记录用于调试</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MAX(a, b) (&#123; \</span><br><span class="hljs-meta">    int _max = ((a) &gt; (b) ? (a) : (b)); \</span><br><span class="hljs-meta">    printf(<span class="hljs-string">&quot;MAX(%d, %d) = %d\n&quot;</span>, a, b, _max); \</span><br><span class="hljs-meta">    _max; \</span><br><span class="hljs-meta">&#125;)</span><br></code></pre></td></tr></table></figure>
 <blockquote>
-<p>在这个重新定义的宏中，使用了 <code>GCC</code>
-的扩展特性，即在宏中使用 <code>&#123;&#125;</code>
-来创建一个复合语句，这允许在宏中使用局部变量和多条语句。添加了一个局部变量
-<code>_max</code> 来存储比较的结果，并通过 <code>printf</code>
-函数输出比较的值和结果，这有助于调试。最后，返回
-<code>_max</code>，确保宏的返回值与原始定义相同。</p>
+<p>在这个重新定义的宏中，使用了 <code>GCC</code> 的扩展特性，即在宏中使用 <code>&#123;&#125;</code> 来创建一个复合语句，这允许在宏中使用局部变量和多条语句。添加了一个局部变量 <code>_max</code> 来存储比较的结果，并通过 <code>printf</code> 函数输出比较的值和结果，这有助于调试。最后，返回 <code>_max</code>，确保宏的返回值与原始定义相同。</p>
 </blockquote>
 <p>  <strong>如果重新定义的宏定义实际上与旧定义不一致</strong>，预处理器会发出警告，<strong>并更改宏以使用新定义</strong>。如果新定义实际上与旧定义相同，则重新定义将被默默忽略。例如，这就允许两个不同的头定义一个共同的宏。只有当定义不匹配时，预处理器才会抱怨。</p>
 <h2 id="宏参数中的指令">宏参数中的指令</h2>
-<p>  有时，在宏的参数中使用预处理器指令也很方便。<code>C</code> 和
-<code>C++</code> 标准声明这些情况下的<strong>行为是未定义的</strong>。
-<code>GNU CPP</code>
-处理宏参数中任意指令的方式，与不存在函数式宏调用时处理指令的方式完全相同。</p>
-<p>  如果在一个宏调用中，该宏被重新定义，那么新定义在参数预扩展时生效，但原定义仍用于参数替换。
-下面是一个病态的例子：</p>
+<p>  有时，在宏的参数中使用预处理器指令也很方便。<code>C</code> 和 <code>C++</code> 标准声明这些情况下的<strong>行为是未定义的</strong>。 <code>GNU CPP</code> 处理宏参数中任意指令的方式，与不存在函数式宏调用时处理指令的方式完全相同。</p>
+<p>  如果在一个宏调用中，该宏被重新定义，那么新定义在参数预扩展时生效，但原定义仍用于参数替换。 下面是一个病态的例子：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> f(x) x x</span><br><span class="hljs-built_in">f</span> (<span class="hljs-number">1</span><br><span class="hljs-meta">#<span class="hljs-keyword">undef</span> f</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> f 2</span><br>f)<br></code></pre></td></tr></table></figure>
 <p>最终会被拓展为：<code>1 2 1 2</code>。</p>
 
@@ -509,9 +463,9 @@ Operators⌉</h3>
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Cpp/" class="print-no-link">#Cpp</a>
-      
         <a href="/tags/C/" class="print-no-link">#C</a>
+      
+        <a href="/tags/Cpp/" class="print-no-link">#Cpp</a>
       
         <a href="/tags/Macros/" class="print-no-link">#Macros</a>
       
