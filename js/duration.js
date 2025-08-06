@@ -23,8 +23,8 @@
     if(String(snum).length === 1 ){
       snum = "0" + snum;
     }
-    document.getElementById("timeDate").innerHTML = "Surviving in the cracks, "+dnum+" days";
-    document.getElementById("times").innerHTML = hnum + " hours " + mnum + " minutes " + snum + " seconds";
+    document.getElementById("timeDate").innerHTML = "Surviving in the cracks<br>";
+    document.getElementById("times").innerHTML = dnum+" days " + hnum + " hours " + mnum + " minutes " + snum + " seconds";
   }
 
   update();
