@@ -28,7 +28,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://gnibnay.github.io/img/in_posts/Macros/background.png">
 <meta property="article:published_time" content="2024-12-24T09:00:00.000Z">
-<meta property="article:modified_time" content="2025-08-06T02:45:18.743Z">
+<meta property="article:modified_time" content="2025-08-13T11:34:39.912Z">
 <meta property="article:author" content="gnibnay">
 <meta property="article:tag" content="Cpp">
 <meta property="article:tag" content="C">
@@ -489,7 +489,7 @@
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    Last updated on August 6, 2025 am
+                    Last updated on August 13, 2025 pm
                   
                 
               </p>
@@ -498,10 +498,10 @@
               <div class="markdown-body">
                 
                 <h2 id="连接-Concatenation">连接[Concatenation]</h2>
-<p>  在拓展宏时，将两个标记合并成一个标记通常很有用。而这个过程被称为<strong>标记连接</strong> <code>token concatenation</code>（或称<strong>标记粘贴</strong> <code>token pasting</code>），这是通过 <code>##</code>预处理运算符实现的。宏进行展开时，在<code>##</code>运算符两侧的标记会被合并成为一个标记，而<code>##</code>运算符本身会被删去。比如：</p>
+<p>  在拓展宏时，将两个标记合并成一个标记通常很有用。而这个过程被称为<strong>标记连接</strong> <code>token concatenation</code>（或称<strong>标记粘贴</strong> <code>token pasting</code>），这是通过 <code>##</code>预处理运算符实现的。宏进行展开时，在<code>##</code>运算符两侧的标记会被合并成为一个标记，而<code>##</code>运算符本身会被删去。比如：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> PASTE(x, y) x ## y</span><br><br><span class="hljs-built_in">PASTE</span>(My, Class)<br><br><span class="hljs-comment">// 预处理之后</span><br>MyClass<br></code></pre></td></tr></table></figure>
 <h3 id="合法的标记">合法的标记</h3>
-<p>  那么 <code>##</code> 两侧可以放置的合法的标记有哪些呢？一下是一些合法的标记：</p>
+<p>  那么 <code>##</code> 两侧可以放置的合法的标记有哪些呢？一下是一些合法的标记：</p>
 <ol>
 <li>标识符（<code>Identifiers</code>）：合法的 <code>C/C++</code> 标识符，例如变量名、函数名等；</li>
 <li>预处理数字（<code>Preprocessing Numbers</code>）：预处理器识别的数字，包括整数和浮点数；</li>
@@ -520,7 +520,7 @@
 <figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs txt">// g++ -E -o main.i main.cpp<br>main.cpp:3:8: error: pasting &quot;x&quot; and &quot;+&quot; does not give a valid preprocessing token<br>   3 | CONCAT(x, +)<br>     |        ^<br>main.cpp:1:22: note: in definition of macro &#x27;CONCAT&#x27;<br>   1 | #define CONCAT(a, b) a ## b<br>     |                      ^<br></code></pre></td></tr></table></figure>
 <p>可以看到，报错信息已经很显然了</p>
 </blockquote>
-<p>  需要注意的是，</p>
+<p>  需要注意的是，</p>
 <ul>
 <li>
 <p>注释会转换为空白<br>
@@ -541,44 +541,44 @@
 </ul>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> PASTE(a, b) a ## b</span><br><br><span class="hljs-comment">// 正确使用，参数之间有注释</span><br><span class="hljs-built_in">PASTE</span>(a <span class="hljs-comment">/* comment */</span> , b)  <span class="hljs-comment">// 展开为 ab</span><br><br><span class="hljs-comment">// 错误使用，## 出现在宏的开始</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> INVALID_MACRO1 ##a  <span class="hljs-comment">// 错误，## 没有操作数</span></span><br><br><span class="hljs-comment">// 错误使用，## 出现在宏的结束</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> INVALID_MACRO2 a##  <span class="hljs-comment">// 错误，## 没有操作数</span></span><br></code></pre></td></tr></table></figure>
 <h3 id="实际的例子">实际的例子</h3>
-<p>  下面是一个运用宏连接使得代码更简洁的例子：</p>
+<p>  下面是一个运用宏连接使得代码更简洁的例子：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">command</span>&#123;<br>    <span class="hljs-type">char</span>* name;<br>    <span class="hljs-built_in">void</span> (*function) (<span class="hljs-type">void</span>);<br>&#125;<br><br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">command</span> commands[] = &#123;<br>    &#123;<span class="hljs-string">&quot;quit&quot;</span>, quit_command&#125;,<br>    &#123;<span class="hljs-string">&quot;help&quot;</span>, help_command&#125;,<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
 <p>使用宏连接后：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> COMMAND(NAME) &#123;#NAME, NAME ## _command&#125;</span><br><br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">command</span> commands[] = &#123;<br>    <span class="hljs-built_in">COMMAND</span>(quit),<br>    <span class="hljs-built_in">COMMAND</span>(help),<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
-<p>  这里分别使用宏<strong>字符串化</strong>和宏<strong>连接</strong>。</p>
+<p>  这里分别使用宏<strong>字符串化</strong>和宏<strong>连接</strong>。</p>
 <h2 id="可变参数宏-Variadic-Macros">可变参数宏[Variadic Macros]</h2>
-<p>  和函数一样，宏也可以在声明时接受一个可变数量的参数，语法也与函数定义相似。如：</p>
+<p>  和函数一样，宏也可以在声明时接受一个可变数量的参数，语法也与函数定义相似。如：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> eprintf(...) fprintf(stderr, __VA_ARGS__)</span><br></code></pre></td></tr></table></figure>
-<p>  这样的宏被称为<strong>可变参数宏</strong>。当可变参数宏被调用时，<u>所有在最后一个命名参数之后传递给宏的参数（在这个例子中，宏没有命名参数）都被视为可变参数部分</u>。这意味着，<u>包括任何逗号在内的所有标记（tokens）都被视为可变参数</u>。</p>
-<p>  在宏体内，<code>__VA_ARGS__</code>是一个特殊的标识符，用来表示传递给宏的所有可变参数。当宏展开时，<code>__VA_ARGS__</code>会被替换为宏调用中传递的所有实际参数。在宏展开过程中，<code>__VA_ARGS__</code>将被替换为宏调用中提供的实际参数序列。这意味着，宏调用中的参数将直接替换宏定义中的<code>__VA_ARGS__</code>，包括所有的逗号和标记。例如：</p>
+<p>  这样的宏被称为<strong>可变参数宏</strong>。当可变参数宏被调用时，<u>所有在最后一个命名参数之后传递给宏的参数（在这个例子中，宏没有命名参数）都被视为可变参数部分</u>。这意味着，<u>包括任何逗号在内的所有标记（tokens）都被视为可变参数</u>。</p>
+<p>  在宏体内，<code>__VA_ARGS__</code>是一个特殊的标识符，用来表示传递给宏的所有可变参数。当宏展开时，<code>__VA_ARGS__</code>会被替换为宏调用中传递的所有实际参数。在宏展开过程中，<code>__VA_ARGS__</code>将被替换为宏调用中提供的实际参数序列。这意味着，宏调用中的参数将直接替换宏定义中的<code>__VA_ARGS__</code>，包括所有的逗号和标记。例如：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> LOG(...) printf(__VA_ARGS__)</span><br><br><span class="hljs-built_in">LOG</span>(<span class="hljs-string">&quot;Hello, %s!\n&quot;</span>, <span class="hljs-string">&quot;world&quot;</span>);<br><br><span class="hljs-comment">// 预处理展开后：</span><br><span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Hello, %s!\n&quot;</span>, <span class="hljs-string">&quot;world&quot;</span>); <span class="hljs-comment">// 可以看到，逗号也作为可变参数的一部分</span><br></code></pre></td></tr></table></figure>
 <ol>
 <li>可变参数中的宏<br>
-  在可变参数被插入到宏展开中之前，它们会像普通参数一样被完全宏展开。也就是说，如果可变参数中包含宏，这些宏会在被传递到可变参数之前被展开。如：</li>
+  在可变参数被插入到宏展开中之前，它们会像普通参数一样被完全宏展开。也就是说，如果可变参数中包含宏，这些宏会在被传递到可变参数之前被展开。如：</li>
 </ol>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> LOG(...) printf(__VA_ARGS__)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> FMT <span class="hljs-string">&quot;Hello, %s!\n&quot;</span></span><br><br><span class="hljs-built_in">LOG</span>(FMT, <span class="hljs-string">&quot;world&quot;</span>);<br><br><span class="hljs-comment">// 预处理展开后：</span><br><span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Hello, %s!\n&quot;</span>, <span class="hljs-string">&quot;world&quot;</span>);<br></code></pre></td></tr></table></figure>
 <ol start="2">
 <li>字符串化可变参数（#）<br>
-  同样可以使用 <code>#</code> 操作符来字符串化可变参数，这样可以将可变参数转化为字符串字面量。例如：</li>
+  同样可以使用 <code>#</code> 操作符来字符串化可变参数，这样可以将可变参数转化为字符串字面量。例如：</li>
 </ol>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> STRINGIFY(...) #__VA_ARGS__</span><br><br><span class="hljs-built_in">STRINGIFY</span>(some text)<br><br><span class="hljs-comment">// 预处理展开后：</span><br><span class="hljs-string">&quot;some text&quot;</span><br></code></pre></td></tr></table></figure>
 <ol start="3">
 <li>使用 <code>##</code> 操作符<br>
-  实际上，使用 <code>##</code> 操作符将可变参数的首位标记与其他标记连接在一起也是允许的，例如：</li>
+  实际上，使用 <code>##</code> 操作符将可变参数的首位标记与其他标记连接在一起也是允许的，例如：</li>
 </ol>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> PASTE_PREFIX(prefix, ...) prefix ## __VA_ARGS__</span><br><br><span class="hljs-built_in">PASTE_PREFIX</span>(MY_, function)<br><br><span class="hljs-comment">// 预处理展开后：</span><br>MY_function<br></code></pre></td></tr></table></figure>
-<p>  需要注意的是，当使用 <code>##</code> 连接可变参数时，如果可变参数本身为空，那么对应连接的空白标记的情况，这个时候 <code>##</code> 操作符不会有任何效果。</p>
+<p>  需要注意的是，当使用 <code>##</code> 连接可变参数时，如果可变参数本身为空，那么对应连接的空白标记的情况，这个时候 <code>##</code> 操作符不会有任何效果。</p>
 <p><br><br><br><br></p>
-<p>  如果宏很复杂，那么可能希望变量参数有一个比<code>__VA_ARGS__</code>更具描述性的名称。<code>CPP</code>允许这样，作为一种扩展。可以立即在<code>...</code>前面写入一个参数名称；该名称用于变量参数。可以编写上面的<code>eprintf</code>宏：</p>
+<p>  如果宏很复杂，那么可能希望变量参数有一个比<code>__VA_ARGS__</code>更具描述性的名称。<code>CPP</code>允许这样，作为一种扩展。可以立即在<code>...</code>前面写入一个参数名称；该名称用于变量参数。可以编写上面的<code>eprintf</code>宏：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> eprintf(args...) fprintf(stderr, args)</span><br></code></pre></td></tr></table></figure>
 <p>需要注意的是，使用了拓展名之后，不能在同一个宏中同时使用拓展名和 <code>__VA_ARGS__</code>。</p>
-<p>  就如前面的例子，在一个可变参数宏中既可以存在命名参数和可变参数，如上面的：</p>
+<p>  就如前面的例子，在一个可变参数宏中既可以存在命名参数和可变参数，如上面的：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> PASTE_PREFIX(prefix, ...) prefix ## __VA_ARGS__</span><br></code></pre></td></tr></table></figure>
 <p>但这实际上存在一个可能的问题——当此时可变参数为空时：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> PASTE_PREFIX(prefix, ...) prefix ## __VA_ARGS__</span><br><br><span class="hljs-built_in">PASTE_PREFIXZ</span>(MY_, )<br></code></pre></td></tr></table></figure>
 <p>在 <code>C++20</code> 以前，<code>PASTE_PREFIXZ(MY_, )</code> 中的 <code>,</code> 被视为可变参数的一部分，所以最终展开的结果是 <code>MY_,</code>，这与我们的预期不符。这个问题在 <code>C++20</code> 后已经被解决了——实际上我们已经可以完全忽略可变参数了：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> PASTE_PREFIX(prefix, ...) prefix ## __VA_ARGS__</span><br><br><span class="hljs-built_in">PASTE_PREFIXZ</span>(MY_) <span class="hljs-comment">// 这里逗号都可以不要</span><br></code></pre></td></tr></table></figure>
-<p>  其次，<code>C++20</code>引入了<code>__VA_OPT__</code>函数宏。此宏可能<u>只出现在可变参数宏的定义中</u>。它提供了一种条件展开机制，允许开发者根据可变参数是否存在来决定是否展开某些代码。其工作原理：</p>
+<p>  其次，<code>C++20</code>引入了<code>__VA_OPT__</code>函数宏。此宏可能<u>只出现在可变参数宏的定义中</u>。它提供了一种条件展开机制，允许开发者根据可变参数是否存在来决定是否展开某些代码。其工作原理：</p>
 <ol>
 <li>
 <p>条件展开</p>
@@ -680,7 +680,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>Updated on</div>
-          <div>August 6, 2025</div>
+          <div>August 13, 2025</div>
         </div>
       
       
@@ -890,7 +890,7 @@
     <div class="footer-inner">
   
     <div class="footer-content">
-       <style> .small-text { font-size: 0.8em; } </style> <p class="small-text">&copy; 2024-2025 gnibnay. All rights reserved.</p> <div class="statistics" style="font-size: 0.80rem"> <a target="_blank" rel="noopener" href="https://developer.hitokoto.cn/" id="hitokoto_text"><span id="hitokoto"></span></a> <script src="https://v1.hitokoto.cn/?c=h&c=i&c=k&encode=js&select=%23hitokoto" defer></script> </div> <div style="font-size: 0.85rem"> <span id="timeDate">loading days...</span> <span id="times">loading time...</span> <script src="/js/duration.js"></script> </div> 
+       <style> .small-text { font-size: 0.8em; } </style> <p class="small-text">&copy; 2024-2025 gnibnay. All rights reserved.</p> <div class="statistics" style="font-size: 0.80rem"> <div href="https://developer.hitokoto.cn/" id="hitokoto_text"><span id="hitokoto"></span></div> <script src="https://v1.hitokoto.cn/?c=f&c=h&c=i&c=k&c=l&encode=js&select=%23hitokoto" defer></script> </div> <div style="font-size: 0.85rem"> <span id="timeDate">loading days...</span> <span id="times">loading time...</span> <script src="/js/duration.js"></script> </div> 
     </div>
   
   

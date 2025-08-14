@@ -28,9 +28,8 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://gnibnay.github.io/img/in_posts/YOLO/background.png">
 <meta property="article:published_time" content="2025-01-04T09:00:00.000Z">
-<meta property="article:modified_time" content="2025-08-06T02:47:32.716Z">
+<meta property="article:modified_time" content="2025-08-13T11:35:00.083Z">
 <meta property="article:author" content="gnibnay">
-<meta property="article:tag" content="PaperShare">
 <meta property="article:tag" content="YOLO">
 <meta property="article:tag" content="目标检测">
 <meta name="twitter:card" content="summary_large_image">
@@ -335,17 +334,17 @@
     
     <div class="category row nomargin-x">
       <a class="category-item 
-          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="目标检测"
-        id="heading-7692bbdb2fca7b849d7a25213a75ce2c" role="tab" data-toggle="collapse" href="#collapse-7692bbdb2fca7b849d7a25213a75ce2c"
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Object Detection"
+        id="heading-bbd095339778d37d7a041cd15c2dbe03" role="tab" data-toggle="collapse" href="#collapse-bbd095339778d37d7a041cd15c2dbe03"
         aria-expanded="true"
       >
-        目标检测
+        Object Detection
         <span class="list-group-count">(2)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
-      <div class="category-collapse collapse show" id="collapse-7692bbdb2fca7b849d7a25213a75ce2c"
-           role="tabpanel" aria-labelledby="heading-7692bbdb2fca7b849d7a25213a75ce2c">
+      <div class="category-collapse collapse show" id="collapse-bbd095339778d37d7a041cd15c2dbe03"
+           role="tabpanel" aria-labelledby="heading-bbd095339778d37d7a041cd15c2dbe03">
         
         
           
@@ -407,6 +406,52 @@
       </div>
     </div>
   
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Paper Hub"
+        id="heading-9ef268aa27830b24d8c35f81f84b84aa" role="tab" data-toggle="collapse" href="#collapse-9ef268aa27830b24d8c35f81f84b84aa"
+        aria-expanded="true"
+      >
+        Paper Hub
+        <span class="list-group-count">(2)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-9ef268aa27830b24d8c35f81f84b84aa"
+           role="tabpanel" aria-labelledby="heading-9ef268aa27830b24d8c35f81f84b84aa">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2025/01/01/YOLO/YOLO_v1/" title="YOLO v1 论文分享"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">YOLO v1 论文分享</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2025/01/04/YOLO/YOLO_v2/" title="YOLO v2 论文分享"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">YOLO v2 论文分享</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
 </div>
 
 
@@ -424,7 +469,7 @@
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    Last updated on August 6, 2025 am
+                    Last updated on August 13, 2025 pm
                   
                 
               </p>
@@ -432,18 +477,17 @@
             
               <div class="markdown-body">
                 
-                <h1>$YOLO9000:\ Better,\ Faster,\ Stronger$</h1>
-<blockquote>
+                <blockquote>
 <p><a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content_cvpr_2017/papers/Redmon_YOLO9000_Better_Faster_CVPR_2017_paper.pdf">论文链接</a></p>
 </blockquote>
 <h2 id="摘要-⌊Abstract⌉">摘要 ⌊Abstract⌉</h2>
-<p>  这篇论文介绍了<code>YOLO9000</code>，这是一个先进的实时目标检测系统，能够检测超过<code>9000</code>个目标类别。首先，作者提出了一系列对<code>YOLO</code>检测方法的改进，形成了<code>YOLOv2</code>模型。<code>YOLOv2</code>在标准检测任务如<code>PASCAL VOC</code>和<code>COCO</code>上达到了最先进的水平，并且可以通过多尺度训练方法在不同大小上运行，从而在速度和准确性之间提供简单的权衡。在<code>67 FPS</code>的速度下，<code>YOLOv2</code>在<code>VOC 2007</code>上达到了<code>76.8 mAP</code>，而在<code>40 FPS</code>的速度下达到了<code>78.6 mAP</code>，超过了<code>Faster R-CNN</code>和<code>SSD</code>等其他先进方法。此外，作者提出了一种联合训练方法，可以在目标检测和分类数据上同时训练<code>YOLO9000</code>，使其能够预测那些没有标记检测数据的目标类别。在<code>ImageNet</code>检测验证集上，尽管只有<code>44</code>个类别有检测数据，<code>YOLO9000</code>仍然达到了<code>19.7 mAP</code>，并且在不在<code>COCO</code>中的<code>156</code>个类别上达到了<code>16.0 mAP</code>。<code>YOLO9000</code>能够在实时中检测超过<code>9000</code>个不同的目标类别。</p>
+<p>  这篇论文介绍了<code>YOLO9000</code>，这是一个先进的实时目标检测系统，能够检测超过<code>9000</code>个目标类别。首先，作者提出了一系列对<code>YOLO</code>检测方法的改进，形成了<code>YOLOv2</code>模型。<code>YOLOv2</code>在标准检测任务如<code>PASCAL VOC</code>和<code>COCO</code>上达到了最先进的水平，并且可以通过多尺度训练方法在不同大小上运行，从而在速度和准确性之间提供简单的权衡。在<code>67 FPS</code>的速度下，<code>YOLOv2</code>在<code>VOC 2007</code>上达到了<code>76.8 mAP</code>，而在<code>40 FPS</code>的速度下达到了<code>78.6 mAP</code>，超过了<code>Faster R-CNN</code>和<code>SSD</code>等其他先进方法。此外，作者提出了一种联合训练方法，可以在目标检测和分类数据上同时训练<code>YOLO9000</code>，使其能够预测那些没有标记检测数据的目标类别。在<code>ImageNet</code>检测验证集上，尽管只有<code>44</code>个类别有检测数据，<code>YOLO9000</code>仍然达到了<code>19.7 mAP</code>，并且在不在<code>COCO</code>中的<code>156</code>个类别上达到了<code>16.0 mAP</code>。<code>YOLO9000</code>能够在实时中检测超过<code>9000</code>个不同的目标类别。</p>
 <h3 id="平均精度均值-⌊mAP⌉">平均精度均值 ⌊mAP⌉</h3>
-<p>  <code>mAP</code>（<code>mean Average Precision</code>，平均精度均值）是目标检测领域常用的性能指标，用于衡量检测模型的整体性能。目标检测问题中的每个图片都可能包含一些不同类别的物体，需要评估模型的物体分类和定位性能。因此，不能用图像分类问题的标准指标 <code>Precision</code> 来简单评估模型性能。</p>
-<p>  <code>mAP</code> 是多个分类任务的 <code>AP</code> 的平均值，而 <code>AP（average precision）</code> 是 <code>PR</code> 曲线下的面积。在介绍 <code>mAP</code> 之前，有必要先介绍 <code>PR</code> 曲线。</p>
+<p>  <code>mAP</code>（<code>mean Average Precision</code>，平均精度均值）是目标检测领域常用的性能指标，用于衡量检测模型的整体性能。目标检测问题中的每个图片都可能包含一些不同类别的物体，需要评估模型的物体分类和定位性能。因此，不能用图像分类问题的标准指标 <code>Precision</code> 来简单评估模型性能。</p>
+<p>  <code>mAP</code> 是多个分类任务的 <code>AP</code> 的平均值，而 <code>AP（average precision）</code> 是 <code>PR</code> 曲线下的面积。在介绍 <code>mAP</code> 之前，有必要先介绍 <code>PR</code> 曲线。</p>
 <h4 id="P-R-曲线">P-R 曲线</h4>
 <h5 id="1-TP、FP、FN-和-TN">1. TP、FP、FN 和 TN</h5>
-<p>  这些术语通常用于评估分类模型的性能。通过这些指标，可以计算出模型的准确率、查全率、精确率等其他指标。</p>
+<p>  这些术语通常用于评估分类模型的性能。通过这些指标，可以计算出模型的准确率、查全率、精确率等其他指标。</p>
 <table>
 <thead>
 <tr>
@@ -484,10 +528,10 @@ $$Precision = \frac{TP}{TP+FP}$$<br>
 $$Recall = \frac{TP}{TP+FN}$$<br>
 说明：查全率关注的是模型对正例的识别能力，即在所有实际为正例的样本中，有多少被正确识别出来。查全率亦可称<strong>召回率</strong>。</li>
 </ul>
-<p>  根据查准率（<code>P</code>）和查全率（<code>R</code>）绘制的曲线即 <code>P-R</code> 曲线：</p>
+<p>  根据查准率（<code>P</code>）和查全率（<code>R</code>）绘制的曲线即 <code>P-R</code> 曲线：</p>
 <p><img src="/img/in_posts/YOLO/YOLO_v2/image.png" srcset="/img/loading.gif" lazyload alt="yolo_v1: Picasso Dataset precision-recall curves."></p>
 <h4 id="AP-的计算">AP 的计算</h4>
-<p>  <code>AP</code> 是计算某一类 <code>P-R</code> 曲线下的面积，计算<code>AP</code> 有两类方法，以下面的 <code>P-R</code> 曲线为例：</p>
+<p>  <code>AP</code> 是计算某一类 <code>P-R</code> 曲线下的面积，计算<code>AP</code> 有两类方法，以下面的 <code>P-R</code> 曲线为例：</p>
 <h5 id="11-点插值法">11 点插值法</h5>
 <ol>
 <li>将检测结果按照置信度从高到低排序；</li>
@@ -497,7 +541,7 @@ $$Recall = \frac{TP}{TP+FN}$$<br>
 <li>计算这<code>11</code>个最大准确率值的平均值，作为<code>AP</code>。</li>
 </ol>
 <p><img src="/img/in_posts/YOLO/YOLO_v2/image-1.png" srcset="/img/loading.gif" lazyload alt="11 点插值法"></p>
-<p>  <code>11</code>点插值法在早期的信息检索和目标检测领域中被广泛使用，尤其是在<code>PASCAL VOC</code>数据集的早期版本中（如<code>VOC2007</code>和<code>VOC2008</code>）。这种方法简单易实现，但精度较低，因为它只考虑了<code>11</code>个固定的查全率点.</p>
+<p>  <code>11</code>点插值法在早期的信息检索和目标检测领域中被广泛使用，尤其是在<code>PASCAL VOC</code>数据集的早期版本中（如<code>VOC2007</code>和<code>VOC2008</code>）。这种方法简单易实现，但精度较低，因为它只考虑了<code>11</code>个固定的查全率点.</p>
 <h5 id="积分法">积分法</h5>
 <ol>
 <li>对检测结果按置信度从高到低排序，计算每个结果对应的准确率和查全率；</li>
@@ -507,10 +551,10 @@ $$Recall = \frac{TP}{TP+FN}$$<br>
 </ol>
 <p><img src="/img/in_posts/YOLO/YOLO_v2/image-2.png" srcset="/img/loading.gif" lazyload alt="积分法"></p>
 <h4 id="mAP-的计算">mAP 的计算</h4>
-<p>  <code>AP</code> 是计算某一类 <code>P-R</code> 曲线下的面积，<code>mAP</code> 则是计算所有类别 <code>P-R</code> 曲线下面积的<strong>平均值</strong>。</p>
+<p>  <code>AP</code> 是计算某一类 <code>P-R</code> 曲线下的面积，<code>mAP</code> 则是计算所有类别 <code>P-R</code> 曲线下面积的<strong>平均值</strong>。</p>
 <p>$$mAP = \frac{\sum_{c \in classes} AP_{c}}{N(classes)}$$</p>
 <h3 id="YOLOv1-的不足">YOLOv1 的不足</h3>
-<p>  <code>YOLOv1</code>在检测精度上存在不足，尤其是在<code>mAP</code>（平均精度均值）方面。主要缺点包括：</p>
+<p>  <code>YOLOv1</code>在检测精度上存在不足，尤其是在<code>mAP</code>（平均精度均值）方面。主要缺点包括：</p>
 <ol>
 <li>
 <p><strong>定位误差</strong><br><code>YOLOv1</code>在定位目标时容易出现误差。与基于区域建议的方法（如<code>Faster R-CNN</code>）相比，<code>YOLOv1</code>的定位精度较低，这导致其<code>mAP</code>值相对较低；</p>
@@ -522,9 +566,9 @@ $$Recall = \frac{TP}{TP+FN}$$<br>
 <p><strong>对小目标的检测能力不足</strong><br><code>YOLOv1</code>在检测小目标方面表现不佳，因为它使用的是较为粗糙的特征图进行检测，难以准确捕捉小目标的细节。</p>
 </li>
 </ol>
-<p>  这些不足使得<code>YOLOv1</code>在一些标准检测任务（如<code>PASCAL VOC</code>和<code>COCO</code>）上的<code>mAP</code>表现不如一些基于区域建议的先进方法。因此，<code>YOLOv2</code>在这些方面进行了改进，以提高检测的精度和查全率，从而提升了<code>mAP</code>值。</p>
+<p>  这些不足使得<code>YOLOv1</code>在一些标准检测任务（如<code>PASCAL VOC</code>和<code>COCO</code>）上的<code>mAP</code>表现不如一些基于区域建议的先进方法。因此，<code>YOLOv2</code>在这些方面进行了改进，以提高检测的精度和查全率，从而提升了<code>mAP</code>值。</p>
 <h2 id="引言-⌊Introduction⌉">引言 ⌊Introduction⌉</h2>
-<p>  引言部分，作者讨论了通用目标检测面临的挑战和机遇：</p>
+<p>  引言部分，作者讨论了通用目标检测面临的挑战和机遇：</p>
 <ol>
 <li>
 <p><strong>目标检测的需求</strong><br>通用目标检测应该具备快速、准确和能够识别广泛种类目标的特点。随着神经网络的发展，检测框架在速度和准确性上都有了显著提升，但在目标种类的识别上仍然受到限制。</p>
@@ -540,11 +584,11 @@ $$Recall = \frac{TP}{TP+FN}$$<br>
 </li>
 </ol>
 <h2 id="更好-⌊Better⌉">更好 ⌊Better⌉</h2>
-<p>  <code>YOLO</code>在定位和查全率方面存在不足，而<code>YOLOv2</code>通过简化网络结构和优化学习表示，提高了定位精度和召回率，同时保持了快速的检测速度。从 <code>YOLOv1</code> 到 <code>YOLOv2</code> 结合了过去的研究成果和一些新概念，使得<code>YOLOv2</code>在性能上取得了显著提升：</p>
+<p>  <code>YOLO</code>在定位和查全率方面存在不足，而<code>YOLOv2</code>通过简化网络结构和优化学习表示，提高了定位精度和召回率，同时保持了快速的检测速度。从 <code>YOLOv1</code> 到 <code>YOLOv2</code> 结合了过去的研究成果和一些新概念，使得<code>YOLOv2</code>在性能上取得了显著提升：</p>
 <p><img src="/img/in_posts/YOLO/YOLO_v2/image-3.png" srcset="/img/loading.gif" lazyload alt="从 YOLOv1 到 YOLOv2"></p>
 <h3 id="1-批归一化-⌊Batch-Normalization⌉">1. 批归一化 ⌊Batch Normalization⌉</h3>
-<p>  <code>Batch Normalization</code> 往往用于在深度神经网络中激活层之前，可以加快模型训练时的收敛速度，使得模型训练过程更加稳定，避免梯度爆炸或者梯度消失。</p>
-<p>  <code>Batch Normalization</code> 核心公式：<br>
+<p>  <code>Batch Normalization</code> 往往用于在深度神经网络中激活层之前，可以加快模型训练时的收敛速度，使得模型训练过程更加稳定，避免梯度爆炸或者梯度消失。</p>
+<p>  <code>Batch Normalization</code> 核心公式：<br>
 $$\begin{aligned} Input:\ B = {x_{1…m}};\ \gamma,\ \beta \\ Output:\ {y_i = BN_{\gamma, \beta}(x_i) } \\ \mu_B \leftarrow \frac{1}{m} \sum_{i = 1}^m x_i \\ \sigma^2_{B} \leftarrow \frac{1}{m} \sum_{i=1}^m (x_i - \mu_B)^2 \\ \tilde{x} \leftarrow \frac{x_i - \mu_B}{\sqrt{\sigma^2 +\epsilon}} \\ y_i \leftarrow \gamma \tilde{x} + \beta \end{aligned}$$</p>
 <p>解释：</p>
 <ol>
@@ -596,10 +640,10 @@ $$<br>
 </li>
 </ol>
 <p><code>Batch Normalization</code>批归一化确保了每批数据的分布更加稳定，从而加速了模型的训练过程并提高了模型的泛化能力。</p>
-<p>  通过在 <code>YOLO</code> 中的所有卷积层上添加批量归一化，使得 <code>YOLO</code> 在 <code>mAP</code> 指标上获得了 <code>2% </code>以上的改进。通过批归一化，可以在不过度拟合的情况下从模型中删除 <code>dropout</code>。</p>
+<p>  通过在 <code>YOLO</code> 中的所有卷积层上添加批量归一化，使得 <code>YOLO</code> 在 <code>mAP</code> 指标上获得了 <code>2% </code>以上的改进。通过批归一化，可以在不过度拟合的情况下从模型中删除 <code>dropout</code>。</p>
 <h3 id="2-高分辨率分类器-⌊High-Resolution-Classifier⌉">2. 高分辨率分类器 ⌊High Resolution Classifier⌉</h3>
-<p>  <code>YOLOv1</code>的分类器网络在<code>224x224</code>分辨率下进行训练，然后在检测时将分辨率提高到<code>448x448</code>。这种突然的分辨率变化使得网络需要同时适应新的输入分辨率和学习目标检测任务，导致性能受限。</p>
-<p>  为了改进这一点，<code>YOLOv2</code>采取了以下步骤进行优化：</p>
+<p>  <code>YOLOv1</code>的分类器网络在<code>224x224</code>分辨率下进行训练，然后在检测时将分辨率提高到<code>448x448</code>。这种突然的分辨率变化使得网络需要同时适应新的输入分辨率和学习目标检测任务，导致性能受限。</p>
+<p>  为了改进这一点，<code>YOLOv2</code>采取了以下步骤进行优化：</p>
 <ol>
 <li>
 <p><strong>预训练阶段</strong><br>在<code>ImageNet</code>数据集上，首先将分类器网络在<code>448x448</code>的高分辨率下进行预训练。这样做的目的是让网络有足够的时间调整其滤波器（<code>filters</code>），以更好地适应高分辨率的输入图像。通过这种方式，<u>网络可以在检测任务开始之前，就已经具备了处理高分辨率图像的能力</u>；</p>
@@ -608,14 +652,14 @@ $$<br>
 <p><strong>微调阶段</strong><br>在完成高分辨率下的分类器预训练之后，再将得到的网络用于目标检测任务的微调。此时，网络已经在高分辨率下具备了良好的特征提取能力，因此在检测任务中能够更准确地定位和识别目标。</p>
 </li>
 </ol>
-<p>  通过这种<strong>高分辨率分类器</strong>的改进方法，<code>YOLOv2</code>在检测任务中的平均精度（<code>mAP</code>）得到了显著提升，具体来说，相比之前的方法提高了将近<code>4%</code>的<code>mAP</code>。这表明，<u>通过让网络在高分辨率下进行充分的预训练，可以有效地提高其在目标检测任务中的性能，尤其是在定位精度方面</u>。</p>
+<p>  通过这种<strong>高分辨率分类器</strong>的改进方法，<code>YOLOv2</code>在检测任务中的平均精度（<code>mAP</code>）得到了显著提升，具体来说，相比之前的方法提高了将近<code>4%</code>的<code>mAP</code>。这表明，<u>通过让网络在高分辨率下进行充分的预训练，可以有效地提高其在目标检测任务中的性能，尤其是在定位精度方面</u>。</p>
 <h3 id="3-带锚框的卷积-⌊Convolutional-With-Anchor-Boxes⌉">3. 带锚框的卷积 ⌊Convolutional With Anchor Boxes⌉</h3>
 <h4 id="什么是锚框-Anchor-Boxes">什么是<strong>锚框</strong> <code>Anchor Boxes</code></h4>
-<p>  <strong>锚框</strong>（<code>Anchor Boxes</code>）最初在<code>Faster R-CNN</code>中被引入。其<strong>基本思想</strong>是在特征图的<strong>每个位置上预定义一组不同尺寸和宽高比的边界框</strong>，这些预定义的边界框被称为锚框。<strong>网络的任务是调整这些锚框以更好地匹配图像中的真实目标</strong>。</p>
+<p>  <strong>锚框</strong>（<code>Anchor Boxes</code>）最初在<code>Faster R-CNN</code>中被引入。其<strong>基本思想</strong>是在特征图的<strong>每个位置上预定义一组不同尺寸和宽高比的边界框</strong>，这些预定义的边界框被称为锚框。<strong>网络的任务是调整这些锚框以更好地匹配图像中的真实目标</strong>。</p>
 <h4 id="为什么要引入锚框Anchor-Boxes">为什么要引入锚框<code>Anchor Boxes</code></h4>
-<p>  由于<code>YOLOv1</code>直接预测边界框的<strong>绝对坐标</strong>，这在学习过程中容易导致不稳定，尤其是在预测边界框的大小和位置时，这就导致 <code>YOLOv1</code> 在定位精度方面存在局限。</p>
-<p>  而调整锚框相当于在预定义的边界框的基础上进行微调，<strong>只需要预测相对于锚框的偏移量</strong>（比如中心点的偏移，宽度和高度的缩放比例），这使得学习任务更加简单和直观。因为<u>网络不需要从零开始学习边界框的绝对位置和大小，而是专注于如何调整已有的框以更好地匹配目标，降低了学习难度</u>。</p>
-<p>  此外，使用锚框可以生成更多的候选框，覆盖图像中的多种目标尺寸和形状。这使得检测模型能够更好地捕捉到目标，从而<strong>提高查全率</strong>。即使某些目标的尺寸或形状与预定义的锚框不完全匹配，网络也可以通过调整锚框的偏移量来适应这些目标。</p>
+<p>  由于<code>YOLOv1</code>直接预测边界框的<strong>绝对坐标</strong>，这在学习过程中容易导致不稳定，尤其是在预测边界框的大小和位置时，这就导致 <code>YOLOv1</code> 在定位精度方面存在局限。</p>
+<p>  而调整锚框相当于在预定义的边界框的基础上进行微调，<strong>只需要预测相对于锚框的偏移量</strong>（比如中心点的偏移，宽度和高度的缩放比例），这使得学习任务更加简单和直观。因为<u>网络不需要从零开始学习边界框的绝对位置和大小，而是专注于如何调整已有的框以更好地匹配目标，降低了学习难度</u>。</p>
+<p>  此外，使用锚框可以生成更多的候选框，覆盖图像中的多种目标尺寸和形状。这使得检测模型能够更好地捕捉到目标，从而<strong>提高查全率</strong>。即使某些目标的尺寸或形状与预定义的锚框不完全匹配，网络也可以通过调整锚框的偏移量来适应这些目标。</p>
 <h4 id="具体是怎么做的">具体是怎么做的</h4>
 <ol>
 <li>
@@ -635,7 +679,7 @@ $$<br>
 </li>
 </ol>
 <h4 id="引入锚框带来什么效果">引入锚框带来什么效果</h4>
-<p>  使用锚框后，<code>YOLOv2</code>的<code>mAP</code><strong>略有下降</strong>，从<code>69.5%</code>降至<code>69.2%</code>，但查全率（<code>Recall</code>）从<code>81%</code>提高到<code>88%</code>。虽然<code>mAP</code>有所下降，但查全率的提高为模型的进一步优化提供了更大的空间，因为模型能够检测到更多的目标。</p>
+<p>  使用锚框后，<code>YOLOv2</code>的<code>mAP</code><strong>略有下降</strong>，从<code>69.5%</code>降至<code>69.2%</code>，但查全率（<code>Recall</code>）从<code>81%</code>提高到<code>88%</code>。虽然<code>mAP</code>有所下降，但查全率的提高为模型的进一步优化提供了更大的空间，因为模型能够检测到更多的目标。</p>
 <h4 id="YOLOv1-和-YOLOv2-对比">YOLOv1 和 YOLOv2  对比</h4>
 <table>
 <thead>
@@ -676,15 +720,15 @@ $$<br>
 <p><img src="/img/in_posts/YOLO/YOLO_v2/image-4.png" srcset="/img/loading.gif" lazyload alt="输出张量对比"></p>
 <h3 id="4-维度集群-⌊Dimension-Clusters⌉">4. 维度集群 ⌊Dimension Clusters⌉</h3>
 <h4 id="什么是维度聚类-Dimension-Clusters">什么是<strong>维度聚类</strong> Dimension Clusters</h4>
-<p>  <strong>维度聚类</strong><code>Dimension Clusters</code>是一种用于优化目标检测中锚框尺寸选择的方法。它通过在训练数据集的边界框尺寸上进行聚类分析，自动选择一组能够较好地覆盖数据集中目标尺寸分布的锚框尺寸。</p>
+<p>  <strong>维度聚类</strong><code>Dimension Clusters</code>是一种用于优化目标检测中锚框尺寸选择的方法。它通过在训练数据集的边界框尺寸上进行聚类分析，自动选择一组能够较好地覆盖数据集中目标尺寸分布的锚框尺寸。</p>
 <h4 id="为什么要引入-Dimension-Clusters">为什么要引入 Dimension Clusters</h4>
-<p>  在目标检测中，<strong>使用锚框的一个关键挑战是如何选择合适的锚框尺寸</strong>。如果锚框的尺寸与数据集中目标的实际尺寸差异较大，网络需要花费更多的努力来调整这些锚框以匹配目标，从而影响检测性能。</p>
+<p>  在目标检测中，<strong>使用锚框的一个关键挑战是如何选择合适的锚框尺寸</strong>。如果锚框的尺寸与数据集中目标的实际尺寸差异较大，网络需要花费更多的努力来调整这些锚框以匹配目标，从而影响检测性能。</p>
 <ul>
 <li><strong>手动选择的局限性</strong><br>在<code>Faster R-CNN</code>等早期方法中，锚框的尺寸通常是手动选择的，这依赖于经验，并且可能无法很好地匹配数据集中目标的实际尺寸分布；</li>
 <li><strong>提高检测精度</strong><br>通过自动选择更合适的锚框尺寸，可以使网络更容易学习如何调整锚框以匹配目标，从而提高检测的精度和效率。</li>
 </ul>
 <h4 id="如何引入Dimension-Clusters">如何引入Dimension Clusters</h4>
-<p>  <code>YOLOv2</code>通过以下步骤引入了<code>Dimension Clusters</code>：</p>
+<p>  <code>YOLOv2</code>通过以下步骤引入了<code>Dimension Clusters</code>：</p>
 <ol>
 <li><strong>数据预处理</strong><br>首先，从训练集中提取所有标注的边界框的尺寸（宽度和高度）;</li>
 <li><strong>k-means聚类</strong><br>在这些边界框的尺寸上运行<code>k-means</code>聚类算法。与传统的欧氏距离不同，这里使用基于<code>IOU</code>（交并比）的距离度量来计算边界框之间的相似性。具体来说，<strong>距离度量</strong>定义为：<br>
@@ -704,14 +748,14 @@ $$d(box, centroid) = 1 - \text{IOU}(box, centroid)$$<br>
 </ul>
 <h3 id="5-直接位置预测-⌊Direct-location-prediction⌉">5. 直接位置预测 ⌊Direct location prediction⌉</h3>
 <h4 id="为什么需要进行直接的位置预测">为什么需要进行直接的位置预测</h4>
-<p>  使用锚框<code>Anchor Boxes</code> 带来的第二个问题是：模型不稳定，特别是在早期迭代期间。大多数不稳定性来自于对边界框中心位置<code>(x, y)</code>的预测。</p>
-<p>  在使用<strong>区域提议</strong>的网络中，网络预测边界框相对于锚框的偏移量 <code>tx</code> 和<code>ty</code>，中心位置 <code>(x, y)</code> 坐标计算如下：</p>
+<p>  使用锚框<code>Anchor Boxes</code> 带来的第二个问题是：模型不稳定，特别是在早期迭代期间。大多数不稳定性来自于对边界框中心位置<code>(x, y)</code>的预测。</p>
+<p>  在使用<strong>区域提议</strong>的网络中，网络预测边界框相对于锚框的偏移量 <code>tx</code> 和<code>ty</code>，中心位置 <code>(x, y)</code> 坐标计算如下：</p>
 <p>$$\begin{aligned}x = (t_x * w_a) + x_a \\ y = (t_y * h_a) + y_a \\ 其中，\\ w_a 是锚框的宽度 \\ h_a 是锚框的高度 \\ (x_a, y_a) 是锚框的中心位置坐标 \end{aligned}$$</p>
 <blockquote>
 <p>论文中这里使用了减法，这应该是一个错误。因为 $$初始锚框中心坐标(x_a, y_a) + 偏移量 = 预测的边界框的中心坐标$$</p>
 </blockquote>
 <p>例如，当 $t_x = 1$ 时，就是将边界框向右移动一个锚框宽度 $w_a$ 的距离；而 $t_x = -1$ 时，就是将边界框向左移动一个锚框宽度 $w_a$ 的距离。</p>
-<p>  这个公式存在局限性：</p>
+<p>  这个公式存在局限性：</p>
 <ol>
 <li><strong>初始权重的影响</strong><br>在训练初期，网络的权重通常是随机初始化的。这可能导致预测的偏移量 $(t_x, t_y)$ 在初始阶段波动较大，从而使得预测的边界框中心坐标不稳定。尤其是在偏移量的预测值较大或较小的情况下，边界框的位置可能会偏离真实目标较远，影响模型的训练过程和收敛速度；</li>
 <li><strong>无界性</strong><br>虽然理论上偏移量$(t_x, t_y)$， 应该是相对于锚框的相对位置，但在实际训练过程中，如果没有适当的约束和正则化，偏移量可能会变得非常大，导致预测的边界框位置不合理，从而影响检测的准确性.\</li>
@@ -735,10 +779,10 @@ $$ \begin{aligned} b_w = P_w e^{t_w} \\ b_h = P_h e^{t_h} \end{aligned}$$<br>
 </ol>
 <p><img src="/img/in_posts/YOLO/YOLO_v2/image-6.png" srcset="/img/loading.gif" lazyload alt="具有维度先验和位置预测的边界框"></p>
 <h4 id="达到了什么效果">达到了什么效果</h4>
-<p>  由于约束位置预测，参数化更容易学习，使网络更加稳定。使用维度集群以及直接预测边界框中心位置比带有锚框的版本提高了近 <code>5%</code>。</p>
+<p>  由于约束位置预测，参数化更容易学习，使网络更加稳定。使用维度集群以及直接预测边界框中心位置比带有锚框的版本提高了近 <code>5%</code>。</p>
 <h3 id="6-细粒度特征-⌊Fine-Grained-Features⌉">6. 细粒度特征 ⌊Fine-Grained Features⌉</h3>
 <h4 id="What（是什么）">What（是什么）</h4>
-<p>  在<code>YOLOv2</code>中，<strong>细粒度特征</strong>是指<u>通过结合更高分辨率的特征图来增强模型对小目标的检测能力</u>。具体来说，<code>YOLOv2</code>使用一个<code>passthrough</code>层将<code>26x26x512</code>的特征图转换为<code>13x13x2048</code>的特征图，并将其与原始的<code>13x13x1024</code>特征图拼接，形成一个更大的特征图用于检测器的输入。</p>
+<p>  在<code>YOLOv2</code>中，<strong>细粒度特征</strong>是指<u>通过结合更高分辨率的特征图来增强模型对小目标的检测能力</u>。具体来说，<code>YOLOv2</code>使用一个<code>passthrough</code>层将<code>26x26x512</code>的特征图转换为<code>13x13x2048</code>的特征图，并将其与原始的<code>13x13x1024</code>特征图拼接，形成一个更大的特征图用于检测器的输入。</p>
 <h4 id="Why（为什么）">Why（为什么）</h4>
 <ul>
 <li><strong>提高对小目标的检测能力</strong><br>小目标在图像中占据的像素面积较小，直接在低分辨率的特征图上进行检测可能会丢失重要的细节特征，导致检测精度下降。引入细粒度特征可以捕捉到更多的细节信息，从而更好地定位和识别小目标.</li>
@@ -757,7 +801,7 @@ $$ \begin{aligned} b_w = P_w e^{t_w} \\ b_h = P_h e^{t_h} \end{aligned}$$<br>
 </ul>
 <h3 id="7-多尺度训练-⌊Multi-Scale-Training⌉">7. 多尺度训练 ⌊Multi-Scale Training⌉</h3>
 <h4 id="What（是什么）-2">What（是什么）</h4>
-<p>  <strong>多尺度训练</strong>：在训练过程中，<code>YOLOv2</code>不是固定输入图像的尺寸，而是随机改变输入图像的尺寸。具体来说，每隔<code>10</code>个批次，网络会随机选择一个新的图像尺寸进行训练。</p>
+<p>  <strong>多尺度训练</strong>：在训练过程中，<code>YOLOv2</code>不是固定输入图像的尺寸，而是随机改变输入图像的尺寸。具体来说，每隔<code>10</code>个批次，网络会随机选择一个新的图像尺寸进行训练。</p>
 <h4 id="Why（为什么）-2">Why（为什么）</h4>
 <ul>
 <li><strong>提高模型的鲁棒性</strong><br>通过在不同尺寸的图像上进行训练，模型能够学习到在各种输入尺寸下进行检测的能力，从而提高对不同尺寸目标的检测鲁棒性.</li>
@@ -770,18 +814,18 @@ $$ \begin{aligned} b_w = P_w e^{t_w} \\ b_h = P_h e^{t_h} \end{aligned}$$<br>
 </ul>
 <p><img src="/img/in_posts/YOLO/YOLO_v2/image-8.png" srcset="/img/loading.gif" lazyload alt="多尺度训练"></p>
 <h4 id="效果如何-2">效果如何</h4>
-<p>  多尺度训练使得<code>YOLOv2</code>能够在不同的输入尺寸下提供速度与精度之间的权衡。在较小的输入尺寸下，模型运行速度更快，虽然精度略有下降，但仍然能够保持较高的检测性能；在较大的输入尺寸下，模型能够达到更高的精度，同时仍然保持实时的检测速度。</p>
+<p>  多尺度训练使得<code>YOLOv2</code>能够在不同的输入尺寸下提供速度与精度之间的权衡。在较小的输入尺寸下，模型运行速度更快，虽然精度略有下降，但仍然能够保持较高的检测性能；在较大的输入尺寸下，模型能够达到更高的精度，同时仍然保持实时的检测速度。</p>
 <h3 id="8-总结">8. 总结</h3>
-<p>  经过一系列改进，如批归一化、高分辨率分类器、使用锚框、维度聚类、直接位置预测、细粒度特征和多尺度训练等，<code>YOLO</code>模型从<code>YOLOv1</code>进步到了<code>YOLOv2</code>，这些优化措施显著提升了检测速度、精度和对不同尺寸目标的适应性，使<code>YOLOv2</code>成为一个更加强大和高效的目标检测模型：</p>
+<p>  经过一系列改进，如批归一化、高分辨率分类器、使用锚框、维度聚类、直接位置预测、细粒度特征和多尺度训练等，<code>YOLO</code>模型从<code>YOLOv1</code>进步到了<code>YOLOv2</code>，这些优化措施显著提升了检测速度、精度和对不同尺寸目标的适应性，使<code>YOLOv2</code>成为一个更加强大和高效的目标检测模型：</p>
 <p><img src="/img/in_posts/YOLO/YOLO_v2/image-11.png" srcset="/img/loading.gif" lazyload alt="VOC 2007 的准确性和速度对比"></p>
 <h2 id="更快-⌊Faster⌉">更快 ⌊Faster⌉</h2>
-<p>  <code>YOLOv2</code>提出了<code>Darknet-19</code>（有<code>19</code>个卷积层和<code>5</code>个<code>MaxPooling</code>层）网络结构作为特征提取网络。<code>DarkNet-19</code>比<code>VGG-16</code>小一些，精度不弱于<code>VGG-16</code>，但浮点运算量减少到约$\frac{1}{5}$，以保证更快的运算速度。</p>
+<p>  <code>YOLOv2</code>提出了<code>Darknet-19</code>（有<code>19</code>个卷积层和<code>5</code>个<code>MaxPooling</code>层）网络结构作为特征提取网络。<code>DarkNet-19</code>比<code>VGG-16</code>小一些，精度不弱于<code>VGG-16</code>，但浮点运算量减少到约$\frac{1}{5}$，以保证更快的运算速度。</p>
 <p><img src="/img/in_posts/YOLO/YOLO_v2/image-9.png" srcset="/img/loading.gif" lazyload alt="Darknet-19"></p>
-<p>  <code>YOLOv2</code>的网络中只有<code>卷积+pooling</code>，从<code>416x416x3</code> 变换到 <code>13x13x5x25</code>。增加了<code>batch normalization</code>，增加了一个<code>passthrough</code>层，去掉了全连接层，以及采用了<code>5</code>个锚框,网络的输出如下图所示：</p>
+<p>  <code>YOLOv2</code>的网络中只有<code>卷积+pooling</code>，从<code>416x416x3</code> 变换到 <code>13x13x5x25</code>。增加了<code>batch normalization</code>，增加了一个<code>passthrough</code>层，去掉了全连接层，以及采用了<code>5</code>个锚框,网络的输出如下图所示：</p>
 <p><img src="/img/in_posts/YOLO/YOLO_v2/image-10.png" srcset="/img/loading.gif" lazyload alt="网络输出"></p>
 <h2 id="更强-⌊Stronger⌉">更强 ⌊Stronger⌉</h2>
 <h3 id="YOLOv2-与-YOLO9000">YOLOv2 与 YOLO9000</h3>
-<p>  <code>YOLOv2</code>是<code>YOLO</code>系列目标检测模型的一个重要改进版本，通过一系列优化措施提升了检测速度和精度。而<code>YOLO9000</code>则是在<code>YOLOv2</code>的基础上进一步扩展，采用联合训练方法和基于<code>WordNet</code>的层次化分类结构（<code>WordTree</code>），将不同数据集的类别标签映射到一个统一的层次结构中，使其能够检测超过<code>9000</code>个不同的目标类别，从而在类别检测能力和应用场景上实现了显著扩展，两者共同推动了<code>YOLO</code>系列模型的发展。</p>
+<p>  <code>YOLOv2</code>是<code>YOLO</code>系列目标检测模型的一个重要改进版本，通过一系列优化措施提升了检测速度和精度。而<code>YOLO9000</code>则是在<code>YOLOv2</code>的基础上进一步扩展，采用联合训练方法和基于<code>WordNet</code>的层次化分类结构（<code>WordTree</code>），将不同数据集的类别标签映射到一个统一的层次结构中，使其能够检测超过<code>9000</code>个不同的目标类别，从而在类别检测能力和应用场景上实现了显著扩展，两者共同推动了<code>YOLO</code>系列模型的发展。</p>
 
                 
               </div>
@@ -800,15 +844,25 @@ $$ \begin{aligned} b_w = P_w e^{t_w} \\ b_h = P_h e^{t_h} \end{aligned}$$<br>
     
       <span class="category-chain">
         
-  <a href="/categories/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/" class="category-chain-item">目标检测</a>
+  <a href="/categories/Object-Detection/" class="category-chain-item">Object Detection</a>
   
   
     <span>></span>
     
-  <a href="/categories/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/YOLO/" class="category-chain-item">YOLO</a>
+  <a href="/categories/Object-Detection/YOLO/" class="category-chain-item">YOLO</a>
   
   
 
+  
+
+      </span>
+    
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Paper-Hub/" class="category-chain-item">Paper Hub</a>
+  
   
 
       </span>
@@ -821,8 +875,6 @@ $$ \begin{aligned} b_w = P_w e^{t_w} \\ b_h = P_h e^{t_h} \end{aligned}$$<br>
   
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
-      
-        <a href="/tags/PaperShare/" class="print-no-link">#PaperShare</a>
       
         <a href="/tags/YOLO/" class="print-no-link">#YOLO</a>
       
@@ -857,7 +909,7 @@ $$ \begin{aligned} b_w = P_w e^{t_w} \\ b_h = P_h e^{t_h} \end{aligned}$$<br>
       
         <div class="license-meta-item license-meta-date">
           <div>Updated on</div>
-          <div>August 6, 2025</div>
+          <div>August 13, 2025</div>
         </div>
       
       
@@ -1067,7 +1119,7 @@ $$ \begin{aligned} b_w = P_w e^{t_w} \\ b_h = P_h e^{t_h} \end{aligned}$$<br>
     <div class="footer-inner">
   
     <div class="footer-content">
-       <style> .small-text { font-size: 0.8em; } </style> <p class="small-text">&copy; 2024-2025 gnibnay. All rights reserved.</p> <div class="statistics" style="font-size: 0.80rem"> <a target="_blank" rel="noopener" href="https://developer.hitokoto.cn/" id="hitokoto_text"><span id="hitokoto"></span></a> <script src="https://v1.hitokoto.cn/?c=h&c=i&c=k&encode=js&select=%23hitokoto" defer></script> </div> <div style="font-size: 0.85rem"> <span id="timeDate">loading days...</span> <span id="times">loading time...</span> <script src="/js/duration.js"></script> </div> 
+       <style> .small-text { font-size: 0.8em; } </style> <p class="small-text">&copy; 2024-2025 gnibnay. All rights reserved.</p> <div class="statistics" style="font-size: 0.80rem"> <div href="https://developer.hitokoto.cn/" id="hitokoto_text"><span id="hitokoto"></span></div> <script src="https://v1.hitokoto.cn/?c=f&c=h&c=i&c=k&c=l&encode=js&select=%23hitokoto" defer></script> </div> <div style="font-size: 0.85rem"> <span id="timeDate">loading days...</span> <span id="times">loading time...</span> <script src="/js/duration.js"></script> </div> 
     </div>
   
   

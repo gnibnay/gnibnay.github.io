@@ -28,9 +28,8 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://gnibnay.github.io/img/in_posts/YOLO/background.png">
 <meta property="article:published_time" content="2025-01-01T09:00:00.000Z">
-<meta property="article:modified_time" content="2025-08-06T02:47:28.582Z">
+<meta property="article:modified_time" content="2025-08-13T11:34:56.883Z">
 <meta property="article:author" content="gnibnay">
-<meta property="article:tag" content="PaperShare">
 <meta property="article:tag" content="YOLO">
 <meta property="article:tag" content="目标检测">
 <meta name="twitter:card" content="summary_large_image">
@@ -335,17 +334,17 @@
     
     <div class="category row nomargin-x">
       <a class="category-item 
-          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="目标检测"
-        id="heading-7692bbdb2fca7b849d7a25213a75ce2c" role="tab" data-toggle="collapse" href="#collapse-7692bbdb2fca7b849d7a25213a75ce2c"
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Object Detection"
+        id="heading-bbd095339778d37d7a041cd15c2dbe03" role="tab" data-toggle="collapse" href="#collapse-bbd095339778d37d7a041cd15c2dbe03"
         aria-expanded="true"
       >
-        目标检测
+        Object Detection
         <span class="list-group-count">(2)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
-      <div class="category-collapse collapse show" id="collapse-7692bbdb2fca7b849d7a25213a75ce2c"
-           role="tabpanel" aria-labelledby="heading-7692bbdb2fca7b849d7a25213a75ce2c">
+      <div class="category-collapse collapse show" id="collapse-bbd095339778d37d7a041cd15c2dbe03"
+           role="tabpanel" aria-labelledby="heading-bbd095339778d37d7a041cd15c2dbe03">
         
         
           
@@ -407,6 +406,52 @@
       </div>
     </div>
   
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Paper Hub"
+        id="heading-9ef268aa27830b24d8c35f81f84b84aa" role="tab" data-toggle="collapse" href="#collapse-9ef268aa27830b24d8c35f81f84b84aa"
+        aria-expanded="true"
+      >
+        Paper Hub
+        <span class="list-group-count">(2)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-9ef268aa27830b24d8c35f81f84b84aa"
+           role="tabpanel" aria-labelledby="heading-9ef268aa27830b24d8c35f81f84b84aa">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2025/01/01/YOLO/YOLO_v1/" title="YOLO v1 论文分享"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">YOLO v1 论文分享</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2025/01/04/YOLO/YOLO_v2/" title="YOLO v2 论文分享"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">YOLO v2 论文分享</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
 </div>
 
 
@@ -424,7 +469,7 @@
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    Last updated on August 6, 2025 am
+                    Last updated on August 13, 2025 pm
                   
                 
               </p>
@@ -432,8 +477,7 @@
             
               <div class="markdown-body">
                 
-                <h2 id="You-Only-Look-Once-Unified-Real-Time-Object-Detection">$You\ Only\ Look\ Once:\ Unified,\ Real-Time\ Object\ Detection$</h2>
-<blockquote>
+                <blockquote>
 <p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1506.02640">论文链接</a><br>
 <a target="_blank" rel="noopener" href="https://pjreddie.com/darknet/yolo/">项目地址</a></p>
 </blockquote>
@@ -452,7 +496,7 @@
 <li><strong>准确性与泛化</strong><br>与最先进的检测系统相比，<code>YOLO</code>在目标定位上可能会犯更多错误，但不太可能在背景上预测出错误的正例。此外，<code>YOLO</code>学习到的目标表示具有很好的泛化能力，当从自然图像泛化到其他领域（如艺术品）时，其表现优于其他检测方法，包括<code>DPM</code>和<code>R-CNN</code>。</li>
 </ul>
 <h3 id="引言-⌊Introduction⌉">引言 ⌊Introduction⌉</h3>
-<p>  论文引言部分，作者总结了之前目标检测算法使用的主要方法：</p>
+<p>  论文引言部分，作者总结了之前目标检测算法使用的主要方法：</p>
 <h4 id="之前的目标检测算法主要方法">之前的目标检测算法主要方法</h4>
 <ol>
 <li>
@@ -484,34 +528,34 @@
 </li>
 </ol>
 <h3 id="统一检测-⌊Unified-Detection⌉">统一检测 ⌊Unified Detection⌉</h3>
-<p>  <code>YOLO</code>通过将目标检测的各个环节整合进一个神经网络，实现了利用整张图像的特征来同时预测所有类别的边界框，并进行全局推理，这样的设计使得<code>YOLO</code>不仅能够端到端训练，还能在保持高平均精度的同时达到实时的检测速度。</p>
-<p>  <code>YOLO</code> 将输入的图像划分为 $S \times S$ 网格。<strong>如果物体的中心落入一个网格单元，则该网格单元负责检测该物体</strong>；<br></p>
-<p>  每个网格单元预测<code>B</code>（用<code>B</code>表示是出于<code>Boxes</code>）个边界框以及这些框的置信度分数。这些<strong>置信度分数</strong>反映了模型对于边界框内包含物体的置信度，同时也反映了模型对其边界框准确性的评估。<br>形式上，<code>YOLO</code> 将置信度定义为</p>
+<p>  <code>YOLO</code>通过将目标检测的各个环节整合进一个神经网络，实现了利用整张图像的特征来同时预测所有类别的边界框，并进行全局推理，这样的设计使得<code>YOLO</code>不仅能够端到端训练，还能在保持高平均精度的同时达到实时的检测速度。</p>
+<p>  <code>YOLO</code> 将输入的图像划分为 $S \times S$ 网格。<strong>如果物体的中心落入一个网格单元，则该网格单元负责检测该物体</strong>；<br></p>
+<p>  每个网格单元预测<code>B</code>（用<code>B</code>表示是出于<code>Boxes</code>）个边界框以及这些框的置信度分数。这些<strong>置信度分数</strong>反映了模型对于边界框内包含物体的置信度，同时也反映了模型对其边界框准确性的评估。<br>形式上，<code>YOLO</code> 将置信度定义为</p>
 <p>$$Confidence = Pr(Object)*IOU_{pred}^{truth}$$</p>
 <blockquote>
 <p>$Pr(Object)$：模型预测某个边界框包含至少一个对象的概率。$Pr$ 代表概率。</p>
 </blockquote>
-<p>  如果网格单元中不存在物体，则置信度得分应该为 <code>0</code>。否则，置信度得分希望等于边界框与真实值之间的<strong>交并比</strong>（<code>IOU</code>）。</p>
+<p>  如果网格单元中不存在物体，则置信度得分应该为 <code>0</code>。否则，置信度得分希望等于边界框与真实值之间的<strong>交并比</strong>（<code>IOU</code>）。</p>
 <blockquote>
 <p>交并比（<code>Intersection Over Union</code>，<code>IOU</code>）是目标检测和图像分割任务中常用的评估指标，用于衡量两个边界框（或区域）之间的重叠程度。<code>IOU</code>计算的是两个边界框交集面积与并集面积的比值。$$IOU^{A}_{B} = \frac{Area(A \cap B)}{Area(A) + Area(B) - Area(A \cap B)}$$<br></p>
 </blockquote>
-<p>  每个边界框包含<code>5</code>个预测值：<code>x</code>， <code>y</code>，<code>w</code>，<code>h</code>以及<code>置信度</code>。<code>(x, y)</code>坐标表示边界框的中心<strong>相对于网格单元边界的相对位置</strong>，其数值是归一化的结果。比如：</p>
+<p>  每个边界框包含<code>5</code>个预测值：<code>x</code>， <code>y</code>，<code>w</code>，<code>h</code>以及<code>置信度</code>。<code>(x, y)</code>坐标表示边界框的中心<strong>相对于网格单元边界的相对位置</strong>，其数值是归一化的结果。比如：</p>
 <p><img src="/img/in_posts/YOLO/YOLO_v1/image-1.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p>  <strong>宽度</strong><code>w</code>和<strong>高度</strong><code>h</code>是<u>相对于整个图像的预测值</u>。也就是说，<strong>一个网格单元预测的边界框的中心必须落在该网格单元内，但此边界框的大小范围可以超出此网格单元，其范围大小是相对于整张图像而言的</strong>，其数值也是归一化的结果。</p>
+<p>  <strong>宽度</strong><code>w</code>和<strong>高度</strong><code>h</code>是<u>相对于整个图像的预测值</u>。也就是说，<strong>一个网格单元预测的边界框的中心必须落在该网格单元内，但此边界框的大小范围可以超出此网格单元，其范围大小是相对于整张图像而言的</strong>，其数值也是归一化的结果。</p>
 <p><img src="/img/in_posts/YOLO/YOLO_v1/image-2.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p>  <strong>置信度</strong>表示边界框与任何真实值框之间的<code>IOU</code>（交并比）。<br></p>
-<p>  每个网格单元还预测 <code>C</code>个<strong>条件类别概率</strong>，$Pr(Class_i | Object)$ 。这些概率是基于网格单元包含一个物体的条件，即条件概率。<u>无论网格单元中的边界框数量 <code>B</code> 有多少，都只预测一组类别概率</u>。<br></p>
-<p>  测试时，将条件类别概率与各个边界框的置信度预测相乘，</p>
+<p>  <strong>置信度</strong>表示边界框与任何真实值框之间的<code>IOU</code>（交并比）。<br></p>
+<p>  每个网格单元还预测 <code>C</code>个<strong>条件类别概率</strong>，$Pr(Class_i | Object)$ 。这些概率是基于网格单元包含一个物体的条件，即条件概率。<u>无论网格单元中的边界框数量 <code>B</code> 有多少，都只预测一组类别概率</u>。<br></p>
+<p>  测试时，将条件类别概率与各个边界框的置信度预测相乘，</p>
 <p>$$\begin{aligned}Pr(Class_i | Object) * Pr(Object) * IOU_{pred}^{truth} \\ = Pr(Class_i) * IOU_{pred}^{truth} \\ ······（1） \end{aligned}$$</p>
 <p>可得每个框的<strong>针对类别的置信度分数</strong>。这些分数既编码了该类别出现在框中的概率，也编码了边界框与对象的拟合程度。</p>
 <blockquote>
 <p>这里说明，模型不仅给出了每个边界框内包含对象的置信度，而且给出了这个边界框内对象属于特定类别的置信度</p>
 </blockquote>
 <p><img src="/img/in_posts/YOLO/YOLO_v1/image.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p>  <code>YOLO</code> 将检测建模为一个回归问题。它将图像划分为 $S \times S$ 的网格，并为每个网格单元预测 $B$ 个边界框、这些边界框的置信度以及 $C$ 个类别概率。这些预测被编码为一个 $S \times S \times (B * 5 + C)$ 的<strong>张量</strong>。</p>
+<p>  <code>YOLO</code> 将检测建模为一个回归问题。它将图像划分为 $S \times S$ 的网格，并为每个网格单元预测 $B$ 个边界框、这些边界框的置信度以及 $C$ 个类别概率。这些预测被编码为一个 $S \times S \times (B * 5 + C)$ 的<strong>张量</strong>。</p>
 <br>
 <h4 id="网络设计-⌊Network-Design⌉">网络设计 ⌊Network Design⌉</h4>
-<p>  <code>YOLO</code>模型被实现为<strong>卷积神经网络</strong>，网络的初始卷积层从图像中提取特征，而在<strong>全连接层</strong>预测输出概率和坐标。受到用于图像分类的<code>GoogLeNet</code>模型的启发，<code>YOLO</code> 网络结构包含<code>24</code>个卷积层，随后是<code>2</code>个全连接层。与 <code>GoogLeNet</code> 模型使用的 <code>inception</code> 模块不同的是，<code>YOLO</code>在 <code>3x3</code> 的卷积层后使用<code>1x1</code>的降维层。直接看结构图：</p>
+<p>  <code>YOLO</code>模型被实现为<strong>卷积神经网络</strong>，网络的初始卷积层从图像中提取特征，而在<strong>全连接层</strong>预测输出概率和坐标。受到用于图像分类的<code>GoogLeNet</code>模型的启发，<code>YOLO</code> 网络结构包含<code>24</code>个卷积层，随后是<code>2</code>个全连接层。与 <code>GoogLeNet</code> 模型使用的 <code>inception</code> 模块不同的是，<code>YOLO</code>在 <code>3x3</code> 的卷积层后使用<code>1x1</code>的降维层。直接看结构图：</p>
 <p><img src="/img/in_posts/YOLO/YOLO_v1/image-3.png" srcset="/img/loading.gif" lazyload alt="模型结构图"></p>
 <p>输入图像大小为 <code>448x448</code>，经过 <code>24</code> 个卷积层和若干池化层后输出为 <code>7x7x1024</code>张量（倒数第三个立方体），最后再经过两层全连接层，得到网络的最终输出，即预测的 <code>7x7x30</code>张量。根据前面的内容，预测的结果是 $S \times S \times (B * 5 + C)$，这里的 <code>7x7x30</code> 含义是:</p>
 <ul>
@@ -524,13 +568,13 @@
 <p>除了<code>YOLO</code>外，作者还训练了一个快速版本的<code>YOLO</code>，旨在突破快速目标检测的界限。<code>Fast YOLO</code>使用了一个具有较少卷积层（<code>9</code>层而不是<code>24</code>层）和较少滤波器的神经网络。除了网络的大小外，<code>YOLO</code>和<code>Fast YOLO</code>的所有训练和测试参数都相同。</p>
 </blockquote>
 <h3 id="训练-⌊Training⌉">训练 ⌊Training⌉</h3>
-<p>  <code>YOLO</code>模型首先在<code>ImageNet</code>的<code>1000</code>类分类数据集上进行预训练，使用前<code>20</code>个卷积层以及平均池化层和全连接层，达到<code>88%</code>的<code>top-5</code>准确率。</p>
-<p>  为了进行目标检测，模型增加了<code>四个卷积层</code>和<code>两个全连接层</code>，并将输入分辨率从<code>224x224</code>提升至<code>448x448</code>以捕捉更精细的视觉信息。</p>
-<p>  模型的输出层预测归一化的边界框坐标和类别概率，其中边界框的宽高和图像宽高成比例，坐标则是相对于网格单元的偏移量。和前面的描述保持一致。</p>
-<p>  除了对网络结构的最后一层使用线性激活函数外，其他所有层使用了下面的 <code>Leaky ReLU</code> 函数：</p>
+<p>  <code>YOLO</code>模型首先在<code>ImageNet</code>的<code>1000</code>类分类数据集上进行预训练，使用前<code>20</code>个卷积层以及平均池化层和全连接层，达到<code>88%</code>的<code>top-5</code>准确率。</p>
+<p>  为了进行目标检测，模型增加了<code>四个卷积层</code>和<code>两个全连接层</code>，并将输入分辨率从<code>224x224</code>提升至<code>448x448</code>以捕捉更精细的视觉信息。</p>
+<p>  模型的输出层预测归一化的边界框坐标和类别概率，其中边界框的宽高和图像宽高成比例，坐标则是相对于网格单元的偏移量。和前面的描述保持一致。</p>
+<p>  除了对网络结构的最后一层使用线性激活函数外，其他所有层使用了下面的 <code>Leaky ReLU</code> 函数：</p>
 <p>$$\phi(x) = \begin{cases} x,\ if\ x &gt;\ 0 \\<br>
 0.1x,\ otherwise \end{cases} ······（2） $$</p>
-<p>  论文中优化了模型输出中的平方和误差:</p>
+<p>  论文中优化了模型输出中的平方和误差:</p>
 <h4 id="平方和误差的局限性">平方和误差的局限性</h4>
 <ol>
 <li>将定位误差和分类误差同等对待<br>在目标检测中，<strong>定位误差</strong>直接影响到预测框与真实物体的交并比 <code>IOU</code>。而<strong>分类误差</strong>对检测性能的影响相对较小，分类误差主要影响的是识别物体类别的准确性，但在有些情况下，即使分类错误或导致检测结果不正确，只要检测的位置和大小足够正确，检测的结果也可以被接受；</li>
@@ -553,7 +597,7 @@
 </li>
 </ol>
 <br>
-<p>  于是，通过前面的优化，<code>YOLO</code> 使用了如下的，多部分和的损失函数：</p>
+<p>  于是，通过前面的优化，<code>YOLO</code> 使用了如下的，多部分和的损失函数：</p>
 <p>$$\begin{aligned} \lambda_{coord} \sum_{i=1}^{S^2} \sum_{j=1}^{B}\ \mathbf{1}<em>{ij}^{obj}[(x_i-\hat{x_i})^2 + (y_i - \hat{y_i})^2] \\ + \lambda</em>{coord} \sum_{i=1}^{S^2} \sum_{j=1}^{B}\ \mathbf{1}<em>{ij}^{obj}[(\sqrt{w_i}-\sqrt{\hat{w_i}})^2 + (\sqrt{h_i}-\sqrt{\hat{h_i}}\ )^2] \\ + \sum</em>{i=1}^{S^2} \sum_{j=1}^{B}\ \mathbf{1}<em>{ij}^{obj} (C_i - \hat{C_i})^2 \\ + \lambda</em>{noobj} \sum_{i=1}^{S^2} \sum_{j=1}^{B} \mathbf{1}<em>{ij}^{noobj} (C_i - \hat{C_i})^2 \\ + \sum</em>{i=1}^{S^2} \sum_{c \in classes} (p_i© - \hat{p_i}©)^2 \\ ······（3）\end{aligned}$$</p>
 <blockquote>
 <p>论文中这里貌似出现了笔误，论文中的损失函数中求和是从 <code>i=0</code> 到 <code>S^2</code>，即 $\sum_{i = 0}^{S^2}$，实际上应该为$\sum_{i = 1}^{S^2}$ 或者 $\sum_{i = 0}^{S^2 - 1}$。</p>
@@ -571,7 +615,7 @@
 <p>$$\mathbf{1}_{ij}^{obj} = \begin{cases} 1,\ 第 i 个网格单元的第 j 个边界框预测器是否负责预测一个物体 \\ 0,\ 否则\end{cases}$$</p>
 </li>
 </ul>
-<p>  实际上，上述损失函数可以分为以下几个部分：</p>
+<p>  实际上，上述损失函数可以分为以下几个部分：</p>
 <ol>
 <li>
 <p><strong>位置误差</strong></p>
@@ -592,8 +636,8 @@
 </li>
 </ol>
 <p><img src="/img/in_posts/YOLO/YOLO_v1/image-6.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p>  由损失函数不难看出，由于分类误差中含有指示函数 $\mathbf{1}_{i}^{obj}$ ，所以损失函数只会在该网格单元中存在物体时才对分类误差进行惩罚。</p>
-<p>  此外，由于位置误差中指示函数 $\mathbf{1}_{ij}^{obj}$ 的存在，损失函数只会某个某个边界框预测器对真实值框 “负责” 时会惩罚边界框的位置误差。</p>
+<p>  由损失函数不难看出，由于分类误差中含有指示函数 $\mathbf{1}_{i}^{obj}$ ，所以损失函数只会在该网格单元中存在物体时才对分类误差进行惩罚。</p>
+<p>  此外，由于位置误差中指示函数 $\mathbf{1}_{ij}^{obj}$ 的存在，损失函数只会某个某个边界框预测器对真实值框 “负责” 时会惩罚边界框的位置误差。</p>
 <h3 id="YOLO-的局限性">YOLO 的局限性</h3>
 <p>YOLO的局限性主要包括以下几点：</p>
 <ol>
@@ -631,15 +675,25 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/" class="category-chain-item">目标检测</a>
+  <a href="/categories/Object-Detection/" class="category-chain-item">Object Detection</a>
   
   
     <span>></span>
     
-  <a href="/categories/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/YOLO/" class="category-chain-item">YOLO</a>
+  <a href="/categories/Object-Detection/YOLO/" class="category-chain-item">YOLO</a>
   
   
 
+  
+
+      </span>
+    
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Paper-Hub/" class="category-chain-item">Paper Hub</a>
+  
   
 
       </span>
@@ -652,8 +706,6 @@
   
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
-      
-        <a href="/tags/PaperShare/" class="print-no-link">#PaperShare</a>
       
         <a href="/tags/YOLO/" class="print-no-link">#YOLO</a>
       
@@ -688,7 +740,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>Updated on</div>
-          <div>August 6, 2025</div>
+          <div>August 13, 2025</div>
         </div>
       
       
@@ -898,7 +950,7 @@
     <div class="footer-inner">
   
     <div class="footer-content">
-       <style> .small-text { font-size: 0.8em; } </style> <p class="small-text">&copy; 2024-2025 gnibnay. All rights reserved.</p> <div class="statistics" style="font-size: 0.80rem"> <a target="_blank" rel="noopener" href="https://developer.hitokoto.cn/" id="hitokoto_text"><span id="hitokoto"></span></a> <script src="https://v1.hitokoto.cn/?c=h&c=i&c=k&encode=js&select=%23hitokoto" defer></script> </div> <div style="font-size: 0.85rem"> <span id="timeDate">loading days...</span> <span id="times">loading time...</span> <script src="/js/duration.js"></script> </div> 
+       <style> .small-text { font-size: 0.8em; } </style> <p class="small-text">&copy; 2024-2025 gnibnay. All rights reserved.</p> <div class="statistics" style="font-size: 0.80rem"> <div href="https://developer.hitokoto.cn/" id="hitokoto_text"><span id="hitokoto"></span></div> <script src="https://v1.hitokoto.cn/?c=f&c=h&c=i&c=k&c=l&encode=js&select=%23hitokoto" defer></script> </div> <div style="font-size: 0.85rem"> <span id="timeDate">loading days...</span> <span id="times">loading time...</span> <script src="/js/duration.js"></script> </div> 
     </div>
   
   
