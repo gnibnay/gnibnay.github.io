@@ -1,0 +1,1204 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="gnibnay">
+  <meta name="keywords" content="computer.science">
+  
+    <meta name="description" content="如何在vscode中使用clangd，而非使用intellisense">
+<meta property="og:type" content="article">
+<meta property="og:title" content="using clangd, instead of intellisense in vscode">
+<meta property="og:url" content="http://gnibnay.github.io/2025/10/01/Notes/vscode+clangd/index.html">
+<meta property="og:site_name" content="gnibnay&#39;s blog">
+<meta property="og:description" content="如何在vscode中使用clangd，而非使用intellisense">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://gnibnay.github.io/img/in_posts/Notes/background.png">
+<meta property="article:published_time" content="2025-10-01T05:00:00.000Z">
+<meta property="article:modified_time" content="2025-10-02T01:54:55.501Z">
+<meta property="article:author" content="gnibnay">
+<meta property="article:tag" content="vscode">
+<meta property="article:tag" content="clangd">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://gnibnay.github.io/img/in_posts/Notes/background.png">
+  
+  
+  
+  <title>using clangd, instead of intellisense in vscode - gnibnay&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/indeximg-hover.css">
+<link rel="stylesheet" href="/css/scrollbar.css">
+<link rel="stylesheet" href="/css/scrollAnimation.css">
+<link rel="stylesheet" href="/css/font.css">
+<link rel="stylesheet" href="/css/APlayer.min.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"gnibnay.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":2},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":"pO4fPO8GQ0rpvThocBK6UsqM-gzGzoHsz","app_key":"CClN4theleoncPtM9pz8iS73","server_url":"https://po4fpo8g.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":true},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+  <link rel="stylesheet" href="https://npm.elemecdn.com/lxgw-wenkai-screen-webfont/style.css" media="print" onload="this.media='all'">
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 90vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>gnibnay</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/in_posts/Notes/background.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="how to use clangd in vscode"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        gnibnay
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-10-01 13:00" pubdate>
+          October 1, 2025 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.3k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          28 mins
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span> views
+        </span>
+        
+      
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+        <div class="scroll-down-bar">
+          <i class="iconfont icon-arrowdown"></i>
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-right: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="C/C++"
+        id="heading-915d356c4d213cec76d72f1cc1ec13f5" role="tab" data-toggle="collapse" href="#collapse-915d356c4d213cec76d72f1cc1ec13f5"
+        aria-expanded="true"
+      >
+        C/C++
+        <span class="list-group-count">(7)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-915d356c4d213cec76d72f1cc1ec13f5"
+           role="tabpanel" aria-labelledby="heading-915d356c4d213cec76d72f1cc1ec13f5">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Concurrency"
+        id="heading-3e48afddb0c5521684b8d2687b0869d6" role="tab" data-toggle="collapse" href="#collapse-3e48afddb0c5521684b8d2687b0869d6"
+        aria-expanded="false"
+      >
+        Concurrency
+        <span class="list-group-count">(1)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-3e48afddb0c5521684b8d2687b0869d6"
+           role="tabpanel" aria-labelledby="heading-3e48afddb0c5521684b8d2687b0869d6">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2024/12/26/Concurrency/c++%E5%A4%9A%E7%BA%BF%E7%A8%8B-%E5%B1%82%E6%AC%A1%E9%94%81/" title="C++多线程之层次锁"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">C++多线程之层次锁</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Macros"
+        id="heading-a0e3947a02661e2385e4b76ab1b12f4d" role="tab" data-toggle="collapse" href="#collapse-a0e3947a02661e2385e4b76ab1b12f4d"
+        aria-expanded="false"
+      >
+        Macros
+        <span class="list-group-count">(5)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-a0e3947a02661e2385e4b76ab1b12f4d"
+           role="tabpanel" aria-labelledby="heading-a0e3947a02661e2385e4b76ab1b12f4d">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2024/11/18/Macros/%E5%AE%8F%E7%9A%84%E8%89%BA%E6%9C%AF_1/" title="探索C/C++宏的艺术（一）"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">探索C/C++宏的艺术（一）</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/12/24/Macros/%E5%AE%8F%E7%9A%84%E8%89%BA%E6%9C%AF_3/" title="探索C/C++宏的艺术（三）"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">探索C/C++宏的艺术（三）</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/11/20/Macros/%E5%AE%8F%E7%9A%84%E8%89%BA%E6%9C%AF_2/" title="探索C/C++宏的艺术（二）"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">探索C/C++宏的艺术（二）</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2025/01/10/Macros/%E5%AE%8F%E7%9A%84%E8%89%BA%E6%9C%AF_5/" title="探索C/C++宏的艺术（五）"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">探索C/C++宏的艺术（五）</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/12/28/Macros/%E5%AE%8F%E7%9A%84%E8%89%BA%E6%9C%AF_4/" title="探索C/C++宏的艺术（四）"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">探索C/C++宏的艺术（四）</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="clang"
+        id="heading-2c5517db7bc397f9b14ae357a7ce54ff" role="tab" data-toggle="collapse" href="#collapse-2c5517db7bc397f9b14ae357a7ce54ff"
+        aria-expanded="true"
+      >
+        clang
+        <span class="list-group-count">(1)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-2c5517db7bc397f9b14ae357a7ce54ff"
+           role="tabpanel" aria-labelledby="heading-2c5517db7bc397f9b14ae357a7ce54ff">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2025/10/01/Notes/vscode+clangd/" title="using clangd, instead of intellisense in vscode"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">using clangd, instead of intellisense in vscode</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">how to use clangd in vscode</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    Last updated on October 2, 2025 am
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="what-is-clangd">what is clangd?</h2>
+<p>  如果你使用 llvm/clang 工具链开发 C/C++ 项目，那么对
+<strong>clangd</strong> 应该不会陌生。这里不对 llvm/clang
+工具链做过多介绍，但是 clangd 值得一提。</p>
+<p>  clangd 作为 llvm/clang 生态下的核心工具之一，主要用于为 C/C++
+提供语言服务器协议（LSP，language Server
+Protocol）支持，如代码补全、语法检查、代码导航或跳转等功能。clangd
+通过解析代码结构，理解代码语义，提供更智能的代码分析和建议。</p>
+<h2 id="why-clangd">why clangd?</h2>
+<p>  有过 clion 和 vscode 开发 C/C++ 经验的同学应该有所感触，当从 clion
+切换到 vscode 进行开发时，往往会觉得 vscode
+的代码补全、语法检查等功能不如 clion 智能。vscode 默认使用的
+<strong>intellisense</strong>
+特别是在针对较大项目代码的分析上，不够精确、高效，有时甚至会出现误报的情况，而基于
+clangd 的 clion 却能够带来更好的体验。那 vscode+intellisense
+只能是唯一选择了吗？</p>
+<p>  实际上，llvm 团队开发了 clangd 插件供vscode环境使用，但为什么不禁用
+intellisense，转而拥抱 clangd 呢？我想 clangd
+无法做到开箱即用成为这唯一的阻碍。本文将介绍如何在 vscode 中使用
+clangd。</p>
+<figure>
+<img
+src="/themes/fluid/source/img/in_posts/Notes/vscode+clangd/image1.png" srcset="/img/loading.gif" lazyload
+alt="clangd 插件" />
+<figcaption aria-hidden="true">clangd 插件</figcaption>
+</figure>
+<h2 id="how-to-use-clangd-in-vscode">how to use clangd in vscode?</h2>
+<p>  下面介绍如何在 vscode 中配置并使用 clangd。</p>
+<h3 id="安装-clangd">1. 安装 clangd</h3>
+<p>  clangd 的安装方式多样，可以通过包管理器安装，也可以从 llvm
+官网下载预编译的二进制文件，或从源码编译安装。</p>
+<h4 id="源码编译安装">源码编译安装</h4>
+<p>  如果你尚未安装 llvm/clang
+工具链，而有心尝试，推荐从源码直接编译安装clangd，这样可以获取<strong>严格匹配的版本</strong>。以下是简要步骤：
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 假设已经克隆好llvm项目源码（这里以20.1.5版本为例）</span><br><span class="hljs-built_in">cd</span> llvm-project<br><span class="hljs-comment"># 创建编译目录</span><br><span class="hljs-built_in">mkdir</span> build &amp;&amp; <span class="hljs-built_in">cd</span> build<br><br><span class="hljs-comment"># 配置 Cmake，指定安装路径（如 /usr/local/bin/llvm-20.1.5）</span><br>cmake -G <span class="hljs-string">&quot;Unix Makefiles&quot;</span> \<br>  -DCMAKE_INSTALL_PREFIX=/usr/local/llvm-20.1.5 \<br>  -DLLVM_ENABLE_PROJECTS=<span class="hljs-string">&quot;clang;clang-tools-extra&quot;</span> \  <span class="hljs-comment"># 包含clangd</span><br>  -DCMAKE_BUILD_TYPE=Release \<br>  ../llvm<br><br><span class="hljs-comment">#编译并安装</span><br>make -j$(<span class="hljs-built_in">nproc</span>) <span class="hljs-comment"># 根据情况调整并行数</span><br><span class="hljs-built_in">sudo</span> make install<br><br><span class="hljs-comment"># 添加到环境变量（~/.bashrc或~/.zshrc）</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;export PATH=/usr/local/llvm-20.1.5/bin:$PATH&#x27;</span> &gt;&gt; ~/.bashrc<br><span class="hljs-built_in">source</span> ~/.bashrc<br></code></pre></td></tr></table></figure></p>
+<h4 id="通过包管理器安装">通过包管理器安装</h4>
+<p>  如果已经安装了 llvm/clang 工具链，但编译时并没有包含
+clangd，可以通过包管理器按照，但是要安装与 llvm/clang
+相匹配的版本。以下是简要步骤： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> apt update<br><span class="hljs-built_in">sudo</span> apt install clangd-20 <span class="hljs-comment"># 以20版本为例</span><br><br><span class="hljs-comment"># apt 默认安装到 /usr/bin/clangd-20的位置</span><br><span class="hljs-comment"># 可以创建软连接到 llvm/clang 工具链目录下</span><br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">ln</span> -s /usr/bin/clangd-20 /usr/local/llvm-20.1.5/bin/clangd<br></code></pre></td></tr></table></figure></p>
+<h4 id="验证安装">验证安装</h4>
+<p>  安装完成后，可以通过下面命令验证是否安装成功： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">clangd --version<br></code></pre></td></tr></table></figure>
+如果显示版本信息则说明安装成功。</p>
+<h3 id="vscode-插件配置">2. vscode 插件配置</h3>
+<h4 id="安装-clangd-插件">安装 clangd 插件</h4>
+<p>  打开 vscode 插件市场，键入 clangd 安装即可。</p>
+<h4 id="禁用默认的-c-插件避免冲突">禁用默认的 C++ 插件（避免冲突）</h4>
+<p>  vscode 默认安装的 C++ 插件（ms-vscode.cpptools）会与 clangd
+插件冲突，建议禁用该插件。可以在插件视图中找到该插件，点击禁用即可。</p>
+<h3 id="vscode-配置">3. vscode 配置</h3>
+<p>  需要修改 setting.json（全局或工作区），指定 clangd
+行为。核心配置如下： <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-comment">// ... 原有配置项</span><br><br>    <span class="hljs-comment">// 禁用默认C++插件的IntelliSense</span><br>    <span class="hljs-attr">&quot;C_Cpp.intelliSenseEngine&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;disabled&quot;</span><span class="hljs-punctuation">,</span><br><br>    <span class="hljs-comment">// clangd配置</span><br>    <span class="hljs-attr">&quot;clangd.arguments&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>      <span class="hljs-string">&quot;--compile-commands-dir=$&#123;workspaceFolder&#125;/build&quot;</span><span class="hljs-punctuation">,</span>  <span class="hljs-comment">// 编译数据库路径（关键）</span><br>      <span class="hljs-string">&quot;--background-index&quot;</span><span class="hljs-punctuation">,</span>                               <span class="hljs-comment">// 后台索引，提升性能</span><br>      <span class="hljs-string">&quot;--header-insertion=never&quot;</span><span class="hljs-punctuation">,</span>                         <span class="hljs-comment">// 禁用自动插入头文件</span><br>      <span class="hljs-string">&quot;--query-driver=/usr/local/llvm-20.1.5/bin/clang++&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-comment">// 你的编译器路径</span><br>      <span class="hljs-string">&quot;--all-scopes-completion&quot;</span><span class="hljs-punctuation">,</span>                          <span class="hljs-comment">// 显示所有作用域的补全（可选）</span><br>      <span class="hljs-string">&quot;--completion-style=detailed&quot;</span><span class="hljs-punctuation">,</span>                      <span class="hljs-comment">// 补全信息更详细（可选）</span><br>      <span class="hljs-string">&quot;--log=verbose&quot;</span>                                     <span class="hljs-comment">// 调试日志（可选）</span><br>    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br><br>    <span class="hljs-comment">// 用clangd格式化代码（可选）</span><br>    <span class="hljs-attr">&quot;editor.defaultFormatter&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;llvm-vs-code-extensions.vscode-clangd&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;[cpp]&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;editor.formatOnSave&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span> <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;[c]&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;editor.formatOnSave&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span> <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure></p>
+<h3 id="生成编译数据库">4. 生成编译数据库</h3>
+<p>  clangd 依赖<strong>编译数据库</strong>（Compilation
+Database）来理解项目的编译选项和结构。通常，编译数据库以
+<strong>compile_commands.json</strong>
+文件的形式存在，其本质是项目编译信息的结构化记录，告诉 clangd
+如何解析项目中的每一个源文件。</p>
+<p>  compile_commands.json 是一个 JSON
+数组，每个元素对应一个源文件的编译信息，核心字段包括：</p>
+<ul>
+<li><strong>directory</strong>：编译该文件时的工作目录（绝对路径）；</li>
+<li><strong>command</strong>：编译该文件的完整命令（包含所有的编译选项）；</li>
+<li><strong>file</strong>：源文件的路径（绝对路径或相对于 directory
+的相对路径）。</li>
+</ul>
+<p>  例如：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">[</span><br>  <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;directory&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;/home/user/my_project/build&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;command&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;g++ -I../include -I../third_party/spdlog/include -DDEBUG -std=c++17 -Wall -c ../src/main.cpp -o src/main.o&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;file&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;/home/user/my_project/src/main.cpp&quot;</span><br>  <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;directory&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;/home/user/my_project/build&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;command&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;g++ -I../include -I../third_party/json/include -DNDEBUG -std=c++17 -c ../src/util/string_utils.cpp -o src/util/string_utils.o&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;file&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;/home/user/my_project/src/util/string_utils.cpp&quot;</span><br>  <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;directory&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;/home/user/my_project/build&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;command&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;gcc -I../include -DPLATFORM_LINUX -std=c99 -Wextra -c ../src/core/config.c -o src/core/config.o&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;file&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;/home/user/my_project/src/core/config.c&quot;</span><br>  <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;directory&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;/home/user/my_project/build&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;command&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;g++ -I../include -I../third_party/protobuf/include -DUSE_PROTOBUF -std=c++20 -c ../src/net/network.cpp -o src/net/network.o&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;file&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;/home/user/my_project/src/net/network.cpp&quot;</span><br>  <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;directory&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;/home/user/my_project/build&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;command&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;g++ -I../include -DTEST_MODE -std=c++17 -c ../tests/unit/test_main.cpp -o tests/unit/test_main.o&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;file&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;/home/user/my_project/tests/unit/test_main.cpp&quot;</span><br>  <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">]</span><br></code></pre></td></tr></table></figure>
+<blockquote>
+<p>  其中，"directory"
+字段记录的"编译该文件时的工作目录"，指的是编译器在编译这个源文件时所处目录的绝对路径，而"command"
+字段中的编译选项，如 -I../include
+等，都是相对于此"基准目录"进行解析的。</p>
+</blockquote>
+<h4 id="自动搜索逻辑">自动搜索逻辑</h4>
+<p>  当没有配置 --compile-commands-dir 参数，或者其值指定目录下不存在
+compile_commands.json 文件时，clangd
+都会执行一种自动搜索逻辑的策略寻找该 json 文件，具体为：</p>
+<ol type="1">
+<li><strong>以"当前打开的文件"为起点</strong> clangd
+的搜索会从<strong>用户正在编辑的文件所在目录</strong>开始。例如，假设你正在编辑
+/home/user/my_project/src/main.cpp 文件，clangd 会从
+/home/user/my_project/src 目录开始搜索 compile_commands.json 文件。</li>
+<li><strong>逐级向上搜索父目录</strong> 如果在当前目录没有找到目标
+compile_commands.json 文件，clangd
+会继续向上搜索其父目录，直到找到该文件，或到达文件系统的根目录为止。例如，继续上诉例子，clangd
+会依次检查以下目录：
+<ul>
+<li>/home/user/my_project/src/</li>
+<li>/home/user/my_project/</li>
+<li>/home/user/</li>
+<li>/home/</li>
+<li>/</li>
+</ul></li>
+<li><strong>优先识别"项目根目录"</strong>
+为了避免无意义的全局搜索，或误将其他项目的 compile_commands.json
+文件纳入考虑，clangd 会优先识别一些典型的"项目根目录"标志，如
+.git、.hg、.svn
+等版本控制目录。如果在搜索过程中遇到这些标志目录或文件，clangd
+会将其所在目录视为项目根目录，并优先在该目录下寻找 compile_commands.json
+文件。</li>
+<li><strong>检查常见构建项目</strong> 在项目根目录下，clangd
+会额外检查一些约定俗成的构建目录，如
+build、build-dir、out、cmake-build-debug
+等，这些目录通常时构建系统生成编译产物的地方，可能会包含
+compile_commands.json 文件。</li>
+<li><strong>停止条件</strong> clangd 的搜索会在以下两种情况下停止：
+<ul>
+<li>找到了 compile_commands.json 文件，停止搜索并使用该文件；</li>
+<li>达到了项目根目录，仍未找到，则使用默认配置（可能会解析错误）。</li>
+</ul></li>
+</ol>
+<p>  生成 compile_commands.json 的方式有多种，最常见的是通过 CMake
+构建系统进行生成。</p>
+<h4 id="使用-cmake-生成适用于-cmake-项目">使用 CMake 生成（适用于 CMake
+项目）</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 进入项目目录</span><br><span class="hljs-built_in">cd</span> your_project\<br><br><span class="hljs-comment"># 创建 build 目录并生成编译数据库</span><br><span class="hljs-built_in">mkdir</span> build &amp;&amp; <span class="hljs-built_in">cd</span> build<br>cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .. <span class="hljs-comment"># 关键参数，导出编译命令</span><br></code></pre></td></tr></table></figure>
+<p>  生成后，build/compile_commands.json 文件会被 clangd
+自动识别（对应配置中的 --compile-commands-dir）。</p>
+<h4 id="使用-bear-生成适用非-cmake-项目如-make">使用 Bear 生成（适用非
+CMake 项目，如 Make）</h4>
+<p>  简单说，bear
+是一个"编译命令捕获工具"，它并不依赖特定的构建系统，而是通过监控整个构建过程，提取每一源文件的实际编译命令，从而生成最终的
+compile_commands.json 文件，专门为<strong>非CMake 构建系统</strong>（如
+Make等）生成编译数据库的工具。</p>
+<blockquote>
+<p>  bear
+捕获编译命令不意味着会改变或干预项目构建过程，只是作为一个监控者，记录下编译器调用的相关信息，并将其整理为
+compile_commands.json 文件，所以编译命令还是会实际执行的。</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 安装 bear</span><br><span class="hljs-built_in">sudo</span> apt install bear<br><br><span class="hljs-comment"># 使用 bear 生成</span><br>bear make<br></code></pre></td></tr></table></figure>
+<h4 id="手动创建适用于简单项目">手动创建（适用于简单项目）</h4>
+<p>  前面我们介绍了 compile_commands.json
+的数据格式，对于一些简单的项目，也可以手动创建该文件，这里不再赘述。</p>
+<h3 id="推荐使用项目级配置-.clangd">5. 推荐使用项目级配置 .clangd</h3>
+<p>  前面介绍了如何在 vscode 的 setting.json 中配置 clangd，而 .clangd
+文件作为 clangd
+的原生配置文件，支持更多的高级配置选项，推荐在项目根目录下创建 .clangd
+文件进行项目级配置。并且 <strong>clangd 会优先读取 .clangd
+文件中的配置</strong>，覆盖 vscode setting.json 中的同名配置项。</p>
+<p>  .clangd 使用 YAML 格式，以下是一个示例配置： <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-comment"># .clangd 配置示例（放置于项目根目录）</span><br><br><span class="hljs-comment"># --------------------------</span><br><span class="hljs-comment"># 1. 诊断相关设置（代码错误/警告提示）</span><br><span class="hljs-comment"># --------------------------</span><br><span class="hljs-attr">Diagnostics:</span><br>  <span class="hljs-comment"># 忽略指定类型的警告（完整警告列表见 clang 文档）</span><br>  <span class="hljs-comment"># 常见场景：关闭 &quot;未使用的头文件&quot; 警告、&quot;未使用的变量&quot; 警告等</span><br>  <span class="hljs-attr">Ignore:</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;unused-includes&quot;</span>  <span class="hljs-comment"># 忽略 &quot;头文件未直接使用&quot; 警告（如你之前遇到的场景）</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;unused-variable&quot;</span>  <span class="hljs-comment"># 忽略 &quot;变量未使用&quot; 警告</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;unused-function&quot;</span>  <span class="hljs-comment"># 忽略 &quot;函数未使用&quot; 警告</span><br><br>  <span class="hljs-comment"># 警告级别（默认 &quot;Warning&quot;，可选 &quot;Error&quot; 或 &quot;Ignore&quot;）</span><br>  <span class="hljs-comment"># 可将特定警告提升为错误，强制修复</span><br>  <span class="hljs-attr">Severity:</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;missing-field-initializers:Error&quot;</span>  <span class="hljs-comment"># 将 &quot;结构体成员未初始化&quot; 警告设为错误</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;implicit-fallthrough:Warning&quot;</span>     <span class="hljs-comment"># &quot;switch 穿透未显式标注&quot; 保持警告</span><br><br>  <span class="hljs-comment"># 是否显示修复建议（如自动删除未使用的头文件）</span><br>  <span class="hljs-attr">ShowFixIts:</span> <span class="hljs-literal">true</span>  <span class="hljs-comment"># 默认 true，关闭可设为 false</span><br><br><br><span class="hljs-comment"># --------------------------</span><br><span class="hljs-comment"># 2. 索引相关设置（代码跳转/补全的基础）</span><br><span class="hljs-comment"># --------------------------</span><br><span class="hljs-attr">Index:</span><br>  <span class="hljs-comment"># 索引存储路径（默认在系统临时目录，可指定到项目内方便缓存）</span><br>  <span class="hljs-attr">StoragePath:</span> <span class="hljs-string">.clangd/index</span>  <span class="hljs-comment"># 索引文件存放在项目的 .clangd/index 目录（需手动创建）</span><br><br>  <span class="hljs-comment"># 是否启用全局索引（跨文件的符号查找，适合大型项目）</span><br>  <span class="hljs-attr">EnableGlobalIndex:</span> <span class="hljs-literal">true</span>  <span class="hljs-comment"># 默认 false，开启后支持跨文件查找引用</span><br><br>  <span class="hljs-comment"># 索引构建的并行度（默认等于 CPU 核心数，可降低避免卡顿）</span><br>  <span class="hljs-attr">BackgroundThreads:</span> <span class="hljs-number">4</span>  <span class="hljs-comment"># 限制为 4 线程（视机器性能调整）</span><br><br><br><span class="hljs-comment"># --------------------------</span><br><span class="hljs-comment"># 3. 编译命令相关（处理项目依赖）</span><br><span class="hljs-comment"># --------------------------</span><br><span class="hljs-attr">CompileFlags:</span><br>  <span class="hljs-comment"># 额外添加的编译选项（相当于在编译命令中追加）</span><br>  <span class="hljs-comment"># 常用于补充头文件路径、宏定义（当 compile_commands.json 不完整时）</span><br>  <span class="hljs-attr">Add:</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;-I./third_party/include&quot;</span>  <span class="hljs-comment"># 添加自定义头文件目录</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;-DENABLE_DEBUG&quot;</span>           <span class="hljs-comment"># 定义全局宏（相当于代码中的 #define ENABLE_DEBUG）</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;-std=c++20&quot;</span>               <span class="hljs-comment"># 强制指定 C++ 标准（覆盖 compile_commands.json 中的设置）</span><br><br>  <span class="hljs-comment"># 从编译命令中移除的选项（解决冲突或无用选项）</span><br>  <span class="hljs-attr">Remove:</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;-Werror&quot;</span>  <span class="hljs-comment"># 移除 &quot;将警告视为错误&quot; 的选项（避免轻微警告导致编辑器报错）</span><br><br>  <span class="hljs-comment"># 编译命令数据库（compile_commands.json）的查找路径</span><br>  <span class="hljs-comment"># 默认为项目根目录，若文件在子目录可指定</span><br>  <span class="hljs-attr">CompilationDatabase:</span> <span class="hljs-string">build</span>  <span class="hljs-comment"># 编译命令文件在 build 目录下</span><br><br><br><span class="hljs-comment"># --------------------------</span><br><span class="hljs-comment"># 4. 代码格式化（与 .clang-format 配合）</span><br><span class="hljs-comment"># --------------------------</span><br><span class="hljs-attr">Format:</span><br>  <span class="hljs-comment"># 是否启用 clangd 内置格式化（默认 true）</span><br>  <span class="hljs-attr">Enable:</span> <span class="hljs-literal">true</span><br><br>  <span class="hljs-comment"># 格式化风格文件路径（默认查找项目内的 .clang-format）</span><br>  <span class="hljs-attr">Style:</span><br>    <span class="hljs-comment"># 可直接指定风格（如 &quot;LLVM&quot;、&quot;Google&quot;）或文件路径</span><br>    <span class="hljs-attr">Path:</span> <span class="hljs-string">./.clang-format</span>  <span class="hljs-comment"># 使用项目根目录的 .clang-format 配置</span><br><br><br><span class="hljs-comment"># --------------------------</span><br><span class="hljs-comment"># 5. 代码提示增强（补全/悬浮提示）</span><br><span class="hljs-comment"># --------------------------</span><br><span class="hljs-attr">InlayHints:</span><br>  <span class="hljs-comment"># 是否显示参数名提示（如函数调用时显示参数名）</span><br>  <span class="hljs-attr">ParameterNames:</span> <span class="hljs-literal">true</span>  <span class="hljs-comment"># 例：func(name: &quot;abc&quot;) 中显示 &quot;name:&quot;</span><br><br>  <span class="hljs-comment"># 是否显示类型提示（如 auto 变量的实际类型）</span><br>  <span class="hljs-attr">DeducedTypes:</span> <span class="hljs-literal">true</span>  <span class="hljs-comment"># 例：auto x = 10; 悬浮时显示 &quot;int x = 10&quot;</span><br><br><br><span class="hljs-comment"># --------------------------</span><br><span class="hljs-comment"># 6. 日志与调试（排查 clangd 问题时用）</span><br><span class="hljs-comment"># --------------------------</span><br><span class="hljs-attr">Logging:</span><br>  <span class="hljs-comment"># 日志级别（默认 &quot;info&quot;，调试时设为 &quot;verbose&quot; 或 &quot;debug&quot;）</span><br>  <span class="hljs-attr">Level:</span> <span class="hljs-string">info</span><br><br>  <span class="hljs-comment"># 日志输出路径（默认 stderr，可指定文件）</span><br>  <span class="hljs-attr">Path:</span> <span class="hljs-string">.clangd/clangd.log</span>  <span class="hljs-comment"># 日志存放在项目的 .clangd 目录</span><br><br><br><span class="hljs-comment"># --------------------------</span><br><span class="hljs-comment"># 7. 其他实用设置</span><br><span class="hljs-comment"># --------------------------</span><br><span class="hljs-comment"># 是否允许 clangd 返回不完整的结果（如索引未完成时的临时补全）</span><br><span class="hljs-attr">AllowIncompleteResults:</span> <span class="hljs-literal">false</span>  <span class="hljs-comment"># 默认为 true，关闭可确保结果准确性</span><br><br><span class="hljs-comment"># 头文件映射（解决跨平台路径差异，如 Windows 和 Linux 路径格式）</span><br><span class="hljs-attr">HeaderMappings:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-attr">Local:</span> <span class="hljs-string">&quot;C:/project/include&quot;</span>  <span class="hljs-comment"># 本地路径</span><br>    <span class="hljs-attr">Remote:</span> <span class="hljs-string">&quot;/home/project/include&quot;</span>  <span class="hljs-comment"># 映射到的远程路径（适用于远程开发）</span><br></code></pre></td></tr></table></figure></p>
+<h2 id="总结">总结</h2>
+<p>  通过上述步骤，你应该能够在 vscode 中成功配置并使用 clangd，提升
+C/C++ 的开发体验。告别 c_cpp_properties.json，拥抱 compile_commands.json
+吧，祝你编码愉快！</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/C-C/" class="category-chain-item">C/C++</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/C-C/clang/" class="category-chain-item">clang</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/vscode/" class="print-no-link">#vscode</a>
+      
+        <a href="/tags/clangd/" class="print-no-link">#clangd</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>using clangd, instead of intellisense in vscode</div>
+      <div>http://gnibnay.github.io/2025/10/01/Notes/vscode+clangd/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>gnibnay</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>October 1, 2025</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Updated on</div>
+          <div>October 2, 2025</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="NC - Non-commercial">
+                    <i class="iconfont icon-cc-nc"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="SA - Share-alike">
+                    <i class="iconfont icon-cc-sa"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/08/08/Issues/%E6%9C%89%E7%BD%91%E5%8D%B4%E4%B8%8D%E8%83%BD%E4%B8%8A/" title="有网却不能上？">
+                        <span class="hidden-mobile">有网却不能上？</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="waline"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#waline', function() {
+      Fluid.utils.createCssLink('https://registry.npmmirror.com/@waline/client/2.15.8/files/dist/waline.css')
+      Fluid.utils.createScript('https://registry.npmmirror.com/@waline/client/2.15.8/files/dist/waline.js', function() {
+        var options = Object.assign(
+          {"serverURL":"https://voluble-chimera-42ecad.netlify.app/.netlify/functions/comment","path":"window.location.pathname","meta":["nick","mail","link"],"requiredMeta":["nick"],"lang":"zh-CN","emoji":["https://unpkg.com/@waline/emojis@1.2.0/qq","https://unpkg.com/@waline/emojis@1.2.0/bilibili"],"dark":"html[data-user-color-scheme=\"dark\"]","wordLimit":0,"pageSize":10},
+          {
+            el: '#waline',
+            path: window.location.pathname
+          }
+        )
+        Waline.init(options);
+        Fluid.utils.waitElementVisible('#waline .vcontent', () => {
+          var imgSelector = '#waline .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <style> .small-text { font-size: 0.8em; } </style> <p class="small-text">&copy; 2024-2025 gnibnay. All rights reserved.</p> <div class="statistics" style="font-size: 0.80rem"> <div href="https://developer.hitokoto.cn/" id="hitokoto_text"><span id="hitokoto"></span></div> <script src="https://v1.hitokoto.cn/?c=f&c=h&c=i&c=k&c=l&encode=js&select=%23hitokoto" defer></script> </div> <div style="font-size: 0.85rem"> <span id="timeDate">loading days...</span> <span id="times">loading time...</span> <script src="/js/duration.js"></script> </div> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        Views: 
+        <span id="leancloud-site-pv"></span>
+        
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        Visitors: 
+        <span id="leancloud-site-uv"></span>
+        
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/js/fireworks.js"></script>
+<script src="/js/starswithmouse.js"></script>
+<script src="/js/sakura.js"></script>
+<script src="/js/scrollAnimation.js"></script>
+<script src="/js/APlayer.min.js"></script>
+<script src="/js/Meeting.min.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+
+  <!--浏览器搞笑标题-->
+  <script type="text/javascript" src="/js/funnytitle.js"></script>
+
+</body>
+</html>
