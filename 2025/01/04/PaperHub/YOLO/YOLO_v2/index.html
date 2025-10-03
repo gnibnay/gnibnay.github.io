@@ -1,0 +1,1371 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="gnibnay">
+  <meta name="keywords" content="computer.science">
+  
+    <meta name="description" content="本文是对 《YOLO9000: Better, Faster, Stronger》 论文的总结分享">
+<meta property="og:type" content="article">
+<meta property="og:title" content="YOLO v2 论文分享">
+<meta property="og:url" content="http://gnibnay.github.io/2025/01/04/PaperHub/YOLO/YOLO_v2/index.html">
+<meta property="og:site_name" content="gnibnay&#39;s blog">
+<meta property="og:description" content="本文是对 《YOLO9000: Better, Faster, Stronger》 论文的总结分享">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://gnibnay.github.io/img/in_posts/PaperHub/YOLO/background.png">
+<meta property="article:published_time" content="2025-01-04T09:00:00.000Z">
+<meta property="article:modified_time" content="2025-10-03T04:04:30.892Z">
+<meta property="article:author" content="gnibnay">
+<meta property="article:tag" content="YOLO">
+<meta property="article:tag" content="目标检测">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://gnibnay.github.io/img/in_posts/PaperHub/YOLO/background.png">
+  
+  
+  
+  <title>YOLO v2 论文分享 - gnibnay&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/indeximg-hover.css">
+<link rel="stylesheet" href="/css/scrollbar.css">
+<link rel="stylesheet" href="/css/scrollAnimation.css">
+<link rel="stylesheet" href="/css/font.css">
+<link rel="stylesheet" href="/css/APlayer.min.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"gnibnay.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":2},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":"pO4fPO8GQ0rpvThocBK6UsqM-gzGzoHsz","app_key":"CClN4theleoncPtM9pz8iS73","server_url":"https://po4fpo8g.lc-cn-n1-shared.com","path":"window.location.pathname","ignore_local":true},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+  <link rel="stylesheet" href="https://npm.elemecdn.com/lxgw-wenkai-screen-webfont/style.css" media="print" onload="this.media='all'">
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 90vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>gnibnay</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/in_posts/PaperHub/YOLO/background.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="YOLO9000: Better, Faster, Stronger"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        gnibnay
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-01-04 17:00" pubdate>
+          January 4, 2025 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.3k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          62 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+        <div class="scroll-down-bar">
+          <i class="iconfont icon-arrowdown"></i>
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-right: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Paper Hub"
+        id="heading-9ef268aa27830b24d8c35f81f84b84aa" role="tab" data-toggle="collapse" href="#collapse-9ef268aa27830b24d8c35f81f84b84aa"
+        aria-expanded="true"
+      >
+        Paper Hub
+        <span class="list-group-count">(2)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-9ef268aa27830b24d8c35f81f84b84aa"
+           role="tabpanel" aria-labelledby="heading-9ef268aa27830b24d8c35f81f84b84aa">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="YOLO"
+        id="heading-2d664feb111ebc50c56165966d077f8e" role="tab" data-toggle="collapse" href="#collapse-2d664feb111ebc50c56165966d077f8e"
+        aria-expanded="true"
+      >
+        YOLO
+        <span class="list-group-count">(2)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-2d664feb111ebc50c56165966d077f8e"
+           role="tabpanel" aria-labelledby="heading-2d664feb111ebc50c56165966d077f8e">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2025/01/01/PaperHub/YOLO/YOLO_v1/" title="YOLO v1 论文分享"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">YOLO v1 论文分享</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2025/01/04/PaperHub/YOLO/YOLO_v2/" title="YOLO v2 论文分享"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">YOLO v2 论文分享</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">YOLO9000: Better, Faster, Stronger</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    Last updated on October 3, 2025 pm
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content_cvpr_2017/papers/Redmon_YOLO9000_Better_Faster_CVPR_2017_paper.pdf">论文链接</a></p>
+</blockquote>
+<h2 id="摘要-abstract">摘要 ⌊Abstract⌉</h2>
+<p>  这篇论文介绍了<code>YOLO9000</code>，这是一个先进的实时目标检测系统，能够检测超过<code>9000</code>个目标类别。首先，作者提出了一系列对<code>YOLO</code>检测方法的改进，形成了<code>YOLOv2</code>模型。<code>YOLOv2</code>在标准检测任务如<code>PASCAL VOC</code>和<code>COCO</code>上达到了最先进的水平，并且可以通过多尺度训练方法在不同大小上运行，从而在速度和准确性之间提供简单的权衡。在<code>67 FPS</code>的速度下，<code>YOLOv2</code>在<code>VOC 2007</code>上达到了<code>76.8 mAP</code>，而在<code>40 FPS</code>的速度下达到了<code>78.6 mAP</code>，超过了<code>Faster R-CNN</code>和<code>SSD</code>等其他先进方法。此外，作者提出了一种联合训练方法，可以在目标检测和分类数据上同时训练<code>YOLO9000</code>，使其能够预测那些没有标记检测数据的目标类别。在<code>ImageNet</code>检测验证集上，尽管只有<code>44</code>个类别有检测数据，<code>YOLO9000</code>仍然达到了<code>19.7 mAP</code>，并且在不在<code>COCO</code>中的<code>156</code>个类别上达到了<code>16.0 mAP</code>。<code>YOLO9000</code>能够在实时中检测超过<code>9000</code>个不同的目标类别。</p>
+<h3 id="平均精度均值-map">平均精度均值 ⌊mAP⌉</h3>
+<p>  <code>mAP</code>（<code>mean Average Precision</code>，平均精度均值）是目标检测领域常用的性能指标，用于衡量检测模型的整体性能。目标检测问题中的每个图片都可能包含一些不同类别的物体，需要评估模型的物体分类和定位性能。因此，不能用图像分类问题的标准指标
+<code>Precision</code> 来简单评估模型性能。</p>
+<p>  <code>mAP</code> 是多个分类任务的 <code>AP</code> 的平均值，而
+<code>AP（average precision）</code> 是 <code>PR</code>
+曲线下的面积。在介绍 <code>mAP</code> 之前，有必要先介绍 <code>PR</code>
+曲线。</p>
+<h4 id="p-r-曲线">P-R 曲线</h4>
+<h5 id="tpfpfn-和-tn">1. TP、FP、FN 和 TN</h5>
+<p>  这些术语通常用于评估分类模型的性能。通过这些指标，可以计算出模型的准确率、查全率、精确率等其他指标。</p>
+<table>
+<thead>
+<tr>
+<th>术语</th>
+<th>定义</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TP (True Positive)</td>
+<td>真正例</td>
+<td>模型正确地将正例预测为正例</td>
+</tr>
+<tr>
+<td>FP (False Positive)</td>
+<td>假正例</td>
+<td>模型错误地将负例预测为正例</td>
+</tr>
+<tr>
+<td>FN (False Negative)</td>
+<td>假负例</td>
+<td>模型错误地将正例预测为负例</td>
+</tr>
+<tr>
+<td>TN (True Negative)</td>
+<td>真负例</td>
+<td>模型正确地将负例预测为负例</td>
+</tr>
+</tbody>
+</table>
+<h5 id="查准率查全率">2. 查准率、查全率</h5>
+<ul>
+<li><strong>查准率</strong>（<code>Precision</code>）<br> <span
+class="math display">\[Precision = \frac{TP}{TP+FP}\]</span>
+说明：查准率关注的是预测结果的准确性，即在所有被预测为正例的样本中，有多少是真正的正例；</li>
+<li><strong>查全率</strong>（<code>Recall</code>）<br> <span
+class="math display">\[Recall = \frac{TP}{TP+FN}\]</span>
+说明：查全率关注的是模型对正例的识别能力，即在所有实际为正例的样本中，有多少被正确识别出来。查全率亦可称<strong>召回率</strong>。</li>
+</ul>
+<p>  根据查准率（<code>P</code>）和查全率（<code>R</code>）绘制的曲线即
+<code>P-R</code> 曲线：</p>
+<figure>
+<img src="/img/in_posts/PaperHub/YOLO/YOLO_v2/image.png" srcset="/img/loading.gif" lazyload
+alt="yolo_v1: Picasso Dataset precision-recall curves." />
+<figcaption aria-hidden="true">yolo_v1: Picasso Dataset precision-recall
+curves.</figcaption>
+</figure>
+<h4 id="ap-的计算">AP 的计算</h4>
+<p>  <code>AP</code> 是计算某一类 <code>P-R</code>
+曲线下的面积，计算<code>AP</code> 有两类方法，以下面的 <code>P-R</code>
+曲线为例：</p>
+<h5 id="点插值法">11 点插值法</h5>
+<ol type="1">
+<li>将检测结果按照置信度从高到低排序；</li>
+<li>计算每个检测结果对应的准确率（<code>Precision</code>）和查全率（<code>Recall</code>）；</li>
+<li>在查全率从<code>0</code>到<code>1</code>的区间内<strong>均匀</strong>选择<code>11</code>个点（<code>0</code>,
+<code>0.1</code>, <code>0.2</code>, ..., <code>1</code>）；</li>
+<li>对于每个查全率点，找到该点<strong>右侧（包括该点）的最大准确率值</strong>；</li>
+<li>计算这<code>11</code>个最大准确率值的平均值，作为<code>AP</code>。</li>
+</ol>
+<figure>
+<img src="/img/in_posts/PaperHub/YOLO/YOLO_v2/image-1.png" srcset="/img/loading.gif" lazyload
+alt="11 点插值法" />
+<figcaption aria-hidden="true">11 点插值法</figcaption>
+</figure>
+<p>  <code>11</code>点插值法在早期的信息检索和目标检测领域中被广泛使用，尤其是在<code>PASCAL VOC</code>数据集的早期版本中（如<code>VOC2007</code>和<code>VOC2008</code>）。这种方法简单易实现，但精度较低，因为它只考虑了<code>11</code>个固定的查全率点.</p>
+<h5 id="积分法">积分法</h5>
+<ol type="1">
+<li>对检测结果按置信度从高到低排序，计算每个结果对应的准确率和查全率；</li>
+<li>将准确率序列调整为单调不增；</li>
+<li>对于每个查全率值，找到其<strong>大于等于该值时的最大准确率</strong>；</li>
+<li>计算这些最大准确率值与对应的查全率差值的乘积之和，即为<code>AP</code>。</li>
+</ol>
+<figure>
+<img src="/img/in_posts/PaperHub/YOLO/YOLO_v2/image-2.png" srcset="/img/loading.gif" lazyload
+alt="积分法" />
+<figcaption aria-hidden="true">积分法</figcaption>
+</figure>
+<h4 id="map-的计算">mAP 的计算</h4>
+<p>  <code>AP</code> 是计算某一类 <code>P-R</code>
+曲线下的面积，<code>mAP</code> 则是计算所有类别 <code>P-R</code>
+曲线下面积的<strong>平均值</strong>。</p>
+<p><span class="math display">\[mAP = \frac{\sum_{c \in classes}
+AP_{c}}{N(classes)}\]</span></p>
+<h3 id="yolov1-的不足">YOLOv1 的不足</h3>
+<p>  <code>YOLOv1</code>在检测精度上存在不足，尤其是在<code>mAP</code>（平均精度均值）方面。主要缺点包括：</p>
+<ol type="1">
+<li><p><strong>定位误差</strong><br><code>YOLOv1</code>在定位目标时容易出现误差。与基于区域建议的方法（如<code>Faster R-CNN</code>）相比，<code>YOLOv1</code>的定位精度较低，这导致其<code>mAP</code>值相对较低；</p></li>
+<li><p><strong>查全率较低</strong><br><code>YOLOv1</code>的查全率相对较低，这意味着它可能会漏掉一些实际存在的目标。查全率的不足也会影响<code>mAP</code>的计算，因为<code>mAP</code>是基于精度和查全率的综合指标；</p></li>
+<li><p><strong>对小目标的检测能力不足</strong><br><code>YOLOv1</code>在检测小目标方面表现不佳，因为它使用的是较为粗糙的特征图进行检测，难以准确捕捉小目标的细节。</p></li>
+</ol>
+<p>  这些不足使得<code>YOLOv1</code>在一些标准检测任务（如<code>PASCAL VOC</code>和<code>COCO</code>）上的<code>mAP</code>表现不如一些基于区域建议的先进方法。因此，<code>YOLOv2</code>在这些方面进行了改进，以提高检测的精度和查全率，从而提升了<code>mAP</code>值。</p>
+<h2 id="引言-introduction">引言 ⌊Introduction⌉</h2>
+<p>  引言部分，作者讨论了通用目标检测面临的挑战和机遇：</p>
+<ol type="1">
+<li><p><strong>目标检测的需求</strong><br>通用目标检测应该具备快速、准确和能够识别广泛种类目标的特点。随着神经网络的发展，检测框架在速度和准确性上都有了显著提升，但在目标种类的识别上仍然受到限制。</p></li>
+<li><p><strong>数据集的限制</strong><br>当前的目标检测数据集（如<code>PASCAL VOC</code>和<code>COCO</code>）与分类数据集（如<code>ImageNet</code>）相比规模较小。检测数据集通常包含数千到数十万张图像，而分类数据集则包含数百万张图像和数十万到数百万个类别。<strong>检测数据的标注成本远高于分类数据</strong>，因此不太可能在短期内看到与分类数据集规模相当的检测数据集。</p></li>
+<li><p><strong>YOLO9000的目标</strong><br>作者提出了一种新方法，<strong>利用已有的大量分类数据来扩展当前检测系统的范围</strong>。通过使用层次化的对象分类视图，可以将不同的数据集结合起来。此外，作者还提出了一种<strong>联合训练算法</strong>，可以在检测和分类数据上同时训练目标检测器。这种方法利用检测数据来精确定位目标，同时使用分类数据来增加词汇量和鲁棒性。</p></li>
+<li><p><strong>YOLO9000的实现</strong><br>通过这些方法，作者训练了<code>YOLO9000</code>，这是一个实时目标检测器，能够检测超过<code>9000</code>个不同的目标类别。首先，他们改进了基础的<code>YOLO</code>检测系统，开发出<code>YOLOv2</code>，这是一个先进的实时检测器。然后，他们使用<strong>数据集组合方法</strong>和<strong>联合训练算法</strong>，训练了一个能够在<code>ImageNet</code>的<code>9000</code>多个类别以及<code>COCO</code>的检测数据上运行的模型。</p></li>
+</ol>
+<h2 id="更好-better">更好 ⌊Better⌉</h2>
+<p>  <code>YOLO</code>在定位和查全率方面存在不足，而<code>YOLOv2</code>通过简化网络结构和优化学习表示，提高了定位精度和召回率，同时保持了快速的检测速度。从
+<code>YOLOv1</code> 到 <code>YOLOv2</code>
+结合了过去的研究成果和一些新概念，使得<code>YOLOv2</code>在性能上取得了显著提升：</p>
+<figure>
+<img src="/img/in_posts/PaperHub/YOLO/YOLO_v2/image-3.png" srcset="/img/loading.gif" lazyload
+alt="从 YOLOv1 到 YOLOv2" />
+<figcaption aria-hidden="true">从 YOLOv1 到 YOLOv2</figcaption>
+</figure>
+<h3 id="批归一化-batch-normalization">1. 批归一化 ⌊Batch
+Normalization⌉</h3>
+<p>  <code>Batch Normalization</code>
+往往用于在深度神经网络中激活层之前，可以加快模型训练时的收敛速度，使得模型训练过程更加稳定，避免梯度爆炸或者梯度消失。</p>
+<p>  <code>Batch Normalization</code> 核心公式： <span
+class="math display">\[\begin{aligned} Input:\ B = \{x_{1...m}\};\
+\gamma,\ \beta \\\\ Output:\ \{y_i = BN_{\gamma, \beta}(x_i) \} \\\\
+\mu_B \leftarrow \frac{1}{m} \sum_{i = 1}^m x_i \\\\ \sigma^2_{B}
+\leftarrow \frac{1}{m} \sum_{i=1}^m (x_i - \mu_B)^2 \\\\ \tilde{x}
+\leftarrow \frac{x_i - \mu_B}{\sqrt{\sigma^2 +\epsilon}} \\\\ y_i
+\leftarrow \gamma \tilde{x} + \beta \end{aligned}\]</span></p>
+<p>解释：</p>
+<ol type="1">
+<li><strong>输入</strong>:
+<ul>
+<li>$ B = {x_{1...m}} $: 一批输入数据，其中 $ x_i $ 是第 $ i $ 个输入，$
+m $ 是批大小。</li>
+<li>$ $, $ $: 两个可学习的参数，分别用于缩放和偏移归一化后的数据。</li>
+</ul></li>
+<li><strong>输出</strong>:
+<ul>
+<li>$ {y_i = BN_{, }(x_i) } $: 经过批归一化后的输出数据。</li>
+</ul></li>
+<li><strong>步骤</strong>:
+<ul>
+<li><p><strong>计算均值</strong>: <span class="math display">\[
+\mu_B \leftarrow \frac{1}{m} \sum_{i = 1}^m x_i
+\]</span> 计算这批数据的均值 <span
+class="math inline">\(\mu_B\)</span>。</p></li>
+<li><p><strong>计算方差</strong>: <span class="math display">\[
+\sigma^2_{B} \leftarrow \frac{1}{m} \sum_{i=1}^m (x_i - \mu_B)^2
+\]</span> 计算这批数据的方差 <span
+class="math inline">\(\sigma^2_{B}\)</span>。</p></li>
+<li><p><strong>归一化</strong>: <span class="math display">\[
+\tilde{x} \leftarrow \frac{x_i - \mu_B}{\sqrt{\sigma^2 +\epsilon}}
+\]</span> 将每个输入 <span class="math inline">\(x_i\)</span>
+归一化，使其均值为<code>0</code>，方差为<code>1</code>。其中 <span
+class="math inline">\(\epsilon\)</span>
+是一个很小的常数，用于防止分母为零。</p></li>
+<li><p><strong>缩放和偏移</strong>: <span class="math display">\[
+y_i \leftarrow \gamma \tilde{x} + \beta
+\]</span> 对归一化后的数据 <span
+class="math inline">\(\tilde{x}\)</span> 进行缩放和偏移，得到最终的输出
+<span class="math inline">\(y_i\)</span>。</p></li>
+</ul></li>
+</ol>
+<p><code>Batch Normalization</code>批归一化确保了每批数据的分布更加稳定，从而加速了模型的训练过程并提高了模型的泛化能力。</p>
+<p>  通过在 <code>YOLO</code> 中的所有卷积层上添加批量归一化，使得
+<code>YOLO</code> 在 <code>mAP</code> 指标上获得了
+<code>2%</code>以上的改进。通过批归一化，可以在不过度拟合的情况下从模型中删除
+<code>dropout</code>。</p>
+<h3 id="高分辨率分类器-high-resolution-classifier">2. 高分辨率分类器
+⌊High Resolution Classifier⌉</h3>
+<p>  <code>YOLOv1</code>的分类器网络在<code>224x224</code>分辨率下进行训练，然后在检测时将分辨率提高到<code>448x448</code>。这种突然的分辨率变化使得网络需要同时适应新的输入分辨率和学习目标检测任务，导致性能受限。</p>
+<p>  为了改进这一点，<code>YOLOv2</code>采取了以下步骤进行优化：</p>
+<ol type="1">
+<li><p><strong>预训练阶段</strong><br>在<code>ImageNet</code>数据集上，首先将分类器网络在<code>448x448</code>的高分辨率下进行预训练。这样做的目的是让网络有足够的时间调整其滤波器（<code>filters</code>），以更好地适应高分辨率的输入图像。通过这种方式，<u>网络可以在检测任务开始之前，就已经具备了处理高分辨率图像的能力</u>；</p></li>
+<li><p><strong>微调阶段</strong><br>在完成高分辨率下的分类器预训练之后，再将得到的网络用于目标检测任务的微调。此时，网络已经在高分辨率下具备了良好的特征提取能力，因此在检测任务中能够更准确地定位和识别目标。</p></li>
+</ol>
+<p>  通过这种<strong>高分辨率分类器</strong>的改进方法，<code>YOLOv2</code>在检测任务中的平均精度（<code>mAP</code>）得到了显著提升，具体来说，相比之前的方法提高了将近<code>4%</code>的<code>mAP</code>。这表明，<u>通过让网络在高分辨率下进行充分的预训练，可以有效地提高其在目标检测任务中的性能，尤其是在定位精度方面</u>。</p>
+<h3 id="带锚框的卷积-convolutional-with-anchor-boxes">3. 带锚框的卷积
+⌊Convolutional With Anchor Boxes⌉</h3>
+<h4 id="什么是锚框-anchor-boxes">什么是<strong>锚框</strong>
+<code>Anchor Boxes</code></h4>
+<p>  <strong>锚框</strong>（<code>Anchor Boxes</code>）最初在<code>Faster R-CNN</code>中被引入。其<strong>基本思想</strong>是在特征图的<strong>每个位置上预定义一组不同尺寸和宽高比的边界框</strong>，这些预定义的边界框被称为锚框。<strong>网络的任务是调整这些锚框以更好地匹配图像中的真实目标</strong>。</p>
+<h4
+id="为什么要引入锚框anchor-boxes">为什么要引入锚框<code>Anchor Boxes</code></h4>
+<p>  由于<code>YOLOv1</code>直接预测边界框的<strong>绝对坐标</strong>，这在学习过程中容易导致不稳定，尤其是在预测边界框的大小和位置时，这就导致
+<code>YOLOv1</code> 在定位精度方面存在局限。</p>
+<p>  而调整锚框相当于在预定义的边界框的基础上进行微调，<strong>只需要预测相对于锚框的偏移量</strong>（比如中心点的偏移，宽度和高度的缩放比例），这使得学习任务更加简单和直观。因为<u>网络不需要从零开始学习边界框的绝对位置和大小，而是专注于如何调整已有的框以更好地匹配目标，降低了学习难度</u>。</p>
+<p>  此外，使用锚框可以生成更多的候选框，覆盖图像中的多种目标尺寸和形状。这使得检测模型能够更好地捕捉到目标，从而<strong>提高查全率</strong>。即使某些目标的尺寸或形状与预定义的锚框不完全匹配，网络也可以通过调整锚框的偏移量来适应这些目标。</p>
+<h4 id="具体是怎么做的">具体是怎么做的</h4>
+<ol type="1">
+<li><p><strong>移除全连接层</strong><br><code>YOLOv1</code>使用全连接层直接预测边界框的坐标，而<code>YOLOv2</code><strong>移除了全连接层，改为使用卷积层来预测边界框</strong>。这使得<code>YOLOv2</code>可以在特征图的每个位置上进行边界框的预测，而不是仅限于固定的网格单元；</p></li>
+<li><p><strong>引入锚框</strong><br>网络预测相对于锚框的偏移量和置信度，而不是直接预测边界框的绝对坐标；</p></li>
+<li><p><strong>提高特征图分辨率</strong><br>为了更好地检测小目标，<code>YOLOv2</code>去除了一个池化层，使得网络的卷积层输出具有更高的分辨率（池化层会降低特征图的空间维度，即宽和高）。同时，将输入图像的尺寸从<code>448x448</code>调整为<code>416x416</code>，以获得一个<code>13x13</code>的输出特征图。这种调整使得特征图的中心位置能够更准确地预测大目标；</p>
+<blockquote>
+<p>即现在图像会被划分为 <span class="math inline">\(S \times S = 13
+\times 13\)</span> 的网络，而不是 <code>YOLOv1</code> 中的 <span
+class="math inline">\(S =
+7\)</span>。为什么是网格划分都是奇数？奇数网格划分可以确保边界框中心有一个单独的网格单元，有利于精确定位目标的中心，提高检测精度.</p>
+</blockquote></li>
+<li><p><strong>解耦类别预测和空间位置预测</strong><br>在<code>YOLOv1</code>中，类别预测和空间位置预测是耦合在一起的。<code>YOLOv2</code>将这两者解耦，使得每个锚框都有自己的类别预测和置信度预测。置信度预测仍然是预测真实框和预测框的<code>IOU</code>，而类别预测则是预测在存在目标的情况下该类别的条件概率。</p></li>
+</ol>
+<h4 id="引入锚框带来什么效果">引入锚框带来什么效果</h4>
+<p>  使用锚框后，<code>YOLOv2</code>的<code>mAP</code><strong>略有下降</strong>，从<code>69.5%</code>降至<code>69.2%</code>，但查全率（<code>Recall</code>）从<code>81%</code>提高到<code>88%</code>。虽然<code>mAP</code>有所下降，但查全率的提高为模型的进一步优化提供了更大的空间，因为模型能够检测到更多的目标。</p>
+<h4 id="yolov1-和-yolov2-对比">YOLOv1 和 YOLOv2 对比</h4>
+<table>
+
+<thead>
+<tr>
+<th></th>
+<th><span class="math inline">\(YOLOv1\)</span></th>
+<th><span class="math inline">\(YOLOv2\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>初始设定</td>
+<td>初始每个网格单元预测<code>2</code>个边界框以及一组类别概率，其中类别概率由该
+<code>2</code> 个边界框共享</td>
+<td>初始时每个网格单元设定固定的 <code>5</code>
+个锚框，并且每个位置的锚框都单独预测一组类别概率值</td>
+</tr>
+<tr>
+<td>预测结果公式</td>
+<td><span class="math inline">\(S\times S\times (B*5+C)\)</span></td>
+<td><span class="math inline">\(S\times S\times A\times
+(5+C)\)</span></td>
+</tr>
+<tr>
+<td>公式说明</td>
+<td><code>YOLOv1</code> 中，每张图像被划分为 <span
+class="math inline">\(S = 7\)</span> 的网络，而每个网格单元预测<span
+class="math inline">\(B=2\)</span>个边界框和 <span
+class="math inline">\(C\)</span> 个类别概率，每个边界框均预测
+<code>5</code>
+个值：<code>x</code>、<code>y</code>、<code>w</code>、<code>h</code> 和
+<code>置信度</code>。并且每个网格单元的所有边界框<strong>共享</strong>这一组类别概率</td>
+<td><code>YOLOv2</code>中，每张图像被划分为<span
+class="math inline">\(S=13\)</span>的网络，初始时设定固定数量的 <span
+class="math inline">\(A=5\)</span>
+个锚框，并且每个位置的锚框都单独预测一组类别概率，同样每个锚框预测
+<code>5</code>
+个值：<code>tx</code>、<code>ty</code>、<code>tw</code>、<code>th</code>
+（即预测相对于锚框的<strong>偏移量</strong>）和<code>置信度</code></td>
+</tr>
+<tr>
+<td>输出框数量</td>
+<td><span class="math inline">\(7\times 7\times 2 = 98\)</span></td>
+<td><span class="math inline">\(13\times 13\times 5 = 845\)</span></td>
+</tr>
+<tr>
+<td>输出张量</td>
+<td><span class="math inline">\(7\times 7\times 30\)</span></td>
+<td><span class="math inline">\(13\times 13\times 125\)</span></td>
+</tr>
+</tbody>
+</table>
+<figure>
+<img src="/img/in_posts/PaperHub/YOLO/YOLO_v2/image-4.png" srcset="/img/loading.gif" lazyload
+alt="输出张量对比" />
+<figcaption aria-hidden="true">输出张量对比</figcaption>
+</figure>
+<h3 id="维度集群-dimension-clusters">4. 维度集群 ⌊Dimension
+Clusters⌉</h3>
+<h4
+id="什么是维度聚类-dimension-clusters">什么是<strong>维度聚类</strong>
+Dimension Clusters</h4>
+<p>  <strong>维度聚类</strong><code>Dimension Clusters</code>是一种用于优化目标检测中锚框尺寸选择的方法。它通过在训练数据集的边界框尺寸上进行聚类分析，自动选择一组能够较好地覆盖数据集中目标尺寸分布的锚框尺寸。</p>
+<h4 id="为什么要引入-dimension-clusters">为什么要引入 Dimension
+Clusters</h4>
+<p>  在目标检测中，<strong>使用锚框的一个关键挑战是如何选择合适的锚框尺寸</strong>。如果锚框的尺寸与数据集中目标的实际尺寸差异较大，网络需要花费更多的努力来调整这些锚框以匹配目标，从而影响检测性能。
+-
+<strong>手动选择的局限性</strong><br>在<code>Faster R-CNN</code>等早期方法中，锚框的尺寸通常是手动选择的，这依赖于经验，并且可能无法很好地匹配数据集中目标的实际尺寸分布；
+-
+<strong>提高检测精度</strong><br>通过自动选择更合适的锚框尺寸，可以使网络更容易学习如何调整锚框以匹配目标，从而提高检测的精度和效率。</p>
+<h4 id="如何引入dimension-clusters">如何引入Dimension Clusters</h4>
+<p>  <code>YOLOv2</code>通过以下步骤引入了<code>Dimension Clusters</code>：</p>
+<ol type="1">
+<li><strong>数据预处理</strong><br>首先，从训练集中提取所有标注的边界框的尺寸（宽度和高度）;</li>
+<li><strong>k-means聚类</strong><br>在这些边界框的尺寸上运行<code>k-means</code>聚类算法。与传统的欧氏距离不同，这里使用基于<code>IOU</code>（交并比）的距离度量来计算边界框之间的相似性。具体来说，<strong>距离度量</strong>定义为：
+<span class="math display">\[d(box, centroid) = 1 - \text{IOU}(box,
+centroid)\]</span>
+这种距离度量方式使得聚类结果更符合检测任务的需求，即最大化预测框与真实框的重叠度;</li>
+<li><strong>选择聚类中心</strong><br>通过调整聚类的数量（<code>k</code>值），选择一组能够较好地覆盖数据集中目标尺寸分布的聚类中心作为锚框的尺寸。在<code>YOLOv2</code>中，最终选择了<code>k=5</code>作为聚类的数量，这在模型复杂度和检测性能之间取得了较好的平衡。</li>
+</ol>
+<figure>
+<img src="/img/in_posts/PaperHub/YOLO/YOLO_v2/image-5.png" srcset="/img/loading.gif" lazyload
+alt="VOC和COCO上的聚类框尺寸" />
+<figcaption aria-hidden="true">VOC和COCO上的聚类框尺寸</figcaption>
+</figure>
+<blockquote>
+<p>为什么不是 <code>K</code> 越大越好？<br>随着 <code>k</code>
+的增加，模型需要处理的锚框数量也会增加，这会导致计算量显著上升。每个锚框都需要进行位置、大小和置信度的预测，计算量的增加会降低模型的运行速度，尤其是在实时检测任务中，这可能会影响模型的实用性.</p>
+</blockquote>
+<h4 id="引入后的效果">引入后的效果</h4>
+<ul>
+<li><strong>提高平均IOU</strong><br>通过使用基于<code>IOU</code>的聚类方法，得到的锚框尺寸与数据集中目标的实际尺寸更加匹配。在<code>VOC 2007</code>数据集上，使用聚类得到的锚框尺寸，模型与真实框的平均<code>IOU</code>从手动选择锚框时的<code>60.9%</code>提高到了<code>61.0%</code>，而使用<code>9</code>个聚类中心时，平均<code>IOU</code>进一步提高到<code>67.2%</code>;</li>
+<li><strong>提升检测性能</strong><br>由于锚框尺寸更加合适，网络在调整锚框以匹配目标时变得更加容易，从而提高了检测的精度;</li>
+<li><strong>简化模型训练</strong><br>使用基于数据的聚类结果作为锚框尺寸，使得模型训练过程更加稳定和高效，因为网络不需要花费过多的精力去调整不合适尺寸的锚框。</li>
+</ul>
+<h3 id="直接位置预测-direct-location-prediction">5. 直接位置预测 ⌊Direct
+location prediction⌉</h3>
+<h4 id="为什么需要进行直接的位置预测">为什么需要进行直接的位置预测</h4>
+<p>  使用锚框<code>Anchor Boxes</code>
+带来的第二个问题是：模型不稳定，特别是在早期迭代期间。大多数不稳定性来自于对边界框中心位置<code>(x, y)</code>的预测。</p>
+<p>  在使用<strong>区域提议</strong>的网络中，网络预测边界框相对于锚框的偏移量
+<code>tx</code> 和<code>ty</code>，中心位置 <code>(x, y)</code>
+坐标计算如下：</p>
+<p><span class="math display">\[\begin{aligned}x = (t_x * w_a) + x_a
+\\\\ y = (t_y * h_a) + y_a \\\\ 其中，\\\\ w_a 是锚框的宽度 \\\\ h_a
+是锚框的高度 \\\\ (x_a, y_a) 是锚框的中心位置坐标
+\end{aligned}\]</span></p>
+<blockquote>
+<p>论文中这里使用了减法，这应该是一个错误。因为 <span
+class="math display">\[初始锚框中心坐标(x_a, y_a) + 偏移量 =
+预测的边界框的中心坐标\]</span></p>
+</blockquote>
+<p>例如，当 <span class="math inline">\(t_x = 1\)</span>
+时，就是将边界框向右移动一个锚框宽度 <span
+class="math inline">\(w_a\)</span> 的距离；而 <span
+class="math inline">\(t_x = -1\)</span>
+时，就是将边界框向左移动一个锚框宽度 <span
+class="math inline">\(w_a\)</span> 的距离。</p>
+<p>  这个公式存在局限性：</p>
+<ol type="1">
+<li><strong>初始权重的影响</strong><br>在训练初期，网络的权重通常是随机初始化的。这可能导致预测的偏移量
+<span class="math inline">\((t_x, t_y)\)</span>
+在初始阶段波动较大，从而使得预测的边界框中心坐标不稳定。尤其是在偏移量的预测值较大或较小的情况下，边界框的位置可能会偏离真实目标较远，影响模型的训练过程和收敛速度；</li>
+<li><strong>无界性</strong><br>虽然理论上偏移量<span
+class="math inline">\((t_x, t_y)\)</span>，
+应该是相对于锚框的相对位置，但在实际训练过程中，如果没有适当的约束和正则化，偏移量可能会变得非常大，导致预测的边界框位置不合理，从而影响检测的准确性.<br />
+</li>
+</ol>
+<h4 id="yolov2-是怎么做的">YOLOv2 是怎么做的</h4>
+<h5 id="直接预测边界框的中心位置">直接预测边界框的中心位置</h5>
+<ol type="1">
+<li><strong>相对于网格单元的绝对位置</strong><br><code>YOLOv2</code>直接预测边界框中心点在网格单元内的<strong>绝对位置</strong>，而不是预测相对于锚框中心的偏移量。具体来说，网络预测的中心点坐标是相对于网格单元左上角的相对坐标
+$ (bx, by) <span class="math inline">\(，使用\)</span>sigmoid$
+<strong>激活函数</strong>将其约束在<code>0</code>到<code>1</code>之间，<u>表示边界框中心点在网格单元内的相对位置</u>；</li>
+<li><strong>计算公式</strong><br>对于每个网格单元，假设其左上角坐标为
+<span class="math inline">\((c_x,
+c_y)\)</span>，则边界框中心点的绝对坐标 <span class="math inline">\((x,
+y)\)</span> 通过以下公式计算：</li>
+</ol>
+<p><span class="math display">\[\begin{aligned}b_x = \sigma(t_x) + c_x
+\\\\ b_y = \sigma(t_y) + c_y \\\\ (tx, ty) 是网络预测的相对偏移量 \\\\
+(c_x, c_y) 是网格单元的左上角坐标 \\\\ \sigma 是sigmoid激活函数
+\end{aligned}\]</span></p>
+<blockquote>
+<p><strong>直接</strong> 是如何体现的？为什么网络仍然预测了相对偏移量？
+<br>
+<strong>直接</strong>体现在<strong>最终输出的边界框中心坐标是相对于整个图像的绝对坐标，而不是相对于锚框的相对位置</strong>。虽然在实际计算过程中，网络预测的是相对于网格单元的相对偏移量
+<span
+class="math inline">\((t_x,t_y)\)</span>，但通过与网格单元的位置信息结合，最终得到的是边界框的绝对位置</p>
+</blockquote>
+<h5 id="预测边界框的宽度和高度">预测边界框的宽度和高度</h5>
+<ol type="1">
+<li><strong>相对于锚框的缩放比例</strong><br>虽然<code>YOLOv2</code>直接预测边界框的中心位置，但在预测边界框的宽度和高度时，<strong>仍然使用锚框作为初始估计</strong>。网络预测的是相对于锚框的缩放比例
+<span class="math inline">\((t_w,
+t_h)\)</span>，即预测框的宽度和高度相对于锚框的宽度和高度的缩放比例.</li>
+<li><strong>计算公式</strong><br>假设锚框的宽度和高度分别为 <span
+class="math inline">\(P_w\)</span> 和 <span
+class="math inline">\(P_h\)</span>，则预测框的宽度和高度可以通过以下公式计算：
+<span class="math display">\[ \begin{aligned} b_w = P_w e^{t_w} \\\\ b_h
+= P_h e^{t_h} \end{aligned}\]</span> 其中，<span
+class="math inline">\((t_w, t_h)\)</span> 是网络预测的缩放比例.</li>
+</ol>
+<figure>
+<img src="/img/in_posts/PaperHub/YOLO/YOLO_v2/image-6.png" srcset="/img/loading.gif" lazyload
+alt="具有维度先验和位置预测的边界框" />
+<figcaption
+aria-hidden="true">具有维度先验和位置预测的边界框</figcaption>
+</figure>
+<h4 id="达到了什么效果">达到了什么效果</h4>
+<p>  由于约束位置预测，参数化更容易学习，使网络更加稳定。使用维度集群以及直接预测边界框中心位置比带有锚框的版本提高了近
+<code>5%</code>。</p>
+<h3 id="细粒度特征-fine-grained-features">6. 细粒度特征 ⌊Fine-Grained
+Features⌉</h3>
+<h4 id="what是什么">What（是什么）</h4>
+<p>  在<code>YOLOv2</code>中，<strong>细粒度特征</strong>是指<u>通过结合更高分辨率的特征图来增强模型对小目标的检测能力</u>。具体来说，<code>YOLOv2</code>使用一个<code>passthrough</code>层将<code>26x26x512</code>的特征图转换为<code>13x13x2048</code>的特征图，并将其与原始的<code>13x13x1024</code>特征图拼接，形成一个更大的特征图用于检测器的输入。</p>
+<h4 id="why为什么">Why（为什么）</h4>
+<ul>
+<li><strong>提高对小目标的检测能力</strong><br>小目标在图像中占据的像素面积较小，直接在低分辨率的特征图上进行检测可能会丢失重要的细节特征，导致检测精度下降。引入细粒度特征可以捕捉到更多的细节信息，从而更好地定位和识别小目标.</li>
+<li><strong>增强特征的表达能力</strong><br>通过结合不同尺度的特征信息，细粒度特征能够提供更丰富的空间信息和纹理信息，使得模型能够更准确地识别目标的轮廓和形状，增强对目标的综合表达能力.</li>
+</ul>
+<h4 id="how如何实现">How（如何实现）</h4>
+<ul>
+<li><strong>Passthrough层的使用</strong><br><code>YOLOv2</code>引入了一个<code>passthrough</code>层，将<code>26x26x512</code>的特征图通过<strong>堆叠相邻特征</strong>的方式转换为<code>13x13x2048</code>的特征图。这种转换类似于<code>ResNet</code>中的恒等映射，<strong>通过将相邻特征堆叠到不同的通道中，保留了更多的细节信息</strong>.</li>
+<li><strong>特征图的拼接</strong><br>将转换后的<code>13x13x2048</code>特征图与原始的<code>13x13x1024</code>特征图进行拼接，形成一个更大的特征图，用于检测器的输入。这样，检测器<strong>可以同时利用不同尺度的特征信息</strong>，提高检测的精度和鲁棒性.</li>
+</ul>
+<figure>
+<img src="/img/in_posts/PaperHub/YOLO/YOLO_v2/image-7.png" srcset="/img/loading.gif" lazyload
+alt="具有维度先验和位置预测的边界框" />
+<figcaption
+aria-hidden="true">具有维度先验和位置预测的边界框</figcaption>
+</figure>
+<h4 id="效果如何">效果如何</h4>
+<ul>
+<li><strong>提升检测性能</strong><br>引入细粒度特征后，<code>YOLOv2</code>在检测小目标方面的性能得到了显著提升。虽然这种改进带来的性能提升相对较小（大约<code>1%</code>的<code>mAP</code>提升），但它对于提高模型在实际应用中的鲁棒性和准确性具有重要意义，尤其是在需要检测大量小目标的场景中.</li>
+<li><strong>增强对小目标的适应性</strong><br>通过捕捉更多的细节信息，<code>YOLOv2</code>能够更好地适应不同尺寸和形状的小目标，提高了对小目标的检测精度和查全率，使其在各种检测任务中表现得更加出色.</li>
+</ul>
+<h3 id="多尺度训练-multi-scale-training">7. 多尺度训练 ⌊Multi-Scale
+Training⌉</h3>
+<h4 id="what是什么-1">What（是什么）</h4>
+<p>  <strong>多尺度训练</strong>：在训练过程中，<code>YOLOv2</code>不是固定输入图像的尺寸，而是随机改变输入图像的尺寸。具体来说，每隔<code>10</code>个批次，网络会随机选择一个新的图像尺寸进行训练。</p>
+<h4 id="why为什么-1">Why（为什么）</h4>
+<ul>
+<li><strong>提高模型的鲁棒性</strong><br>通过在不同尺寸的图像上进行训练，模型能够学习到在各种输入尺寸下进行检测的能力，从而提高对不同尺寸目标的检测鲁棒性.</li>
+<li><strong>适应不同的应用场景</strong><br>在实际应用中，输入图像的尺寸可能会有很大的变化。多尺度训练使得模型能够更好地适应这些变化，提高在不同场景下的检测性能.</li>
+</ul>
+<h4 id="how如何实现-1">How（如何实现）</h4>
+<ul>
+<li><strong>随机选择图像尺寸</strong><br><code>YOLOv2</code>在训练过程中每隔<code>10</code>个批次随机选择一个新的图像尺寸。由于模型的下采样因子为<code>32</code>，因此选择的图像尺寸是<code>32</code>的倍数，范围从<code>320×320</code>到<code>608×608</code>.</li>
+<li><strong>动态调整网络结构</strong><br>根据选择的图像尺寸，动态调整网络的结构，使得网络能够处理不同尺寸的输入图像。这种动态调整使得模型在训练过程中能够学习到不同尺度下的特征表示.</li>
+</ul>
+<figure>
+<img src="/img/in_posts/PaperHub/YOLO/YOLO_v2/image-8.png" srcset="/img/loading.gif" lazyload
+alt="多尺度训练" />
+<figcaption aria-hidden="true">多尺度训练</figcaption>
+</figure>
+<h4 id="效果如何-1">效果如何</h4>
+<p>  多尺度训练使得<code>YOLOv2</code>能够在不同的输入尺寸下提供速度与精度之间的权衡。在较小的输入尺寸下，模型运行速度更快，虽然精度略有下降，但仍然能够保持较高的检测性能；在较大的输入尺寸下，模型能够达到更高的精度，同时仍然保持实时的检测速度。</p>
+<h3 id="总结">8. 总结</h3>
+<p>  经过一系列改进，如批归一化、高分辨率分类器、使用锚框、维度聚类、直接位置预测、细粒度特征和多尺度训练等，<code>YOLO</code>模型从<code>YOLOv1</code>进步到了<code>YOLOv2</code>，这些优化措施显著提升了检测速度、精度和对不同尺寸目标的适应性，使<code>YOLOv2</code>成为一个更加强大和高效的目标检测模型：</p>
+<figure>
+<img src="/img/in_posts/PaperHub/YOLO/YOLO_v2/image-11.png" srcset="/img/loading.gif" lazyload
+alt="VOC 2007 的准确性和速度对比" />
+<figcaption aria-hidden="true">VOC 2007 的准确性和速度对比</figcaption>
+</figure>
+<h2 id="更快-faster">更快 ⌊Faster⌉</h2>
+<p>  <code>YOLOv2</code>提出了<code>Darknet-19</code>（有<code>19</code>个卷积层和<code>5</code>个<code>MaxPooling</code>层）网络结构作为特征提取网络。<code>DarkNet-19</code>比<code>VGG-16</code>小一些，精度不弱于<code>VGG-16</code>，但浮点运算量减少到约<span
+class="math inline">\(\frac{1}{5}\)</span>，以保证更快的运算速度。</p>
+<figure>
+<img src="/img/in_posts/PaperHub/YOLO/YOLO_v2/image-9.png" srcset="/img/loading.gif" lazyload
+alt="Darknet-19" />
+<figcaption aria-hidden="true">Darknet-19</figcaption>
+</figure>
+<p>  <code>YOLOv2</code>的网络中只有<code>卷积+pooling</code>，从<code>416x416x3</code>
+变换到
+<code>13x13x5x25</code>。增加了<code>batch normalization</code>，增加了一个<code>passthrough</code>层，去掉了全连接层，以及采用了<code>5</code>个锚框,网络的输出如下图所示：</p>
+<figure>
+<img src="/img/in_posts/PaperHub/YOLO/YOLO_v2/image-10.png" srcset="/img/loading.gif" lazyload
+alt="网络输出" />
+<figcaption aria-hidden="true">网络输出</figcaption>
+</figure>
+<h2 id="更强-stronger">更强 ⌊Stronger⌉</h2>
+<h3 id="yolov2-与-yolo9000">YOLOv2 与 YOLO9000</h3>
+<p>  <code>YOLOv2</code>是<code>YOLO</code>系列目标检测模型的一个重要改进版本，通过一系列优化措施提升了检测速度和精度。而<code>YOLO9000</code>则是在<code>YOLOv2</code>的基础上进一步扩展，采用联合训练方法和基于<code>WordNet</code>的层次化分类结构（<code>WordTree</code>），将不同数据集的类别标签映射到一个统一的层次结构中，使其能够检测超过<code>9000</code>个不同的目标类别，从而在类别检测能力和应用场景上实现了显著扩展，两者共同推动了<code>YOLO</code>系列模型的发展。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Paper-Hub/" class="category-chain-item">Paper Hub</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Paper-Hub/YOLO/" class="category-chain-item">YOLO</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/YOLO/" class="print-no-link">#YOLO</a>
+      
+        <a href="/tags/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/" class="print-no-link">#目标检测</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>YOLO v2 论文分享</div>
+      <div>http://gnibnay.github.io/2025/01/04/PaperHub/YOLO/YOLO_v2/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>gnibnay</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>January 4, 2025</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Updated on</div>
+          <div>October 3, 2025</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="NC - Non-commercial">
+                    <i class="iconfont icon-cc-nc"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="SA - Share-alike">
+                    <i class="iconfont icon-cc-sa"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/01/10/PL/C&amp;C++/Macros/%E5%AE%8F%E7%9A%84%E8%89%BA%E6%9C%AF_5/" title="探索C/C++宏的艺术（五）">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">探索C/C++宏的艺术（五）</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/01/01/PaperHub/YOLO/YOLO_v1/" title="YOLO v1 论文分享">
+                        <span class="hidden-mobile">YOLO v1 论文分享</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="waline"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#waline', function() {
+      Fluid.utils.createCssLink('https://registry.npmmirror.com/@waline/client/2.15.8/files/dist/waline.css')
+      Fluid.utils.createScript('https://registry.npmmirror.com/@waline/client/2.15.8/files/dist/waline.js', function() {
+        var options = Object.assign(
+          {"serverURL":"https://voluble-chimera-42ecad.netlify.app/.netlify/functions/comment","path":"window.location.pathname","meta":["nick","mail","link"],"requiredMeta":["nick"],"lang":"zh-CN","emoji":["https://unpkg.com/@waline/emojis@1.2.0/qq","https://unpkg.com/@waline/emojis@1.2.0/bilibili"],"dark":"html[data-user-color-scheme=\"dark\"]","wordLimit":0,"pageSize":10},
+          {
+            el: '#waline',
+            path: window.location.pathname
+          }
+        )
+        Waline.init(options);
+        Fluid.utils.waitElementVisible('#waline .vcontent', () => {
+          var imgSelector = '#waline .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <style> .small-text { font-size: 0.8em; } </style> <p class="small-text">&copy; 2024-2025 gnibnay. All rights reserved.</p> <div class="statistics" style="font-size: 0.80rem"> <div href="https://developer.hitokoto.cn/" id="hitokoto_text"><span id="hitokoto"></span></div> <script src="https://v1.hitokoto.cn/?c=f&c=h&c=i&c=k&c=l&encode=js&select=%23hitokoto" defer></script> </div> <div style="font-size: 0.85rem"> <span id="timeDate">loading days...</span> <span id="times">loading time...</span> <script src="/js/duration.js"></script> </div> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/js/fireworks.js"></script>
+<script src="/js/starswithmouse.js"></script>
+<script src="/js/sakura.js"></script>
+<script src="/js/scrollAnimation.js"></script>
+<script src="/js/APlayer.min.js"></script>
+<script src="/js/Meeting.min.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+
+  <!--浏览器搞笑标题-->
+  <script type="text/javascript" src="/js/funnytitle.js"></script>
+
+</body>
+</html>
